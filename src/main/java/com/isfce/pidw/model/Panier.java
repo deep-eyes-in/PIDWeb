@@ -1,11 +1,10 @@
 package com.isfce.pidw.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
-
-import java.util.ArrayList;
 @Component
 @SessionScope
 public class Panier {

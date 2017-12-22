@@ -19,11 +19,11 @@ import lombok.NoArgsConstructor;
 @Entity(name="TETUDIANT")
 public class Etudiant {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@NotNull
-	@Size(min = 2, max = 60, message = "{elem.nom}")
+	@Size(min = 1, max = 60, message = "{elem.nom}")
 	@Column(length = 30, nullable = false)
 	private String nom;
 	

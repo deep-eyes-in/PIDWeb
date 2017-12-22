@@ -1,7 +1,6 @@
 package com.isfce.pidw.web;
 
 import org.springframework.http.HttpStatus;
-
 import org.springframework.web.bind.annotation.ResponseStatus;
 //Map cette exception sur une erreur HTTP 404 paramètrée
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Elément non trouvé !")

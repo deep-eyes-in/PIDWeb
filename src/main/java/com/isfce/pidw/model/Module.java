@@ -2,7 +2,6 @@ package com.isfce.pidw.model;
 
 import java.util.Date;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -36,7 +35,7 @@ public class Module {
 	private MAS moment;
 
 	@NotNull
-	@ManyToOne()
+	@ManyToOne
 	@JoinColumn(name = "FKCours", nullable = false)
 	private Cours cours;
 
@@ -48,5 +47,4 @@ public class Module {
 		this.moment = moment;
 		this.cours = cours;
 	}
-
 }

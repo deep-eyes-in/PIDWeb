@@ -4,11 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CollectionTable;
-import javax.persistence.JoinColumn;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -17,10 +17,9 @@ import javax.validation.constraints.Size;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@NoArgsConstructor()
 @Entity(name = "TCOURS")
 public class Cours {
 
