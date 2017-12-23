@@ -30,6 +30,6 @@ public class ResultatsWebInitializer extends AbstractAnnotationConfigDispatcherS
   @Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		super.onStartup(servletContext);
-		servletContext.setInitParameter("spring.profiles.default", "pro");
+		servletContext.setInitParameter("spring.profiles.default", "dev");
 	}  
 }
