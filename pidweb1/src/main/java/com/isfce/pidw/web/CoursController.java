@@ -133,8 +133,8 @@ public class CoursController  {
 				// throw new DuplicateException("Le cours " + cours.getCode() + " existe déjà
 				// ");
 			}
-		} else
-// cas d'un Update
+		} else      // cas d'un Update
+			
 		{ // Est ce que le code a changé?
 			if (!savedId.equals(cours.getCode())) {
 				// code à changé
