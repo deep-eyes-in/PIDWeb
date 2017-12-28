@@ -48,7 +48,7 @@ public class CoursController  {
 	// Liste des cours
 	@RequestMapping("/liste")
 	public String listeCours(Model model) {
-		model.addAttribute("coursList",coursDAO.findAll());
+		model.addAttribute("coursList", coursDAO.findAll());
 		return "cours/listeCours";
 	}
 
@@ -79,6 +79,8 @@ public class CoursController  {
 		// Attribut maison pour distinguer un add d'un update
 		model.addAttribute("savedId", cours.getCode());
 		model.addAttribute("languesList", listeLangues);
+		
+		
 		// model.addAttribute("nouveau",false);
 		return "cours/addCours";
 
@@ -132,7 +134,7 @@ public class CoursController  {
 				// ");
 			}
 		} else
-		// cas d'un Update
+// cas d'un Update
 		{ // Est ce que le code a changé?
 			if (!savedId.equals(cours.getCode())) {
 				// code à changé
@@ -228,6 +230,10 @@ public class CoursController  {
 		return "cours/cours";
 	}
 
+	
+	
+	
+	
 	// crée un vecteur avec la liste des langues
 	private List<String> creeListeLangues() {
 		List<String> langues = new ArrayList<>();

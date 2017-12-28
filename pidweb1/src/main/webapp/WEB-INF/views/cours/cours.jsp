@@ -43,8 +43,7 @@
 			<td>Sections :</td>
 			<td>
 			<c:forEach items="${cours.section}" var="section">
-				<c:out value="${section}"/>	 
-				<br />
+				<span> [	<c:out value="${section}"/>	 	] </span>
 			</c:forEach>
 			</td>
 		</tr>

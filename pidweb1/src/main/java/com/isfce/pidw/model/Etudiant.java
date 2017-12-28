@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -14,12 +15,17 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+//@GeneratedValue(strategy = GenerationType.IDENTITY)
+//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_etudiant"  )
+//@SequenceGenerator(name = "generator_etudiant", sequenceName = "gen_etudiant", allocationSize=1  )
+
+
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity(name="TETUDIANT")
 public class Etudiant {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id	
 	private Long id;
 	
 	@NotNull
@@ -48,3 +54,25 @@ public class Etudiant {
 		this.tel = tel;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

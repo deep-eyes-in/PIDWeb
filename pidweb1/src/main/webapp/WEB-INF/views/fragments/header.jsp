@@ -32,7 +32,14 @@
 					<li><a href="<s:url value = "/cours/liste"/>">liste</a></li>
 					<li><a href="<s:url value = "/cours/add" />">add</a></li>
 				</ul></li>
-			<li><a href="#">Etudiants</a></li>
+				
+			<li class="dropdown"><a class="dropdown-toggle"
+				data-toggle="dropdown" href="#">Etudiants <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="<s:url value = "/etudiant/liste"/>">liste</a></li>
+					<li><a href="<s:url value = "/etudiant/add" />">add</a></li>
+				</ul></li>
+				
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 			<li><a href=""><span class="glyphicon glyphicon-log-out disabled"></span>
