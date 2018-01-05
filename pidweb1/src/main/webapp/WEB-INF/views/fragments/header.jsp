@@ -47,6 +47,19 @@
 					<li><a href="<s:url value = "/professeur/add" />">add</a></li>
 				</ul></li>
 				
+				
+				<li class="dropdown"><a class="dropdown-toggle"
+				data-toggle="dropdown" href="#">Module <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="<s:url value = "/module/liste"/>">liste</a></li>
+					<li><a href="<s:url value = "/module/add" />">add</a></li>
+				</ul></li>
+				
+				
+				
+								
+				
+				
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 			<li><a href=""><span class="glyphicon glyphicon-log-out disabled"></span>

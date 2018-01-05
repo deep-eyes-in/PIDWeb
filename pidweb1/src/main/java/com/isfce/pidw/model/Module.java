@@ -39,13 +39,21 @@ public class Module {
 	@ManyToOne
 	@JoinColumn(name = "FKCours", nullable = false)
 	private Cours cours;
+	
+//	@NotNull
+	
+	@ManyToOne
+	@JoinColumn(name = "FKProfesseur" )  //  , nullable = false)
+	private Professeur professeur;	
+	
 
-	public Module(String code, Date dateDebut, Date dateFin, MAS moment, Cours cours) {
+	public Module(String code, Date dateDebut, Date dateFin, MAS moment, Cours cours, Professeur professeur) {
 		super();
 		this.code = code;
 		this.dateDebut = dateDebut;
 		this.dateFin = dateFin;
 		this.moment = moment;
 		this.cours = cours;
+		this.professeur = professeur;
 	}
 }
