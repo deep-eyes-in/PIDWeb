@@ -1,3 +1,4 @@
+
 package com.isfce.pidw.model;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class Cours {
 	@Column(nullable = false)
 	private short nbPeriodes;
 
+	
 	@Getter // ne crée pas de setter
 	@ElementCollection
 	@CollectionTable(name = "TSECTION", // nom de la table
@@ -51,11 +53,22 @@ public class Cours {
 	protected Set<String> sections = new HashSet<String>();
 //	protected List<String> sections = new ArrayList<String>();
 	
+	
 	public Cours(String code, String nom, short nbPeriodes) {
 		super();
 		this.code = code;
 		this.nom = nom;
 		this.nbPeriodes = nbPeriodes;
+	}
+	
+	//		{IPID, FranÃ§ais, 30, Projet de Developpement et d'integration, null}
+	public Cours(String code, String langue, short nbPeriodes, String nom, Set<String> sections ) {
+		super();
+		this.code = code;
+		this.langue = langue;
+		this.nbPeriodes = nbPeriodes;
+		this.nom = nom;
+		this.sections = sections;
 	}
 
 	public void addSection(String section) {

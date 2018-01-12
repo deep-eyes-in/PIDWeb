@@ -2,6 +2,8 @@
 <%-- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> --%>
 <%@ page session="false" language="java"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+	
+	
 <head>
 <title>${param.titre}</title>
 <!-- Required meta tags for bootstrap-->
@@ -13,6 +15,8 @@
 <s:url value="/resources/css/style.css" var="styleCss" />
 <link rel="stylesheet" href="${bootstrapCss}"  />
 <link rel="stylesheet"  href="${styleCss}" />
+
+
 
 </head>
 <body>

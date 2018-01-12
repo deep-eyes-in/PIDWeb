@@ -3,6 +3,10 @@
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:url var="home" value="/" scope="request" />
+
 <html>
 
 <jsp:include page="fragments/header.jsp" >
@@ -19,6 +23,9 @@
 		<p>Adresse Locale: ${pageContext.request.localAddr}</p>
 		<p>Locale: ${pageContext.request.locale } </p>
 		<p>Locale cookie : ${cookie['maLocaleCookie'].value} </p>
+		
+		<p>Locale cookie : ${home}  </p>
+		
 
 		<a href="<s:url value = "/cours/liste" />"> Liste des cours</a>
 	</div>

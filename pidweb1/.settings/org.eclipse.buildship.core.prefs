@@ -1,4 +1,4 @@
-#Sat Dec 23 00:03:51 CET 2017
+#Thu Jan 11 15:48:38 CET 2018
 override.workspace.settings=true
 connection.arguments=
 connection.jvm.arguments=
@@ -6,11 +6,11 @@ build.commands=org.eclipse.jdt.core.javabuilder,org.eclipse.wst.common.project.f
 connection.project.dir=
 gradle.user.home=
 natures=org.eclipse.jdt.core.javanature,org.eclipse.wst.common.project.facet.core.nature,org.eclipse.wst.common.modulecore.ModuleCoreNature,org.eclipse.jem.workbench.JavaEMFNature
-auto.sync=false
-offline.mode=false
 build.scans.enabled=true
+offline.mode=false
+auto.sync=false
 eclipse.preferences.version=1
 connection.java.home=null
 derived.resources=.gradle,build
-connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)
 project.path=\:
+connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)

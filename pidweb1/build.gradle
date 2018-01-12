@@ -10,6 +10,9 @@ repositories {
 
 
 dependencies {
+	compile 'com.google.code.gson:gson:2.8.2'
+	
+
 //Spring Framework core et web
     compile "org.springframework:spring-context:$springVersion"
 	compile "org.springframework:spring-webmvc:$springVersion"

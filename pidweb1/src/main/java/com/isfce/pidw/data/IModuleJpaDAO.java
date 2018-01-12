@@ -21,8 +21,10 @@ public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 	
 	
 	
+	
+	
 	@Query(value= "SELECT * FROM TCOURS " , nativeQuery=true) 
-	List<Cours> getCours( );	
+	List<Object[]>  getCours( );		//	List<Cours> getCours( );	
 	
 	
 	
@@ -30,8 +32,11 @@ public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 	@Query(value= "SELECT code FROM TCOURS " , nativeQuery=true) 
 	List<String> getCoursCodeList( );	
 	
-	@Query(value="select name from TCOURS where code=?", nativeQuery=true)
+	@Query(value="select nom from TCOURS where code=?", nativeQuery=true)
 	String getCoursName(String codeCours);	
 	
 	
 }
+
+
+
