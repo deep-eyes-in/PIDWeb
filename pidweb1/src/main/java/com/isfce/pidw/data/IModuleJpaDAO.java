@@ -23,8 +23,12 @@ public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 	
 	
 	
+//	CODE, LANGUE, NBPERIODES, NOM
+//	CODE, NOM, NBPERIODES
 	@Query(value= "SELECT * FROM TCOURS " , nativeQuery=true) 
-	List<Object[]>  getCours( );		//	List<Cours> getCours( );	
+	List< Object[] >  getCours( );		//	List<Cours> getCours( );	Object[]
+	
+	
 	
 	
 	
@@ -37,6 +41,17 @@ public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 	
 	
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

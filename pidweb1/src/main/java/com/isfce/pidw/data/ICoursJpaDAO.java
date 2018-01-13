@@ -24,5 +24,12 @@ public interface ICoursJpaDAO extends JpaRepository<Cours, String> {
 	
 	@Query(value="select distinct upper(section) from TSECTION ", nativeQuery=true)
 	List<String> listeSections();
+	
+	
+	@Query(value= "SELECT * FROM TCOURS " , nativeQuery=true) 
+	List< Cours >  getCours( );
+	
+	
+	
 
 }

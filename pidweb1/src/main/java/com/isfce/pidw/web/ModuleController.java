@@ -2,6 +2,7 @@ package com.isfce.pidw.web;
 
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import com.isfce.pidw.data.IModuleJpaDAO;
+import com.isfce.pidw.model.Cours;
 import com.isfce.pidw.model.Module;
 
 @Controller
@@ -45,18 +47,7 @@ public class ModuleController  {
 		
 	}
 
-	
-			/*
-	public static Object[] getArray(IModuleJpaDAO bean, String key) {
-	    return moduleDAO.getCoursName(key);
-	}
-// 		   */
-	
 
-//	<c:forEach items="${util:getArray(bean, 'foo')}" var="item">
-//    	${item} <br />
-//   </c:forEach>
-	//		*/
 	
 	
 	// Liste des module
@@ -64,55 +55,30 @@ public class ModuleController  {
 	public String listemModule( Model model ) {
 		model.addAttribute("moduleList", moduleDAO.findAll() );
 		
-//		Object[] array = getArray("foo") ;
-//		model.addAttribute("array", array);			//			setAttribute
-		model.addAttribute("intitule", moduleDAO.getCoursName("IPID")  );
-		
 		return "module/listeModule";
 	}
 	
 	
 	
 	
-	// Liste des module
 	@ResponseBody
-	@RequestMapping("/cours")
-	public String jsonCours( Model model ) {
-		
-        List<String> names = new ArrayList<String>();
-        names.add("Alice");
-        names.add("Bob");
-        names.add("Carol");
-        names.add("Mallory");
-
+	@RequestMapping("/module.json")
+	public String jsonCours( Model model ) {	
+	
+        List<Module> xl =  moduleDAO.findAll()  ;
         
-        System.out.println(  moduleDAO.getCours().toString() );		
         
-
+        for(Module c : xl){
+        	System.out.println( c.getCours().getCode()  ) ;
+        	c.setCours(null);
+        	System.out.println( c.toString()  ) ;
+//            c.setSections(moduleDAO.coursSection2( c.getCode() ));
+        } 
         Gson gson = new Gson();
-
-        String jsonNames = gson.toJson( moduleDAO.getCours() );
-        
-        System.out.println("jsonNames = " + jsonNames);		
-/* 
-*/
-		return "1";
+		return gson.toJson( xl ) ;
 	}
 	
-	@ResponseBody
-	@RequestMapping("/cours/{code}")
-	public String jsonModule( Model model ) {
-		
-		return "X" ;  // moduleDAO.getCours("IPID") ;
-	}
-	
-	
-	 @RequestMapping("/carlist.json")
-	public @ResponseBody String getCarList() {
-		 
-		 
-	        return  "{\"name\":\"Alice\",\"address\":\"Apple St\",\"dateOfBirth\":\"Nov 1, 3900 12:00:00 AM\"}"   ;
-	}	
+	//moduleDAO.getCoursCodeList()
 	
 	
 

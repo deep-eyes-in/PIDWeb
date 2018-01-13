@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
+import com.google.gson.Gson;
 import com.isfce.pidw.data.ICoursJpaDAO;
 import com.isfce.pidw.model.Cours;
+import com.isfce.pidw.model.Module;
 
 @Controller
 @RequestMapping("/cours")
@@ -51,6 +54,37 @@ public class CoursController  {
 		model.addAttribute("coursList", coursDAO.findAll());
 		return "cours/listeCours";
 	}
+	
+	
+	@ResponseBody
+	@RequestMapping("/cours.json")
+	public String jsonCours( Model model ) {	
+	
+        List<Cours> cl =  coursDAO.findAll()  ;
+        for(Cours c : cl){
+            c.setSections(coursDAO.coursSection2( c.getCode() ));
+        } 
+        Gson gson = new Gson();
+		return gson.toJson( cl ) ;
+	}
+	
+	
+	// Affichage du détail d'un cours
+	@ResponseBody
+	@RequestMapping(value = "/{code}.json", method = RequestMethod.GET)
+	public String jsonCoursDetail(@PathVariable String code, Model model) {
+		logger.debug("affiche json du Cours :" + code);
+		if (!coursDAO.exists(code))
+			throw new NotFoundException("Le module n'existe pas", code);
+		
+		Cours c = coursDAO.findOne(code);
+		c.setSections(coursDAO.coursSection2( c.getCode() ));
+		
+		Gson gson = new Gson();
+		return  gson.toJson( c ) ;
+	}
+	
+	
 
 	// Méthode Get pour ajouter un cours
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
@@ -64,6 +98,8 @@ public class CoursController  {
 		// model.addAttribute("savedId", null);
 		return "cours/addCours";
 	}
+	
+	
 
 	// Méthode Get pour faire un update d'un cours
 	@RequestMapping(value = "/{code}/update", method = RequestMethod.GET)
