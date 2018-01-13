@@ -24,7 +24,7 @@ import org.springframework.web.util.UriUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
+import com.isfce.pidw.data.ICoursJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
 import com.isfce.pidw.model.Cours;
 import com.isfce.pidw.model.Module;
@@ -62,24 +62,36 @@ public class ModuleController  {
 	
 	
 	@ResponseBody
-	@RequestMapping("/module.json")
+	@RequestMapping("/liste.json")
 	public String jsonCours( Model model ) {	
 	
         List<Module> xl =  moduleDAO.findAll()  ;
         
-        
-        for(Module c : xl){
-        	System.out.println( c.getCours().getCode()  ) ;
-        	c.setCours(null);
-        	System.out.println( c.toString()  ) ;
-//            c.setSections(moduleDAO.coursSection2( c.getCode() ));
+        for(Module c : xl){			//  c.getCours().clearSection();  //  works to avoid lazy loading
+			c.getCours().setSections(moduleDAO.coursSection2( c.getCours().getCode() ));
         } 
         Gson gson = new Gson();
 		return gson.toJson( xl ) ;
 	}
 	
-	//moduleDAO.getCoursCodeList()
 	
+	
+
+	// Affichage du détail d'un module
+	@ResponseBody
+	@RequestMapping(value = "/{code}.json", method = RequestMethod.GET)
+	public String jsonCoursDetail(@PathVariable String code, Model model) {
+		logger.debug("affiche json du module :" + code);
+		if (!moduleDAO.exists(code))
+			throw new NotFoundException("Le module n'existe pas", code);
+		
+		Module x = moduleDAO.findOne(code);
+		x.getCours().setSections(moduleDAO.coursSection2( x.getCours().getCode() ));
+		
+		Gson gson = new Gson();
+		return  gson.toJson( x ) ;
+	}
+
 	
 
 	// Méthode Get pour ajouter un module

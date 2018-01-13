@@ -57,7 +57,7 @@ public class CoursController  {
 	
 	
 	@ResponseBody
-	@RequestMapping("/cours.json")
+	@RequestMapping("/liste.json")
 	public String jsonCours( Model model ) {	
 	
         List<Cours> cl =  coursDAO.findAll()  ;

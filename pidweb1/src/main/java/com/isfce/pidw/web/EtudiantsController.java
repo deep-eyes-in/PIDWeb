@@ -15,12 +15,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
+import com.google.gson.Gson;
 //import com.isfce.pidw.data.ICoursJpaDAO;
 import com.isfce.pidw.data.IEtudiantJpaDAO;
 import com.isfce.pidw.model.Etudiant;
+import com.isfce.pidw.model.Module;
 
 @Controller
 @RequestMapping("/etudiant")
@@ -59,6 +62,43 @@ public class EtudiantsController {
 
 		return "etudiant/listeEtudiant";
 	}
+	
+	
+	
+	@ResponseBody
+	@RequestMapping("/liste.json")
+	public String jsonCours( Model model ) {	
+	
+        List<Etudiant> xl =  etudiantDAO.findAll()  ;
+        
+        for(Etudiant c : xl){			//  c.getCours().clearSection();  //  works to avoid lazy loading
+//			c.getCours().setSections(moduleDAO.coursSection2( c.getCours().getCode() ));
+        } 
+        Gson gson = new Gson();
+		return gson.toJson( xl ) ;
+	}
+	
+	
+	
+
+	// Affichage du détail d'un module
+	@ResponseBody
+	@RequestMapping(value = "/{code}.json", method = RequestMethod.GET)
+	public String jsonCoursDetail(@PathVariable Long code, Model model) {
+		logger.debug("affiche json du module :" + code);
+		if (!etudiantDAO.exists(code))
+			throw new NotFoundException("Le module n'existe pas", code.toString() );
+		
+		Etudiant x = etudiantDAO.findOne(code);
+		
+		Gson gson = new Gson();
+		return  gson.toJson( x ) ;
+	}
+	
+	
+	
+	
+	
 
 	
 	// Méthode Get pour ajouter un Etudiant

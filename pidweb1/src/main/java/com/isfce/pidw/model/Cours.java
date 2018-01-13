@@ -92,6 +92,9 @@ public class Cours {
 		  sections.add(section);
 	}
 	
+	public void clearSection( ) {
+		  sections = null ;
+	}
 	
 	
 }

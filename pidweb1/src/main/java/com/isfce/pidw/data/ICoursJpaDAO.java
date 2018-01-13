@@ -22,6 +22,7 @@ public interface ICoursJpaDAO extends JpaRepository<Cours, String> {
 	@Query(value="select section from TSECTION where FKCOURS=?", nativeQuery=true)
 	Set<String> coursSection2(String codeCours);	
 	
+	
 	@Query(value="select distinct upper(section) from TSECTION ", nativeQuery=true)
 	List<String> listeSections();
 	

@@ -1,6 +1,7 @@
 package com.isfce.pidw.data;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -38,6 +39,12 @@ public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 	
 	@Query(value="select nom from TCOURS where code=?", nativeQuery=true)
 	String getCoursName(String codeCours);	
+	
+	
+	
+	
+	@Query(value="select section from TSECTION where FKCOURS=?", nativeQuery=true)
+	Set<String> coursSection2(String codeCours);		
 	
 	
 }
