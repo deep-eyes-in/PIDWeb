@@ -3,15 +3,6 @@
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-
-
-<%@ taglib uri="http://www.springframework.org/tags" prefix="s"%>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf"%>
-<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%> --%>
-<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%> --%>
-
-
-
 <html>
 <jsp:include page="../fragments/header.jsp" >
  <jsp:param name="titre" value="Cours Résultats ISFCE"/>
@@ -40,18 +31,9 @@
 			<td><c:out value="${cours.langue}" /></td>
 		</tr>
 		<tr>
-			<td>Sections :</td>
-			<td>
-			<c:forEach items="${cours.section}" var="section">
-				<span> [	<c:out value="${section}"/>	 	] </span>
-			</c:forEach>
-			</td>
 		</tr>
 	</table>
 </div>	
-
-
-
 	<jsp:include page="../fragments/footer.jsp" />
 
 </html>

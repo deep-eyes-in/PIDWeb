@@ -9,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 @ControllerAdvice
 public class CentralExceptionHandle {
 	
-	@ExceptionHandler(DuplicateException.class)
+	@ExceptionHandler({DuplicateException.class, NoAccessException.class,BDException.class})
 	private ModelAndView doublonHandler(HttpServletRequest req, Exception e) {
 		ModelAndView m = new ModelAndView();
 		m.addObject("exception", e);

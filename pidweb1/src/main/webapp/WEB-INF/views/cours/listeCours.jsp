@@ -36,7 +36,11 @@
 			
 			<s:url value="/cours/${cours.code}/delete" var="deleteUrl" />
 			<button class="btn btn-danger"
-				onclick="this.disabled=true;post('${deleteUrl}')">Delete</button>
+				onclick="
+				if (confirm('Suppression du cours  ?')) {
+				 this.disabled=true;
+                 post('${deleteUrl}',{'${_csrf.parameterName}': '${_csrf.token}'})}                             
+                                              ">Delete</button>
 
 			<ul class="nivDeux">
 				<li><c:out value="${cours.nom}" /></li>

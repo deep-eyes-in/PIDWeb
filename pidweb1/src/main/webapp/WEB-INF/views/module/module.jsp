@@ -18,34 +18,30 @@
 </jsp:include>
 <div class="container">
 	<h1>
-		Détail du cours:
-		<c:out value="${cours.nom}" default="-----"></c:out>
+		Détail du module:
+		<c:out value="${module.code}" default="-----"></c:out>
 	</h1>
 
 	<table>
 		<tr>
 			<td>Code:</td>
-			<td><c:out value="${cours.code}" /></td>
+			<td><c:out value="${module.code}" /></td>
 		</tr>
 		<tr>
-			<td>Nom:</td>
-			<td><c:out value="${cours.nom}" /></td>
+			<td>Nom du cours:</td>
+			<td><c:out value="${module.cours.nom}" /></td>
 		</tr>
 		<tr>
-			<td>NbPeriodes:</td>
-			<td><c:out value="${cours.nbPeriodes}" /></td>
+			<td>Nombre de périodes:</td>
+			<td><c:out value="${module.cours.nbPeriodes}" /></td>
 		</tr>
 		<tr>
 			<td>Langue:</td>
-			<td><c:out value="${cours.langue}" /></td>
+			<td><c:out value="${module.cours.langue}" /></td>
 		</tr>
 		<tr>
-			<td>Sections :</td>
-			<td>
-			<c:forEach items="${cours.section}" var="section">
-				<span> [	<c:out value="${section}"/>	 	] </span>
-			</c:forEach>
-			</td>
+			<td>Professeur:</td>
+			<td><c:out value="${module.prof.nom}" /></td>
 		</tr>
 	</table>
 </div>	

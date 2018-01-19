@@ -1,12 +1,17 @@
 <!DOCTYPE html>
+<%@ page import="com.isfce.pidw.data.*" %>
 <%@ page session="false" language="java"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf"%>
-<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%> --%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%> --%>
 <html>
+
+	<fmt:formatDate value="${module.dateDebut}" pattern="yyyy-MM-dd" var="dateD"/>
+	<fmt:formatDate value="${module.dateFin}" pattern="yyyy-MM-dd" var="dateF"/>
+
 <jsp:include page="../fragments/header.jsp">
 	<jsp:param name="titre" value="module Résultats ISFCE" />
 </jsp:include>
@@ -50,32 +55,30 @@
 		</s:bind>
 
 		
-		
-		
-		<s:bind path="dateDebut">
+		<s:bind path="dateDebutTemp">
 			<div class="form-group ${status.error ? 'has-error' : ''} ">
-				<sf:label path="dateDebut" class="col-sm-2 control-label">
+				<sf:label path="dateDebutTemp" class="col-sm-2 control-label">
 					<s:message code="module.dateDebut" />
 				</sf:label>
 				<div class="col-sm-10">
-					<sf:input path="dateDebut" id="dateDebut" class="form-control"
-						placeholder="Nom du module" />
-					<sf:errors path="dateDebut" class="control-label" />
+					<sf:input path="dateDebutTemp" value="${dateD}" id="dateDebutTemp" pattern="yyyy/MM/dd"  type="date" class="form-control"
+						 />
+					<sf:errors path="dateDebutTemp" class="control-label" />
 				</div>
 			</div>
 		</s:bind>
 
 
-		<s:bind path="dateFin">
+		<s:bind path="dateFinTemp">
 			<div class="form-group ${status.error ? 'has-error' : ''} ">
-				<sf:label path="dateFin" class="col-sm-2 control-label">
+				<sf:label path="dateFinTemp" class="col-sm-2 control-label">
 					<s:message code="module.dateFin" />
 				</sf:label>
 				<div class="col-sm-10">
-					<sf:input path="dateFin" id="dateFin" class="form-control"
-						placeholder="Nom du module" />
-					<sf:errors path="dateFin" class="control-label" />
-				</div>
+					<sf:input path="dateFinTemp" value="${dateF}" id="dateFinTemp" pattern="yyyy/MM/dd" type="date" class="form-control"
+						/>
+					<sf:errors path="dateFinTemp" class="control-label" />
+				</div> 
 			</div>
 		</s:bind>
 
@@ -108,10 +111,8 @@
 					<s:message code="module.moment" />
 				</sf:label>
 				<div class="col-sm-5">
-					<s:message code="module.moment.defaut" var="lblMoment" />
 					
 					<sf:select path="moment" class="form-control">
-						<sf:option value="None" label="${lblMoment}" />
 						<sf:options items="${momentList}" />
 					</sf:select>
 					<sf:errors path="moment" class="control-label" />
@@ -121,10 +122,6 @@
 			</div>
 		</s:bind>
 		
-					
-		
-	
-
 
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">

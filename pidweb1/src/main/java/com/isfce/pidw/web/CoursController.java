@@ -1,14 +1,16 @@
 package com.isfce.pidw.web;
 
-
 import java.io.UnsupportedEncodingException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,18 +19,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
-import com.google.gson.Gson;
 import com.isfce.pidw.data.ICoursJpaDAO;
+import com.isfce.pidw.data.IModuleJpaDAO;
 import com.isfce.pidw.model.Cours;
 import com.isfce.pidw.model.Module;
 
 @Controller
 @RequestMapping("/cours")
-public class CoursController  {
+public class CoursController {
 
 	// Logger
 	final static Logger logger = Logger.getLogger(CoursController.class);
@@ -37,69 +38,30 @@ public class CoursController  {
 	
 	// Liste des langues
 	private List<String> listeLangues;
-	private List<String> listeSections;
 
 	// Création de la liste de données pour le 1er exemple
 	@Autowired
 	public CoursController(ICoursJpaDAO coursDAO) {
 		this.coursDAO = coursDAO;
 		listeLangues = creeListeLangues();
-		listeSections = creeListeSections();
-		
 	}
 
 	// Liste des cours
 	@RequestMapping("/liste")
-	public String listeCours(Model model) {
-		model.addAttribute("coursList", coursDAO.findAll());
+	public String listeCours(Model model,Principal principal) {
+		model.addAttribute("coursList",coursDAO.findAll());
 		return "cours/listeCours";
 	}
-	
-	
-	@ResponseBody
-	@RequestMapping("/liste.json")
-	public String jsonCours( Model model ) {	
-	
-        List<Cours> cl =  coursDAO.findAll()  ;
-        for(Cours c : cl){
-            c.setSections(coursDAO.coursSection2( c.getCode() ));
-        } 
-        Gson gson = new Gson();
-		return gson.toJson( cl ) ;
-	}
-	
-	
-	// Affichage du détail d'un cours
-	@ResponseBody
-	@RequestMapping(value = "/{code}.json", method = RequestMethod.GET)
-	public String jsonCoursDetail(@PathVariable String code, Model model) {
-		logger.debug("affiche json du Cours :" + code);
-		if (!coursDAO.exists(code))
-			throw new NotFoundException("Le module n'existe pas", code);
-		
-		Cours c = coursDAO.findOne(code);
-		c.setSections(coursDAO.coursSection2( c.getCode() ));
-		
-		Gson gson = new Gson();
-		return  gson.toJson( c ) ;
-	}
-	
-	
 
 	// Méthode Get pour ajouter un cours
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String addCoursGet(@ModelAttribute Cours cours, Model model) {
 		logger.debug("affiche la vue pour ajouter un cours ");
 		model.addAttribute("languesList", listeLangues);
-		
-		model.addAttribute("sectionsList", listeSections);
-		
 		// Attribut maison pour distinguer un add d'un update
 		// model.addAttribute("savedId", null);
 		return "cours/addCours";
 	}
-	
-	
 
 	// Méthode Get pour faire un update d'un cours
 	@RequestMapping(value = "/{code}/update", method = RequestMethod.GET)
@@ -115,8 +77,6 @@ public class CoursController  {
 		// Attribut maison pour distinguer un add d'un update
 		model.addAttribute("savedId", cours.getCode());
 		model.addAttribute("languesList", listeLangues);
-		
-		
 		// model.addAttribute("nouveau",false);
 		return "cours/addCours";
 
@@ -169,8 +129,8 @@ public class CoursController  {
 				// throw new DuplicateException("Le cours " + cours.getCode() + " existe déjà
 				// ");
 			}
-		} else      // cas d'un Update
-			
+		} else
+		// cas d'un Update
 		{ // Est ce que le code a changé?
 			if (!savedId.equals(cours.getCode())) {
 				// code à changé
@@ -218,7 +178,12 @@ public class CoursController  {
 		// Vérifie si le cours existe
 		if (!coursDAO.exists(code))
 			throw new NotFoundException("cours non trouvé pour suppression", code);
-		coursDAO.delete(code);
+		try {
+			coursDAO.delete(code);
+		} catch (DataIntegrityViolationException e) {
+			logger.error("SQL: ",e);
+			throw new NoAccessException(" Suppression impossible: ce cours possède des dépendances");
+		}
 		logger.debug("Supression du cours: " + code);
 		return "redirect:/cours/liste";
 	}
@@ -255,10 +220,6 @@ public class CoursController  {
 			// gestion spécifique pour la non présence du cours.
 			if (cours == null)
 				throw new NotFoundException("Ce cours existe déjà ", code);
-			
-			
-			cours.setSections(coursDAO.coursSection2(cours.getCode()));
-			
 			// Ajout au Modèle
 			model.addAttribute("cours", cours);
 		} else
@@ -266,10 +227,6 @@ public class CoursController  {
 		return "cours/cours";
 	}
 
-	
-	
-	
-	
 	// crée un vecteur avec la liste des langues
 	private List<String> creeListeLangues() {
 		List<String> langues = new ArrayList<>();
@@ -279,16 +236,5 @@ public class CoursController  {
 		langues.add("Espagnol");
 		return langues;
 	}
-	
-	// crée un vecteur avec la liste des sction
-	private List<String> creeListeSections() {
-		List<String> sections = new ArrayList<>();
-		sections.add("Informatique");
-		sections.add("Comptabilité");
-		sections.add("Secrétariat");
-		sections.add("Marketing");
-		return sections;
-	}	
-	
 
 }

@@ -10,8 +10,9 @@ repositories {
 
 
 dependencies {
+
 	compile 'com.google.code.gson:gson:2.8.2'
-	
+
 
 //Spring Framework core et web
     compile "org.springframework:spring-context:$springVersion"
@@ -53,6 +54,13 @@ dependencies {
     providedCompile "javax.el:javax.el-api:$jspElVersion"
     providedCompile "org.projectlombok:lombok:$lombokVersion"
     
+    //Modules pour la sécurité
+    compile "org.springframework.security:spring-security-core:$springSecurityVersion"
+	compile "org.springframework.security:spring-security-config:$springSecurityVersion"
+	compile "org.springframework.security:spring-security-web:$springSecurityVersion" 
+	compile "org.springframework.security:spring-security-taglibs:$springSecurityVersion"
+	//compile "org.springframework.ldap:spring-ldap-core:2.0.1.RELEASE"
+    
     
 // les tests unitaires JUnit et Mockito
     testCompile "junit:junit:$junitVersion"
@@ -68,4 +76,10 @@ dependencies {
 war {
         baseName = 'WPID' 
 }
+
+
+
+
+
+
 

@@ -7,12 +7,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.core.Ordered;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
@@ -38,17 +40,20 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     		org.springframework.web.servlet.view.JstlView.class);
     return resolver;
   }
+  
   // ne pas traiter les ressources statiques
   @Override
   public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
     configurer.enable();
   }
+  
   //définit le mapping pour les ressources statiques
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
        //super.addResourceHandlers(registry);
     registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
   }
+  
   /**
    * Définition de l'endroit où trouver les fichiers de traduction
    * @return
@@ -86,5 +91,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	//interceptor.setParamName("malocale");// par défaut le nom est "locale"
 	registry.addInterceptor(interceptor);
   } 
- 
+  
+//permet d'activer un contrôleur pour notre page de login personnelle
+  @Override
+  public void addViewControllers(ViewControllerRegistry registry) {
+    registry.addViewController("/login").setViewName("login");
+    registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
+  } 
 }

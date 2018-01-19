@@ -91,10 +91,6 @@
 
 			</div>
 		</s:bind>
-		
-			
-		
-	
 
 
 		<div class="form-group">
