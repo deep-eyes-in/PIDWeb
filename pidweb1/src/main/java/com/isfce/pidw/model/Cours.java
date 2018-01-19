@@ -12,6 +12,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -51,6 +52,17 @@ public class Cours {
 	@Column(name = "SECTION") // nom du champ (par defaut ce serait: sections)
 	protected Set<String> sections = new HashSet<String>();
 	
+	
+	
+	
+
+	
+		
+	
+	
+	
+	
+	
 //	@OneToMany(mappedBy="cours",cascade=CascadeType.PERSIST)
 //	protected Collection<Module> modules= new ArrayList<>();
 
@@ -71,3 +83,9 @@ public class Cours {
 		sections.remove(section);
 	}
 }
+
+
+
+
+
+
