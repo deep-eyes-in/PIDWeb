@@ -29,7 +29,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
+		
+		auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN", "PROF");
+		
+//		auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
 	}
 
 	// A redéfinir pour configurer la manière dont les requêtes doivent être

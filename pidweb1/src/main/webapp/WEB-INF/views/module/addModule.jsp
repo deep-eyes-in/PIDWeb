@@ -61,7 +61,7 @@
 					<s:message code="module.dateDebut" />
 				</sf:label>
 				<div class="col-sm-10">
-					<sf:input path="dateDebutTemp" value="${dateD}" id="dateDebutTemp" pattern="yyyy/MM/dd"  type="date" class="form-control"
+					<sf:input path="dateDebutTemp" value="${dateD}" id="dateDebutTemp" pattern="yyyy-MM-dd"  type="date" class="form-control"
 						 />
 					<sf:errors path="dateDebutTemp" class="control-label" />
 				</div>
@@ -75,7 +75,7 @@
 					<s:message code="module.dateFin" />
 				</sf:label>
 				<div class="col-sm-10">
-					<sf:input path="dateFinTemp" value="${dateF}" id="dateFinTemp" pattern="yyyy/MM/dd" type="date" class="form-control"
+					<sf:input path="dateFinTemp" value="${dateF}" id="dateFinTemp" pattern="yyyy-MM-dd" type="date" class="form-control"
 						/>
 					<sf:errors path="dateFinTemp" class="control-label" />
 				</div> 

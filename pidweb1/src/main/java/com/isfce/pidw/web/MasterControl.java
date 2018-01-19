@@ -42,9 +42,8 @@ public class MasterControl {
 	
 
 
-	public MasterControl() {
-
-	}	
+	public MasterControl() {	}
+	
 	
 	
 	@RequestMapping(value = "/date")

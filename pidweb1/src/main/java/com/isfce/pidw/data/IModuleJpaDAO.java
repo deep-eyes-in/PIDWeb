@@ -47,3 +47,9 @@ public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 	@Query(value="select * from TINSCRIPTION where fketudiant=?", nativeQuery=true)
 	Set<Etudiant> getEtudiantsOfModule(String code);
 }
+
+
+
+
+
+

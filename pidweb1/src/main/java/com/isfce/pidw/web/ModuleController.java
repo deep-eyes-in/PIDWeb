@@ -2,14 +2,11 @@ package com.isfce.pidw.web;
 
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
 import com.isfce.pidw.config.security.Roles;
+import com.isfce.pidw.data.ICoursJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
 import com.isfce.pidw.data.IUsersJpaDAO;
 import com.isfce.pidw.model.Cours;
@@ -39,12 +37,14 @@ public class ModuleController {
 
 	private IModuleJpaDAO moduleDAO;
 	private IUsersJpaDAO usersDAO;
+	private ICoursJpaDAO coursDAO;
 
 	@Autowired
-	public ModuleController(IModuleJpaDAO moduleDAO, IUsersJpaDAO usersDAO) {
+	public ModuleController(IModuleJpaDAO moduleDAO, IUsersJpaDAO usersDAO, ICoursJpaDAO coursDAO) {
 		super();
 		this.moduleDAO = moduleDAO;
 		this.usersDAO = usersDAO;
+		this.coursDAO = coursDAO;
 	}
 
 	/**
@@ -145,6 +145,12 @@ public class ModuleController {
 		return coursListLabelled;
 	}
 
+
+	
+	
+	
+	
+
 	// Méthode Get pour faire un update d'un module
 	@RequestMapping(value = "/{code}/update", method = RequestMethod.GET)
 	public String updateModuleGet(@PathVariable String code, Model model) {
@@ -196,18 +202,40 @@ public class ModuleController {
 		
 		
 		Module m = moduleDAO.findOne(savedId);
+		System.out.println( "0000000000000000000000000" );
 		String str = m.getCours().getCode() ;
-		Cours c = moduleDAO.getCoursByCode( str ) ;
+		System.out.println( "CODE COURS " + str );
+		
+		Cours c = coursDAO.findOne(str);
+		System.out.println( "11111111111111111111111" );
+		Set<String> theSection = moduleDAO.getCoursSection( str  ) ;
+		
+		System.out.println( theSection  );
+		
+		System.out.println( "22222222222222222222222" );
+		c.setSections(theSection);
+		
+		System.out.println( "33333333333333333333333" );
 		module.setCours( c );
 		
-		System.out.println( "0000000000000000000000000" );
+		System.out.println( module.toString()  );
 		
-		Set<String> theSection = moduleDAO.getCoursSection(module.getCours().getCode() ) ;
-		module.getCours().setSections(theSection);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		//System.out.println(module.toString());
 		
 
+		
+		
 		
 		// Gestion de la validation
 		if (errors.hasErrors()) {
@@ -222,9 +250,14 @@ public class ModuleController {
 			logger.debug("Erreurs dans les données du module:" + module.getCode());
 			return "module/addModule";
 		}
+		
+		System.out.println( "DONT HAVE hasErrors" );
+		
 
 		// distinction d'un update ou d'un add
 		if (savedId == null) {
+			System.out.println( "SAVEID = null " );
+			
 			// cas ADD
 			// Vérification doublon
 			if (moduleDAO.exists(module.getCode())) {
@@ -242,6 +275,8 @@ public class ModuleController {
 		} else      // cas d'un Update
 			
 		{ // Est ce que le code a changé?
+			System.out.println( "SAVEID != null " );
+			
 			if (!savedId.equals(module.getCode())) {
 				// code à changé
 				// Vérifie si pas en doublon avec un autre
