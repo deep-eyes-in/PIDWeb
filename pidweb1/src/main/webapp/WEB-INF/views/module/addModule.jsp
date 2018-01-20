@@ -9,14 +9,36 @@
 <%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%> --%>
 <html>
 
-	<fmt:formatDate value="${module.dateDebut}" pattern="yyyy-MM-dd" var="dateD"/>
-	<fmt:formatDate value="${module.dateFin}" pattern="yyyy-MM-dd" var="dateF"/>
+
+
+
+
+<c:if test="${empty module}">
+    var1 is empty or null.
+			<s:url value="2000-01-01" var="dateD" />
+			<s:url value="2000-01-01" var="dateF" />
+</c:if>
+
+
+<c:if test="${not empty module}">
+    var1 is NOT empty or null.
+			<fmt:formatDate value="${module.dateDebut}" pattern="yyyy-MM-dd" var="dateD"/>
+			<fmt:formatDate value="${module.dateFin}" pattern="yyyy-MM-dd" var="dateF"/>
+</c:if>
+
+
+
+
+	
+	
+
 
 <jsp:include page="../fragments/header.jsp">
 	<jsp:param name="titre" value="module Résultats ISFCE" />
 </jsp:include>
 
 <div class="container">
+
 	<c:choose>
 		<%--  Pour un Ajout le paramètre "savedId" ne doit pas exister --%>
 		
@@ -27,6 +49,8 @@
 			<h1><s:message code="module.modifier"/></h1>
 		</c:otherwise>
 	</c:choose>
+	
+	
 	<br />
 
 	<s:url value="/module/add" var="moduleActionUrl" />

@@ -90,12 +90,14 @@ public class Module {
 			return dateDebut;
 		 
 	}
+	
 
 	public Date getDateFin() throws ParseException {
 		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 		//dateFin = sdf.parse(dateFin.toString());
 		return dateFin;
 	}
+	
 	
 	public void setDateDebutTemp (String dateDebutStr) throws ParseException {
 		Date  dateDebut = new SimpleDateFormat("yyyy-MM-dd").parse(dateDebutStr);

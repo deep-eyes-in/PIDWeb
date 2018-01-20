@@ -8,8 +8,15 @@
 	</footer>
 </div>
 
-<s:url value="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+	
+	
+														<%-- https://code.jquery.com/jquery-3.2.1.slim.min.js --%>
+<s:url 
+	value="https://code.jquery.com/jquery-3.1.1.min.js"			
 	var="JQuery" />
+	
+		
+	
 <s:url
 	value="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
 	var="Popper" />

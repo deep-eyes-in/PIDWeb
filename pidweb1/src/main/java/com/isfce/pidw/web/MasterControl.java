@@ -46,6 +46,18 @@ public class MasterControl {
 	
 	
 	
+	
+	
+	@RequestMapping(value = "/json")
+	public String testJson(Model model) {
+	    System.out.printf( "[MasterControl]"  +  "[testJson]"  +  "[]" );
+
+	    return "test/json";
+	}
+	
+
+	
+	
 	@RequestMapping(value = "/date")
 	public String testDate(Model model) {
 	    System.out.printf( "[MasterControl]"  +  "[testDate]"  +  "[]" );

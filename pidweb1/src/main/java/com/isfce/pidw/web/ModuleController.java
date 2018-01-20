@@ -2,6 +2,8 @@ package com.isfce.pidw.web;
 
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,7 +114,7 @@ public class ModuleController {
 	
 	// Méthode Get pour ajouter un module
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
-	public String addModuleGet(@ModelAttribute Module module, Model model) {
+	public String addModuleGet(@ModelAttribute Module module, Model model) throws ParseException {
 		logger.debug("affiche la vue pour ajouter un module ");
 		
 		Map<String, String> coursListLabelled = new LinkedHashMap<String, String>();
@@ -126,6 +128,12 @@ public class ModuleController {
 		
 		model.addAttribute( "coursList", coursListLabelled );
 		model.addAttribute( "momentList", Module.MAS.values()  );
+		
+//		Module module = new Module();
+		module.setDateDebutTemp( today()  );
+		module.setDateFinTemp( today()  );
+		
+		model.addAttribute("module", module);
 		
 		// Attribut maison pour distinguer un add d'un update
 		// model.addAttribute("savedId", null);
@@ -160,7 +168,6 @@ public class ModuleController {
 			throw new NotFoundException("Le module n'existe pas", code);
 		
 		
-
 		
 		
 		// recherche le module dans la liste
@@ -172,6 +179,7 @@ public class ModuleController {
 		model.addAttribute("module", module);
 		// Attribut maison pour distinguer un add d'un update
 		model.addAttribute("savedId", module.getCode());
+		
 
 		return "module/addModule";
 
@@ -192,10 +200,7 @@ public class ModuleController {
 		System.out.println( "_________________" );
 		System.out.println(module.toString());
 		System.out.println(module.getDateDebut());
-		//module.setDateDebutTemp("2001-01-01");
-		//System.out.println(module.getDateDebut());
-		
-		//System.out.println(module.toString());
+
 		
 		
 		System.out.println( "_________________" );
@@ -225,20 +230,18 @@ public class ModuleController {
 		
 		
 		
+		System.out.println( errors.getAllErrors().toString()     );
 		
 		
 		
 		
-		
-		
-		//System.out.println(module.toString());
 		
 
-		
+//		/*	
 		
 		
 		// Gestion de la validation
-		if (errors.hasErrors()) {
+		if ( errors.getErrorCount()  > 1  ) {			//			errors.hasErrors()
 			// Attribut maison pour distinguer un add d'un update
 			if (savedId != null)
 				model.addAttribute("savedId", savedId);
@@ -250,6 +253,10 @@ public class ModuleController {
 			logger.debug("Erreurs dans les données du module:" + module.getCode());
 			return "module/addModule";
 		}
+		
+		
+//		*/		
+		
 		
 		System.out.println( "DONT HAVE hasErrors" );
 		
@@ -358,5 +365,21 @@ public class ModuleController {
 		
 		return "module/module";
 	}
+
+	
+	
+	public String today () {
+		
+		String format = "yyyy-MM-dd"; 
+
+		java.text.SimpleDateFormat formater = new java.text.SimpleDateFormat( format ); 
+		java.util.Date date = new java.util.Date(); 
+
+//		System.out.println( formater.format( date ) ); 
+		
+		return formater.format( date ) ;
+	}
+	
+	
 
 }
