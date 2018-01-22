@@ -109,7 +109,7 @@
 
 		
 		
-		<s:bind path="cours">
+		<s:bind path="module.cours.code">
 			<div class="form-group ${status.error ? 'has-error' : ''}">
 				<sf:label path="cours" class="col-sm-2 control-label">
 					<s:message code="module.cours" />
@@ -117,7 +117,7 @@
 				<div class="col-sm-5">
 					<s:message code="module.cours.defaut" var="lblValue" />
 					
-					<sf:select path="cours" class="form-control">
+					<sf:select path="cours.code" class="form-control">
 						<sf:option value="None" label="${lblValue}" />
 						<sf:options items="${coursList}" />
 					</sf:select>

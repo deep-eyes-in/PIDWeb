@@ -81,7 +81,6 @@ public class MasterControl {
 		System.out.printf( model.toString() );
 		
 		
-		
 	    System.out.printf(filter.getLoadingStartDate().toString());
 	    System.out.printf(dateFormat());
 	    
@@ -110,6 +109,22 @@ public class MasterControl {
 	
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

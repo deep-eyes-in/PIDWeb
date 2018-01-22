@@ -36,7 +36,7 @@ public class Evaluation {
 	
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name = "FKCOURS", nullable = false)
+	@JoinColumn(name = "FKMODULE", nullable = false)
 	private Cours cours;
 	
 	

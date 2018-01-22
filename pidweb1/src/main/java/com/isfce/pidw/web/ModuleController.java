@@ -193,42 +193,11 @@ public class ModuleController {
 	
 	
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String addUpdateModulePost( Module module, BindingResult errors,
+	public String addUpdateModulePost(@ModelAttribute Module module, BindingResult errors,
 			@RequestParam(value = "savedId", required = false) String savedId, Model model, RedirectAttributes rModel) throws ParseException {
 		
 		
 		System.out.println( "_________________" );
-		System.out.println(module.toString());
-		System.out.println(module.getDateDebut());
-
-		
-		
-		System.out.println( "_________________" );
-		
-		
-		Module m = moduleDAO.findOne(savedId);
-		System.out.println( "0000000000000000000000000" );
-		String str = m.getCours().getCode() ;
-		System.out.println( "CODE COURS " + str );
-		
-		Cours c = coursDAO.findOne(str);
-		System.out.println( "11111111111111111111111" );
-		Set<String> theSection = moduleDAO.getCoursSection( str  ) ;
-		
-		System.out.println( theSection  );
-		
-		System.out.println( "22222222222222222222222" );
-		c.setSections(theSection);
-		
-		System.out.println( "33333333333333333333333" );
-		module.setCours( c );
-		
-		System.out.println( module.toString()  );
-		
-		
-		
-		
-		
 		
 		System.out.println( errors.getAllErrors().toString()     );
 		
@@ -241,7 +210,7 @@ public class ModuleController {
 		
 		
 		// Gestion de la validation
-		if ( errors.getErrorCount()  > 1  ) {			//			errors.hasErrors()
+		if ( errors.hasErrors() ) {			//			errors.hasErrors()    errors.getErrorCount()  > 1 
 			// Attribut maison pour distinguer un add d'un update
 			if (savedId != null)
 				model.addAttribute("savedId", savedId);
