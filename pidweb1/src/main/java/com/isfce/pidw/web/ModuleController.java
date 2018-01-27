@@ -8,14 +8,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +29,11 @@ import org.springframework.web.util.UriUtils;
 import com.isfce.pidw.config.security.Roles;
 import com.isfce.pidw.data.ICoursJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
+import com.isfce.pidw.data.IProfesseurJpaDAO;
 import com.isfce.pidw.data.IUsersJpaDAO;
-import com.isfce.pidw.model.Cours;
 import com.isfce.pidw.model.Module;
+import com.isfce.pidw.model.Professeur;
+import com.isfce.pidw.model.Users;
 
 @Controller
 @RequestMapping("/module")
@@ -38,15 +42,17 @@ public class ModuleController {
 	final static Logger logger = Logger.getLogger(ModuleController.class);
 
 	private IModuleJpaDAO moduleDAO;
-	private IUsersJpaDAO usersDAO;
+	private IUsersJpaDAO<Users> usersDAO;
 	private ICoursJpaDAO coursDAO;
+	private IUsersJpaDAO<Professeur> profDAO;
 
 	@Autowired
-	public ModuleController(IModuleJpaDAO moduleDAO, IUsersJpaDAO usersDAO, ICoursJpaDAO coursDAO) {
+	public ModuleController(IModuleJpaDAO moduleDAO, IUsersJpaDAO<Users> usersDAO, ICoursJpaDAO coursDAO, IUsersJpaDAO<Professeur> profDAO) {
 		super();
-		this.moduleDAO = moduleDAO;
-		this.usersDAO = usersDAO;
-		this.coursDAO = coursDAO;
+		this.moduleDAO	 = moduleDAO;
+		this.usersDAO	 = usersDAO;
+		this.coursDAO	 = coursDAO;
+		this.profDAO	 = profDAO ;
 	}
 
 	/**
@@ -111,79 +117,46 @@ public class ModuleController {
 	}
 	
 	
+		
 	
-	// Méthode Get pour ajouter un module
-	@RequestMapping(value = "/add", method = RequestMethod.GET)
-	public String addModuleGet(@ModelAttribute Module module, Model model) throws ParseException {
-		logger.debug("affiche la vue pour ajouter un module ");
+	@RequestMapping(value = { "/add", "/{code}/update"  },  method = RequestMethod.GET)  
+	public String addUpdateModules(@PathVariable Optional<String> code, @ModelAttribute Module module, Model model /* , Authentication authentication */) {
 		
-		Map<String, String> coursListLabelled = new LinkedHashMap<String, String>();
-
-		List<Object[]> coursCodeNomList = moduleDAO.getCoursCodeNomList();
+//		logger.debug(" user connecté: " + (authentication == null ? " NULL " : authentication.getName()));
 		
-		for (int i = 0; i < coursCodeNomList.size(); i++) {
-			coursListLabelled.put(coursCodeNomList.get(i)[0].toString(), coursCodeNomList.get(i)[1].toString());
-			System.out.println(coursCodeNomList.get(i)[0] + " " + coursCodeNomList.get(i)[1]);
+		System.out.println( "°addUpdateModules°°°°°°°°°°°°°°°°°°START°");
+		
+		// si on ne précise pas de "codeUser"
+		if ( code.isPresent() ) {
+			logger.debug("affiche la vue pour modifier un module:" + code);
+			if (!moduleDAO.exists(code.get() ))
+				throw new NotFoundException("Le module n'existe pas", code.get());
+			
+			// recherche le module dans la liste
+			Module m = moduleDAO.findOne(code.get());
+			m.getCours().setSections(moduleDAO.getCoursSection(m.getCours().getCode() ));
+			
+			// Attribut maison pour distinguer un add d'un update
+			model.addAttribute("savedId", module.getCode());
+			model.addAttribute("module", m);
+		}   else {
+			
+//			Professeur prof =   usersDAO. ; //  profDAO.getOne("VO");
+//			module.setProf(prof);
+			model.addAttribute("module", module);
 		}
 		
-		model.addAttribute( "coursList", coursListLabelled );
-		model.addAttribute( "momentList", Module.MAS.values()  );
+		model.addAttribute( "coursList", getListLabelled(true) );
 		
-//		Module module = new Module();
-		module.setDateDebutTemp( today()  );
-		module.setDateFinTemp( today()  );
+		model.addAttribute( "profList", getListLabelled(false) );
 		
-		model.addAttribute("module", module);
 		
-		// Attribut maison pour distinguer un add d'un update
-		// model.addAttribute("savedId", null);
+		System.out.println( "°addUpdateModules°°°°°°°°°°°°°°°°°°END°");
+		
 		return "module/addModule";
 	}
 	
-	public Map<String, String> getCoursListLabelled() {
-		Map<String, String> coursListLabelled = new LinkedHashMap<String, String>();
 
-		List<Object[]> coursCodeNomList = moduleDAO.getCoursCodeNomList();
-		
-		for (int i = 0; i < coursCodeNomList.size(); i++) {
-			coursListLabelled.put(coursCodeNomList.get(i)[0].toString(), coursCodeNomList.get(i)[1].toString());
-			System.out.println(coursCodeNomList.get(i)[0] + " " + coursCodeNomList.get(i)[1]);
-		}
-		
-		return coursListLabelled;
-	}
-
-
-	
-	
-	
-	
-
-	// Méthode Get pour faire un update d'un module
-	@RequestMapping(value = "/{code}/update", method = RequestMethod.GET)
-	public String updateModuleGet(@PathVariable String code, Model model) {
-
-		logger.debug("affiche la vue pour modifier un module:" + code);
-		if (!moduleDAO.exists(code))
-			throw new NotFoundException("Le module n'existe pas", code);
-		
-		
-		
-		
-		// recherche le module dans la liste
-		Module module = moduleDAO.findOne(code);
-		module.getCours().setSections(moduleDAO.getCoursSection(module.getCours().getCode() ));
-		
-		model.addAttribute( "coursList", getCoursListLabelled() );
-		// Ajout au Modèle
-		model.addAttribute("module", module);
-		// Attribut maison pour distinguer un add d'un update
-		model.addAttribute("savedId", module.getCode());
-		
-
-		return "module/addModule";
-
-	}
 	
 	
 	
@@ -214,11 +187,12 @@ public class ModuleController {
 			// Attribut maison pour distinguer un add d'un update
 			if (savedId != null)
 				model.addAttribute("savedId", savedId);
-			
+			System.out.println("YOOOOOOOOOOO");
 			// ajoute les données de la liste déroulante
 			model.addAttribute("module", module);
-			model.addAttribute( "coursList", getCoursListLabelled() );
-
+			model.addAttribute( "coursList", getListLabelled(true) );
+			model.addAttribute( "profList", getListLabelled(false) );
+System.out.println("COUCOUUUUUUUUUU");
 			logger.debug("Erreurs dans les données du module:" + module.getCode());
 			return "module/addModule";
 		}
@@ -337,17 +311,50 @@ public class ModuleController {
 
 	
 	
-	public String today () {
-		
-		String format = "yyyy-MM-dd"; 
 
-		java.text.SimpleDateFormat formater = new java.text.SimpleDateFormat( format ); 
-		java.util.Date date = new java.util.Date(); 
-
-//		System.out.println( formater.format( date ) ); 
+	
+	public Map<String, String> getListLabelled( boolean b ) {
+		System.out.println( "°_START°°°°°°°°°°°°°°°°°°°");
 		
-		return formater.format( date ) ;
+		Map<String, String> listLabelled = new LinkedHashMap<String, String>();
+
+		List<Object[]> codeNomList ;
+		
+		if ( b ) {
+			codeNomList = moduleDAO.getCoursCodeNomList();
+		}else {
+			codeNomList = profDAO.getProfCodeNomList();
+		}
+		
+		
+		for (int i = 0; i < codeNomList.size(); i++) {
+			listLabelled.put(codeNomList.get(i)[0].toString(), codeNomList.get(i)[1].toString());
+			System.out.println(codeNomList.get(i)[0] + " " + codeNomList.get(i)[1]);
+		}
+		
+		System.out.println( "°_END°°°°°°°°°°°°°°°°°°°");
+		return listLabelled;
 	}
+	
+	
+	
+	
+	@ModelAttribute("dateFormat")
+	public String dateFormat() {
+	    return "yyyy-MM-dd" ;
+	}
+	
+	@InitBinder
+	private void dateBinder(WebDataBinder binder) {
+	    //The date format to parse or output your dates
+	    SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormat());
+	    //Create a new CustomDateEditor
+	    CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
+	    //Register it as custom editor for the Date type
+	    binder.registerCustomEditor(Date.class, editor);
+	}
+	
+	
 	
 	
 

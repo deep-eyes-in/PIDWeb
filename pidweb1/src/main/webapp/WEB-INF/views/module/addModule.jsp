@@ -13,18 +13,6 @@
 
 
 
-<c:if test="${empty module}">
-    var1 is empty or null.
-			<s:url value="2000-01-01" var="dateD" />
-			<s:url value="2000-01-01" var="dateF" />
-</c:if>
-
-
-<c:if test="${not empty module}">
-    var1 is NOT empty or null.
-			<fmt:formatDate value="${module.dateDebut}" pattern="yyyy-MM-dd" var="dateD"/>
-			<fmt:formatDate value="${module.dateFin}" pattern="yyyy-MM-dd" var="dateF"/>
-</c:if>
 
 
 
@@ -79,29 +67,29 @@
 		</s:bind>
 
 		
-		<s:bind path="dateDebutTemp">
+		<s:bind path="dateDebut">
 			<div class="form-group ${status.error ? 'has-error' : ''} ">
-				<sf:label path="dateDebutTemp" class="col-sm-2 control-label">
+				<sf:label path="dateDebut" class="col-sm-2 control-label">
 					<s:message code="module.dateDebut" />
 				</sf:label>
 				<div class="col-sm-10">
-					<sf:input path="dateDebutTemp" value="${dateD}" id="dateDebutTemp" pattern="yyyy-MM-dd"  type="date" class="form-control"
+					<sf:input path="dateDebut" value="${module.dateDebut}" id="dateDebut" pattern="yyyy-MM-dd"  type="date" class="form-control"
 						 />
-					<sf:errors path="dateDebutTemp" class="control-label" />
+					<sf:errors path="dateDebut" class="control-label" />
 				</div>
 			</div>
 		</s:bind>
 
 
-		<s:bind path="dateFinTemp">
+		<s:bind path="dateFin">
 			<div class="form-group ${status.error ? 'has-error' : ''} ">
-				<sf:label path="dateFinTemp" class="col-sm-2 control-label">
+				<sf:label path="dateFin" class="col-sm-2 control-label">
 					<s:message code="module.dateFin" />
 				</sf:label>
 				<div class="col-sm-10">
-					<sf:input path="dateFinTemp" value="${dateF}" id="dateFinTemp" pattern="yyyy-MM-dd" type="date" class="form-control"
+					<sf:input path="dateFin" value="${module.dateFin}" id="dateFin" pattern="yyyy-MM-dd" type="date" class="form-control"
 						/>
-					<sf:errors path="dateFinTemp" class="control-label" />
+					<sf:errors path="dateFin" class="control-label" />
 				</div> 
 			</div>
 		</s:bind>
@@ -122,6 +110,26 @@
 						<sf:options items="${coursList}" />
 					</sf:select>
 					<sf:errors path="cours" class="control-label" />
+				</div>
+				<div class="col-sm-5"></div>
+
+			</div>
+		</s:bind>
+		
+		
+		<s:bind path="module.prof.username">
+			<div class="form-group ${status.error ? 'has-error' : ''}">
+				<sf:label path="prof" class="col-sm-2 control-label">
+					<s:message code="module.cours" />
+				</sf:label>
+				<div class="col-sm-5">
+					<s:message code="module.cours.defaut" var="lblValue" />
+					
+					<sf:select path="prof.username" class="form-control">
+						<sf:option value="None" label="${lblValue}" />
+						<sf:options items="${profList}" />
+					</sf:select>
+					<sf:errors path="prof" class="control-label" />
 				</div>
 				<div class="col-sm-5"></div>
 

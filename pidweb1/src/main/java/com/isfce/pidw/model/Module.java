@@ -27,6 +27,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Data
 @NoArgsConstructor
 @Entity(name = "TMODULE")
 public class Module {
@@ -52,8 +53,6 @@ public class Module {
 	private Date dateFin;
 	
 	
-	private String  dateFinTemp; 
-	private String dateDebutTemp;
 
 	@NotNull
 	@Column(nullable = false)
@@ -64,6 +63,7 @@ public class Module {
 	@JoinColumn(name = "FKCours", nullable = false)
 	private Cours cours;
 	
+//	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "FKProf")
 	private Professeur prof;
@@ -76,106 +76,14 @@ public class Module {
 	public Module(String code, Date dateDebut, Date dateFin, MAS moment, Cours cours,Professeur prof) {
 		super();
 		this.code = code;
-		this.dateDebut = dateDebut;
-		this.dateFin = dateFin;
+		this.dateDebut = new Date();
+		this.dateFin = new Date();
 		this.moment = moment;
 		this.cours = cours;
 		this.prof=prof;
-	}
-	
-	
-	public Date getDateDebut() throws ParseException {
 		
-			System.out.println( "LINE[87] getDateDebut() : dateDebut = " + dateDebut.toString() );
-			return dateDebut;
-		 
+//		this.myDate = new Date();		
 	}
-	
-
-	public Date getDateFin() throws ParseException {
-		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-		//dateFin = sdf.parse(dateFin.toString());
-		return dateFin;
-	}
-	
-	
-	public void setDateDebutTemp (String dateDebutStr) throws ParseException {
-		Date  dateDebut = new SimpleDateFormat("yyyy-MM-dd").parse(dateDebutStr);
-		this.dateDebut = dateDebut ;
-	}
-	
-	public void setDateFinTemp (String dateFinStr) throws ParseException {
-		Date dateFin = new SimpleDateFormat("yyyy-MM-dd").parse(dateFinStr);
-		this.dateFin = dateFin ;
-	}
-
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public MAS getMoment() {
-		return moment;
-	}
-
-	public void setMoment(MAS moment) {
-		this.moment = moment;
-	}
-
-	public Cours getCours() {
-		return cours;
-	}
-
-	public void setCours(Cours cours) {
-		System.out.println( "LINE[132]  = " + cours.toString() );
-//		Cours c =  new Cours();
-//		c.setCode(cours);
-		//System.out.println( cours.toString() );
-		this.cours = cours;
-	}
-
-	public Professeur getProf() {
-		return prof;
-	}
-
-	public void setProf(Professeur prof) {
-		this.prof = prof;
-	}
-
-	public Set<Etudiant> getEtudiants() {
-		return etudiants;
-	}
-
-	public void setEtudiants(Set<Etudiant> etudiants) {
-		this.etudiants = etudiants;
-	}
-
-	@Override
-	public String toString() {
-		
-		return "Module " + "dateDebutTemp=" + dateFinTemp
-				+ "[code=" + code + ", "
-				+ "dateDebut=" + dateDebut + ", "
-				+ "dateFin=" + dateFin + ", "
-				+ "moment=" + moment
-				+ ", cours=" + cours + ", "
-				+ "prof=" + prof + ", "
-				+ "etudiants=" + etudiants 
-				+ "]";
-	}
-
-	public String getDateFinTemp() {
-		return dateFinTemp;
-	}
-
-	public String getDateDebutTemp() {
-		return dateDebutTemp;
-	}
-
 	
 	
 	

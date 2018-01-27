@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Entity(name = "TUSERS")
 @Inheritance(strategy = InheritanceType.JOINED)
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED,force=true)
+@NoArgsConstructor()
 @Data
 public class Users implements UserDetails {
 	/**
@@ -34,13 +34,13 @@ public class Users implements UserDetails {
 	@Id
 	@Column(length = 50, nullable = false)
 	@Getter
-	private final String username;
+	private  String username;
 	
 	@Column(length = 100, nullable = false)
 	private String password;
 	
 	@Column(nullable=false)
-	private final Roles role;
+	private  Roles role;
 	
 	@Override
 	public boolean isAccountNonExpired() {

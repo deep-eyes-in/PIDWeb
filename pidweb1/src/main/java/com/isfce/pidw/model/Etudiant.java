@@ -1,26 +1,23 @@
 package com.isfce.pidw.model;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.isfce.pidw.config.security.Roles;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
+import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(callSuper=true)
+@ToString(callSuper=true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity(name = "TETUDIANT")
 public class Etudiant extends Users {
@@ -46,6 +43,7 @@ public class Etudiant extends Users {
 	@Column(length = 30, nullable = false)
 	private String email;
 
+	
 	@Column(length = 30)
 	private String tel;
 

@@ -18,10 +18,10 @@ import com.isfce.pidw.model.Users;
 @Service
 public class MyUserDetailsService implements UserDetailsService {
 
-	private IUsersJpaDAO usersDAO;
+	private IUsersJpaDAO<Users> usersDAO;
 
 	@Autowired
-	public MyUserDetailsService(IUsersJpaDAO usersDAO) {
+	public MyUserDetailsService(IUsersJpaDAO<Users> usersDAO) {
 		super();
 		this.usersDAO=usersDAO;
 	}
@@ -29,7 +29,7 @@ public class MyUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		Users user = usersDAO.findOne(username);
+		Users user =  usersDAO.findOne(username);
 		if (user != null)
 			return user;
 		throw new UsernameNotFoundException("User '" + username + "' not found");

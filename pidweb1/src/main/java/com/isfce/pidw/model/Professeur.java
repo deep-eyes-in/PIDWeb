@@ -13,16 +13,16 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString(callSuper = true)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)  //	PUBLIC
 @Entity(name = "TPROFESSEUR")
 public class Professeur extends Users {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	public Professeur(String username, String password, String nom, String prenom, String email) {
