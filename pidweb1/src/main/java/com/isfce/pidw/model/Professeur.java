@@ -18,7 +18,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)  //	PUBLIC
+@NoArgsConstructor(access = AccessLevel.PUBLIC)  //	PUBLIC  PRIVATE
 @Entity(name = "TPROFESSEUR")
 public class Professeur extends Users {
 
@@ -44,5 +44,12 @@ public class Professeur extends Users {
 	@NotNull
 	@Column(length = 30, nullable = false)
 	private String email;
+	
+	
+	
+	public String getUsername() {
+		return super.getUsername() ;
+	}
+	
 
 }

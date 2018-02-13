@@ -3,11 +3,14 @@ package com.isfce.pidw.web;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +31,11 @@ import org.springframework.web.util.UriUtils;
 
 import com.isfce.pidw.config.security.Roles;
 import com.isfce.pidw.data.ICoursJpaDAO;
+import com.isfce.pidw.data.IEtudiantJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
 import com.isfce.pidw.data.IProfesseurJpaDAO;
 import com.isfce.pidw.data.IUsersJpaDAO;
+import com.isfce.pidw.model.Etudiant;
 import com.isfce.pidw.model.Module;
 import com.isfce.pidw.model.Professeur;
 import com.isfce.pidw.model.Users;
@@ -42,17 +47,20 @@ public class ModuleController {
 	final static Logger logger = Logger.getLogger(ModuleController.class);
 
 	private IModuleJpaDAO moduleDAO;
-	private IUsersJpaDAO<Users> usersDAO;
 	private ICoursJpaDAO coursDAO;
-	private IUsersJpaDAO<Professeur> profDAO;
+	private IProfesseurJpaDAO professeurDAO;
+	private IEtudiantJpaDAO etudiantDAO;
+	private IUsersJpaDAO<Users> usersDAO;
 
 	@Autowired
-	public ModuleController(IModuleJpaDAO moduleDAO, IUsersJpaDAO<Users> usersDAO, ICoursJpaDAO coursDAO, IUsersJpaDAO<Professeur> profDAO) {
+	public ModuleController(IModuleJpaDAO moduleDAO, IProfesseurJpaDAO professeurDAO, ICoursJpaDAO coursDAO, IEtudiantJpaDAO etudiantDAO, IUsersJpaDAO<Users> usersDAO ) {
 		super();
 		this.moduleDAO	 = moduleDAO;
-		this.usersDAO	 = usersDAO;
+		this.professeurDAO	 = professeurDAO;
 		this.coursDAO	 = coursDAO;
-		this.profDAO	 = profDAO ;
+		this.etudiantDAO	 = etudiantDAO ;
+
+		this.usersDAO = usersDAO;
 	}
 
 	/**
@@ -146,9 +154,9 @@ public class ModuleController {
 			model.addAttribute("module", module);
 		}
 		
-		model.addAttribute( "coursList", getListLabelled(true) );
+		model.addAttribute( "coursList", getListLabelled( "cours" ) );
 		
-		model.addAttribute( "profList", getListLabelled(false) );
+		model.addAttribute( "profList", getListLabelled( "professeur" ) );
 		
 		
 		System.out.println( "°addUpdateModules°°°°°°°°°°°°°°°°°°END°");
@@ -164,7 +172,7 @@ public class ModuleController {
 	
 	
 	
-	
+
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String addUpdateModulePost(@ModelAttribute Module module, BindingResult errors,
 			@RequestParam(value = "savedId", required = false) String savedId, Model model, RedirectAttributes rModel) throws ParseException {
@@ -176,9 +184,7 @@ public class ModuleController {
 		
 		
 		
-		
-		
-
+	
 //		/*	
 		
 		
@@ -190,8 +196,8 @@ public class ModuleController {
 			System.out.println("YOOOOOOOOOOO");
 			// ajoute les données de la liste déroulante
 			model.addAttribute("module", module);
-			model.addAttribute( "coursList", getListLabelled(true) );
-			model.addAttribute( "profList", getListLabelled(false) );
+			model.addAttribute( "coursList", getListLabelled( "cours" ) );
+			model.addAttribute( "profList", getListLabelled( "professeur" ) );
 System.out.println("COUCOUUUUUUUUUU");
 			logger.debug("Erreurs dans les données du module:" + module.getCode());
 			return "module/addModule";
@@ -247,6 +253,12 @@ System.out.println("COUCOUUUUUUUUUU");
 		System.out.println( module.getCours().getCode()  );
 		
 		
+/*		
+		Set<Etudiant> etudiants = new HashSet<>();
+		
+		etudiants.add( etudiantDAO.findAll().get(0) )  ;
+		module.setEtudiants(etudiants);
+*/
 		
 		// ajoute le nouveau ou le module nouvellement modifié
 		moduleDAO.save(module);
@@ -265,6 +277,9 @@ System.out.println("COUCOUUUUUUUUUU");
 
 		return adr;
 	}
+	
+	
+	
 
 	/**
 	 * Supression d'un module
@@ -311,19 +326,108 @@ System.out.println("COUCOUUUUUUUUUU");
 
 	
 	
+	
+
+
+
+	@RequestMapping(value = "/signup", method = RequestMethod.POST)
+	public String signUpModulesPost(
+//			@ModelAttribute Module module,
+			@ModelAttribute Set<Etudiant> etudiants,  
+
+			BindingResult errors,
+			 Model model, RedirectAttributes rModel
+			 ) throws ParseException {
+		
+		
+		System.out.println( "_________________" );
+		
+//		System.out.println( errors.getAllErrors().toString()     );
+		
+//		System.out.println( model.toString()     ); 
+		
+		
+	
+
+
+		return "/signup" ;
+	}
+	
+	
+	
+	@RequestMapping(value = { "/signup", "/{code}/signup"  },  method = RequestMethod.GET)
+	public String signUpModules(
+			@PathVariable Optional<String> code, 
+			@ModelAttribute Module module, 
+			@ModelAttribute Set<Etudiant> etudiants,  Model model /* , Authentication authentication */
+	) {
+		
+//		logger.debug(" user connecté: " + (authentication == null ? " NULL " : authentication.getName()));
+		
+		System.out.println( "SIGNUPMODULE°°°°°°°°°°°°°°°°°°START°");
+		
+		// si on ne précise pas de "codeUser"
+		if ( code.isPresent() ) {
+			logger.debug("affiche la vue pour signup pour un module precis : " + code);
+			if (!moduleDAO.exists(code.get() ))
+				throw new NotFoundException("Le module n'existe pas", code.get());
+			
+			// recherche le module dans la liste
+			Module m = moduleDAO.findOne(code.get());
+			m.getCours().setSections(moduleDAO.getCoursSection(m.getCours().getCode() ));
+			
+			// Attribut maison pour distinguer un add d'un update
+//			model.addAttribute("savedId", module.getCode());
+			model.addAttribute("module", m);
+		}   else {
+			
+//			Professeur prof =   usersDAO. ; //  profDAO.getOne("VO");
+//			module.setProf(prof);
+			
+			
+			model.addAttribute("moduleList", moduleDAO.getModuleCodeList() );
+			model.addAttribute("etudiantList", moduleDAO.getModuleCodeList() );
+			
+//			System.out.println(  moduleDAO.findAll()  );
+			
+		}
+		
+		
+		
+		
+		model.addAttribute( "etudiantList", getListLabelled( "etudiant" ) );
+		
+		
+		System.out.println( "°SIGNUPETUDIANT°°°°°°°°°°°°°°°°°°END°");
+		
+		return "module/signup";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 	
-	public Map<String, String> getListLabelled( boolean b ) {
+
+	public Map<String, String> getListLabelled( String obj ) {
 		System.out.println( "°_START°°°°°°°°°°°°°°°°°°°");
 		
 		Map<String, String> listLabelled = new LinkedHashMap<String, String>();
 
 		List<Object[]> codeNomList ;
 		
-		if ( b ) {
+		if ( obj == "cours"  ) {
 			codeNomList = moduleDAO.getCoursCodeNomList();
+		}else if( obj == "module"  ){
+			codeNomList = null ;
+		}else if( obj == "etudiant"  ){
+			codeNomList = etudiantDAO.getEtudiantCodeNomList();
 		}else {
-			codeNomList = profDAO.getProfCodeNomList();
+			codeNomList = professeurDAO.getProfCodeNomList();		//		usersDAO
 		}
 		
 		
@@ -335,7 +439,6 @@ System.out.println("COUCOUUUUUUUUUU");
 		System.out.println( "°_END°°°°°°°°°°°°°°°°°°°");
 		return listLabelled;
 	}
-	
 	
 	
 	

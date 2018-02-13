@@ -8,10 +8,10 @@
 
 <html>
 <jsp:include page="../fragments/header.jsp">
-	<jsp:param name="titre" value="Etudiant Résultats ISFCE" />
+	<jsp:param name="titre" value="Professeur Résultats ISFCE" />
 </jsp:include>
 <div class="container">
-<h1>Liste des etudiant</h1>
+<h1>Liste des Professeurs</h1>
 
 <c:if test="${fn:length(etudiantList) == 0}">
 	<h2>Liste Vide</h2>
@@ -19,22 +19,23 @@
 <h2>La liste contient: ${fn:length(etudiantList)} etudiant</h2>
 <a href="<s:url value = "/etudiant/add" />"> Ajout d'un etudiant</a>
 <s:url value="">Ajout d'un etudiant</s:url>
+
 <ul class="nivUn">
 
-	<c:forEach items="${etudiantList}" var="etudiant">
-		<li id="Code_<c:out value="${etudiant.id}"/>">
-		<c:out	value="${etudiant.id}" /> 
+	<c:forEach items="${etudiantList}" var="etudiant">	
+		<li id="Code_<c:out value="${etudiant.username}"/>">
+		<c:out	value="${etudiant.username}" /> 
 		
-			<s:url value="${etudiant.id}" var="etudiantUrl" />
+			<s:url value="${etudiant.username}" var="etudiantUrl" />
 			<button class="btn btn-info" 
 				onclick="location.href='${etudiantUrl}'">Détail</button>
 			
-			<s:url value="/etudiant/${etudiant.id}/update" var="updateUrl" />
+			<s:url value="/etudiant/${etudiant.username}/update" var="updateUrl" />
 			<button class="btn btn-primary" 
 				onclick="location.href='${updateUrl}'">Update</button>
 			
 			
-			<s:url value="/etudiant/${etudiant.id}/delete" var="deleteUrl" />
+			<s:url value="/etudiant/${etudiant.username}/delete" var="deleteUrl" />
 			<button class="btn btn-danger"
 				onclick="this.disabled=true;post('${deleteUrl}')">Delete</button>
 
@@ -43,7 +44,7 @@
 				<li>	Nom:  <c:out value="${etudiant.nom}" />		</li>
 				<li>	Prenom: <c:out value="${etudiant.prenom}" /></li>
 				<li>	email:  <c:out value="${etudiant.email}" />		</li>
-				<li>	tel: <c:out value="${etudiant.tel}" /></li>
+
 			</ul>
 			
 		
@@ -51,6 +52,7 @@
 
 		</li>
 	</c:forEach>
+
 </ul>
 </div>
 <jsp:include page="../fragments/footer.jsp" />

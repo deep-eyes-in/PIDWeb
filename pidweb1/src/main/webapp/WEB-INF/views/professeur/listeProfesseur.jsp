@@ -19,22 +19,23 @@
 <h2>La liste contient: ${fn:length(professeurList)} professeur</h2>
 <a href="<s:url value = "/professeur/add" />"> Ajout d'un professeur</a>
 <s:url value="">Ajout d'un professeur</s:url>
+
 <ul class="nivUn">
 
-	<c:forEach items="${professeurList}" var="professeur">
-		<li id="Code_<c:out value="${professeur.code}"/>">
-		<c:out	value="${professeur.code}" /> 
+	<c:forEach items="${professeurList}" var="professeur">	
+		<li id="Code_<c:out value="${professeur.username}"/>">
+		<c:out	value="${professeur.username}" /> 
 		
-			<s:url value="${professeur.code}" var="professeurUrl" />
+			<s:url value="${professeur.username}" var="professeurUrl" />
 			<button class="btn btn-info" 
 				onclick="location.href='${professeurUrl}'">Détail</button>
 			
-			<s:url value="/professeur/${professeur.code}/update" var="updateUrl" />
+			<s:url value="/professeur/${professeur.username}/update" var="updateUrl" />
 			<button class="btn btn-primary" 
 				onclick="location.href='${updateUrl}'">Update</button>
 			
 			
-			<s:url value="/professeur/${professeur.code}/delete" var="deleteUrl" />
+			<s:url value="/professeur/${professeur.username}/delete" var="deleteUrl" />
 			<button class="btn btn-danger"
 				onclick="this.disabled=true;post('${deleteUrl}')">Delete</button>
 
@@ -43,7 +44,7 @@
 				<li>	Nom:  <c:out value="${professeur.nom}" />		</li>
 				<li>	Prenom: <c:out value="${professeur.prenom}" /></li>
 				<li>	email:  <c:out value="${professeur.email}" />		</li>
-				<li>	tel: <c:out value="${professeur.tel}" /></li>
+
 			</ul>
 			
 		
@@ -51,6 +52,7 @@
 
 		</li>
 	</c:forEach>
+
 </ul>
 </div>
 <jsp:include page="../fragments/footer.jsp" />

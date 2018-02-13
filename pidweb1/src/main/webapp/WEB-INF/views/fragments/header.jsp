@@ -64,6 +64,7 @@
 					<ul class="dropdown-menu">
 						<li><a href="<s:url value = "/module/liste"/>">liste</a></li>
 						<li><a href="<s:url value = "/module/add" />">add</a></li>
+						<li><a href="<s:url value = "/module/signup" />">sign up</a></li>
 					</ul>
 				</li>
 				

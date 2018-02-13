@@ -20,5 +20,8 @@ public interface IUsersJpaDAO<T extends Users> extends JpaRepository<T , String>
 	@Query(value="select username, nom from TPROFESSEUR order by nom ASC", nativeQuery=true)
 	List<Object[]> getProfCodeNomList();	
 	
+	@Query(value="select username, nom from TETUDIANT order by nom ASC", nativeQuery=true)
+	List<Object[]> getEtudiantCodeNomList();	
+	
 	
 }

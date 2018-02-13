@@ -23,25 +23,34 @@
 
  
 		<tr>
-			<td>Code:</td>
-			<td><c:out value="${professeur.code}" /></td>
+			<td>Code: </td>
+			<td><c:out value="${professeur.username}" /></td>
 		</tr>
 
 		<tr>
-			<td>Nom:</td>
+			<td>Nom: </td>
 			<td><c:out value="${professeur.nom}" /></td>
 		</tr>
 		<tr>
-			<td>Prénom:</td>
+			<td>Prénom: </td>
 			<td><c:out value="${professeur.prenom}" /></td>
-		</tr>		
-
+		</tr>	
+		
+			
+		<tr>
+			<td>password: </td>
+			<td><c:out value="${professeur.password}" /></td>
+		</tr>	
+		
+		
 		<tr>
 			<td colspan="2">
 			</td>
 		</tr>
+		
 		<tr>
 		</tr>
+		
 	</table>
 	
 </div>

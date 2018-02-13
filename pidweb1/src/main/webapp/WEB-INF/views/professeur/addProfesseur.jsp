@@ -33,20 +33,39 @@
 		<%-- affiche une div avec toutes les erreurs --%>
 		<sf:errors path="*" element="div" cssClass="alert alert-danger" />
 
-<s:bind path="code">
+<s:bind path="username">
 			<div class="form-group ${status.error ? 'has-error' : ''} ">
-				<sf:label path="code" class="col-sm-2 control-label">
-					<s:message code="professeur.code" />
+				<sf:label path="username" class="col-sm-2 control-label">
+					<s:message code="professeur.username" />
 				</sf:label>
 				<div class="col-sm-10">
-					<sf:input path="code" id="code" class="form-control"
-						placeholder="code de professeur" />
-					<sf:errors path="code" class="control-label" />
+					<sf:input path="username" id="username" class="form-control"
+						placeholder="username du professeur" />
+					<sf:errors path="username" class="control-label" />
 
 				</div>
 
 			</div>
 		</s:bind>
+		
+		
+
+		<s:bind path="password">
+			<div class="form-group ${status.error ? 'has-error' : ''}">
+				<sf:label path="password" class="col-sm-2 control-label">
+					<s:message code="professeur.password" />
+				</sf:label>
+				<div class="col-sm-10">
+					<sf:input path="password" id="password" class="form-control"
+						placeholder="password de professeur" />
+					<sf:errors path="password" class="control-label" />
+				</div>
+			</div>
+		</s:bind>
+		
+			
+		
+		
 
 		<s:bind path="nom">
 			<div class="form-group ${status.error ? 'has-error' : ''} ">
@@ -95,18 +114,6 @@
 
 
 
-		<s:bind path="tel">
-			<div class="form-group ${status.error ? 'has-error' : ''}">
-				<sf:label path="tel" class="col-sm-2 control-label">
-					<s:message code="professeur.tel" />
-				</sf:label>
-				<div class="col-sm-10">
-					<sf:input path="tel" id="tel" class="form-control"
-						placeholder="tel de professeur" />
-					<sf:errors path="tel" class="control-label" />
-				</div>
-			</div>
-		</s:bind>
 
 
 

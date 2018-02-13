@@ -24,22 +24,22 @@ import com.isfce.pidw.data.ICoursJpaDAO;
 //import com.isfce.pidw.data.ICoursJpaDAO;
 import com.isfce.pidw.data.IEtudiantJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
-import com.isfce.pidw.data.IProfesseurJpaDAO;
+import com.isfce.pidw.data.IEtudiantJpaDAO;
 import com.isfce.pidw.data.IUsersJpaDAO;
 import com.isfce.pidw.model.Etudiant;
-import com.isfce.pidw.model.Professeur;
+import com.isfce.pidw.model.Etudiant;
 import com.isfce.pidw.model.Users;
 
 @Controller
-@RequestMapping("/professeur")
-public class ProfesseurController {
+@RequestMapping("/etudiant")
+public class EtudiantController {
 
 	// Logger
-	final static Logger logger = Logger.getLogger(ProfesseurController.class);
+	final static Logger logger = Logger.getLogger(EtudiantController.class);
 	
 	// on recupre la liste de cours et etudiant depois L'usine (factory)
 //	private ICoursJpaDAO coursDAO;
-	private IProfesseurJpaDAO professeurDAO;
+	private IEtudiantJpaDAO etudiantDAO;
 	
 //	private  List<Etudiant> listeEtudiant ;
 //	private  List<Cours> listeCours  ;
@@ -48,8 +48,8 @@ public class ProfesseurController {
 
 	// Création de la liste de données pour le 1er exemple
 	@Autowired
-	public ProfesseurController(IProfesseurJpaDAO professeurDAO) {
-		this.professeurDAO = professeurDAO;
+	public EtudiantController(IEtudiantJpaDAO etudiantDAO) {
+		this.etudiantDAO = etudiantDAO;
 
 //		listeEtudiant = etudiantDAO.findAll() ;
 //		listeCours = coursDAO.findAll() ;
@@ -58,10 +58,10 @@ public class ProfesseurController {
 
 	
 /*
-	private IUsersJpaDAO<Professeur> profDAO;
+	private IUsersJpaDAO<Etudiant> profDAO;
 
 	@Autowired
-	public ModuleController(IModuleJpaDAO moduleDAO, IUsersJpaDAO<Users> usersDAO, ICoursJpaDAO coursDAO, IUsersJpaDAO<Professeur> profDAO) {
+	public ModuleController(IModuleJpaDAO moduleDAO, IUsersJpaDAO<Users> usersDAO, ICoursJpaDAO coursDAO, IUsersJpaDAO<Etudiant> profDAO) {
 		super();
 		this.moduleDAO	 = moduleDAO;
 		this.usersDAO	 = usersDAO;
@@ -74,29 +74,29 @@ public class ProfesseurController {
 	
 	// Liste des profs
 	@RequestMapping("/liste")
-	public String listeProfesseur(Model model) {
+	public String listeEtudiant(Model model) {
 		
-		System.out.println(   professeurDAO.findAll().toString()   );
+		System.out.println(   etudiantDAO.findAll().toString()   );
 		
-		System.out.println(   professeurDAO.findAll().get(0).getUsername()   );
+		System.out.println(   etudiantDAO.findAll().get(0).getUsername()   );
 		
 		
-		model.addAttribute("professeurList", professeurDAO.findAll() );
+		model.addAttribute("etudiantList", etudiantDAO.findAll() );
 
-		return "professeur/listeProfesseur";
+		return "etudiant/listeEtudiant";
 	}
 
 	
 	
 	
 	
-	// Méthode Get pour ajouter un professeur
+	// Méthode Get pour ajouter un etudiant
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
-	public String addProfesseurGet(@ModelAttribute Professeur professeur, Model model) {
-		logger.debug("affiche la vue pour ajouter un Professeur ");
+	public String addEtudiantGet(@ModelAttribute Etudiant etudiant, Model model) {
+		logger.debug("affiche la vue pour ajouter un Etudiant ");
 
 
-		return "professeur/addProfesseur";
+		return "etudiant/addEtudiant";
 	}
 	
 
@@ -106,23 +106,23 @@ public class ProfesseurController {
 	
 	// Méthode Get pour faire un update d'un prof
 	@RequestMapping(value = "/{code}/update", method = RequestMethod.GET)
-	public String updateProfesseurGet(@PathVariable String code, Model model) {
+	public String updateEtudiantGet(@PathVariable String code, Model model) {
 
-		logger.debug("affiche la vue pour modifier un Professeur:" + code);
+		logger.debug("affiche la vue pour modifier un Etudiant:" + code);
 		
-		if (!professeurDAO.exists( code ) )
-			throw new NotFoundException("Le professeur n'existe pas", code  );
-		// recherche le Professeur dans la liste
-		Professeur professeur = professeurDAO.findOne( code );
+		if (!etudiantDAO.exists( code ) )
+			throw new NotFoundException("Le etudiant n'existe pas", code  );
+		// recherche le Etudiant dans la liste
+		Etudiant etudiant = etudiantDAO.findOne( code );
 		
 		// Ajout au Modèle
-		model.addAttribute("professeur", professeur);
+		model.addAttribute("etudiant", etudiant);
 		// Attribut maison pour distinguer un add d'un update
-		model.addAttribute("savedId", professeur.getUsername() );
+		model.addAttribute("savedId", etudiant.getUsername() );
 
 		
 		// model.addAttribute("nouveau",false);
-		return "professeur/addProfesseur";
+		return "etudiant/addEtudiant";
 
 	}
 	
@@ -152,12 +152,12 @@ public class ProfesseurController {
 	 * @return l'adresse URI de redirection
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String addUpdateProfesseurPost(@Valid Professeur professeur, BindingResult errors,
+	public String addUpdateEtudiantPost(@Valid Etudiant etudiant, BindingResult errors,
 			@RequestParam(value = "savedId", required = false) String savedId, Model model, RedirectAttributes rModel) {
 		
 		
 		
-		logger.debug("Professeur Info:" + professeur.getUsername() + " savedId " + savedId);
+		logger.debug("Etudiant Info:" + etudiant.getUsername() + " savedId " + savedId);
 		
 		
 		// Gestion de la validation
@@ -167,68 +167,68 @@ public class ProfesseurController {
 				model.addAttribute("savedId", savedId);
 
 
-			logger.debug("Erreurs dans les données de professeur:" + professeur.getUsername());
-			return "professeur/addProfesseur";
-		}else {	logger.debug("Professeur Info: no errors");		}
+			logger.debug("Erreurs dans les données de etudiant:" + etudiant.getUsername());
+			return "etudiant/addEtudiant";
+		}else {	logger.debug("Etudiant Info: no errors");		}
 		
 		
 		// distinction d'un update ou d'un add
 		if (savedId == null) {
-			logger.debug("Professeur Info: code = null ");
+			logger.debug("Etudiant Info: code = null ");
 
 			// cas ADD
 			// Vérification doublon
-			if (professeurDAO.exists(professeur.getUsername() )) {
-				logger.debug("Le professeur existe:" + professeur.getUsername() + " savedId " + savedId);
+			if (etudiantDAO.exists(etudiant.getUsername() )) {
+				logger.debug("Le etudiant existe:" + etudiant.getUsername() + " savedId " + savedId);
 				//Exemple de gestion d'erreur en modifiant l'objet 'errors' et 
 				//en retournant la vue
-				errors.rejectValue("id", "Professeur.id.doubon", "Existe déjà!");
+				errors.rejectValue("id", "Etudiant.id.doubon", "Existe déjà!");
 
-				return "professeur/addProfesseur";
+				return "etudiant/addEtudiant";
 				//Autre solution en générant une exception
 				// throw new DuplicateException("Le Etudiant " + Etudiant.getId() + " existe déjà
 				// ");
 			}
 		} else {			// cas d'un Update
 
-			logger.debug("professeur Info: code != null ");		
+			logger.debug("etudiant Info: code != null ");		
 		// Est ce que le id a changé?
-//			professeur.setCode( professeur.getCode() ) ;	
+//			etudiant.setCode( etudiant.getCode() ) ;	
 			
-			if (!savedId.equals( professeur.getUsername() )) {
+			if (!savedId.equals( etudiant.getUsername() )) {
 				// code à changé
 				// Vérifie si pas en doublon avec un autre
-				if (professeurDAO.exists(professeur.getUsername())) {
-					logger.debug("Le Professeur Existe:" + professeur.getUsername() + " savedId " + savedId);
-					throw new DuplicateException("Le Professeur " + professeur.getUsername() + " existe déjà");
+				if (etudiantDAO.exists(etudiant.getUsername())) {
+					logger.debug("Le Etudiant Existe:" + etudiant.getUsername() + " savedId " + savedId);
+					throw new DuplicateException("Le Etudiant " + etudiant.getUsername() + " existe déjà");
 				}
-				// retire le professeur avec l'ancien code
-				professeurDAO.delete( savedId );
+				// retire le etudiant avec l'ancien code
+				etudiantDAO.delete( savedId );
 			} else {
 				// retire le cours de la liste
-				professeurDAO.delete( professeur.getUsername());
+				etudiantDAO.delete( etudiant.getUsername());
 			}
 			
 			
 			
-			logger.debug("Mise à jour du professeur: " + savedId);
+			logger.debug("Mise à jour du etudiant: " + savedId);
 
 		}
 		
 
 
-		String pwd = GeneratePassword.PasswordEncode( professeur.getPassword()  )  ;
-		professeur.setPassword(   pwd   );
+		String pwd = GeneratePassword.PasswordEncode( etudiant.getPassword()  )  ;
+		etudiant.setPassword(   pwd   );
 		
 		
-		// ajoute le nouveau ou le Professeur nouvellement modifié
-		professeur.setRole( Roles.ROLE_PROF );
-		professeurDAO.save(professeur);
+		// ajoute le nouveau ou le Etudiant nouvellement modifié
+		etudiant.setRole( Roles.ROLE_ETUDIANT);
+		etudiantDAO.save(etudiant);
 
 		// Préparation des attribut Flash pour survivre à la redirection
-		rModel.addFlashAttribute(professeur);
+		rModel.addFlashAttribute(etudiant);
 		// Gestion de la redirection pour l'UTF8 en cas d'accents
-		String adr = "redirect:/professeur/"   + professeur.getUsername();
+		String adr = "redirect:/etudiant/"   + etudiant.getUsername();
 		// encode l'URI en percent-encoding pour les accents
 		try {
 			adr = UriUtils.encodePath(adr, "UTF8");
@@ -252,17 +252,17 @@ public class ProfesseurController {
 	 * @return le mapping de redirection
 	 */
 	@RequestMapping(value = "/{code}/delete", method = RequestMethod.POST)
-	public String deleteProfesseur(@PathVariable String code) {
-		logger.debug("<DEBUT> Supression du professeur: " + code);
+	public String deleteEtudiant(@PathVariable String code) {
+		logger.debug("<DEBUT> Supression du etudiant: " + code);
 		
 		// Vérifie si le cours existe
-		if (!professeurDAO.exists(code))  {
-			throw new NotFoundException("Professeur non trouvé pour suppression", code );
+		if (!etudiantDAO.exists(code))  {
+			throw new NotFoundException("Etudiant non trouvé pour suppression", code );
 		}
-		professeurDAO.delete(code);
-		logger.debug("Supression du professeur: " + code);
+		etudiantDAO.delete(code);
+		logger.debug("Supression du etudiant: " + code);
 		
-		return "redirect:/professeur/liste";
+		return "redirect:/etudiant/liste";
 
 	}
 	
@@ -290,30 +290,30 @@ public class ProfesseurController {
 
 	// Affichage du détail d'un Etudiant
 	@RequestMapping(value = "/{code}", method = RequestMethod.GET)
-	public String detailProfesseur(@PathVariable String code, Model model) {
+	public String detailEtudiant(@PathVariable String code, Model model) {
 		// Vérifie si on ne recoit pas le Etudiant suite à une redirection
-		if (!model.containsAttribute("professeur")) {
-			logger.debug("Recherche le professeur: " + code);
-			// recherche le professeur dans la liste
+		if (!model.containsAttribute("etudiant")) {
+			logger.debug("Recherche le etudiant: " + code);
+			// recherche le etudiant dans la liste
 			// Vérifie si le prof existe
-			Professeur professeur = getProfesseur(code);
-			// gestion spécifique pour la non présence de professeur.
-			if (professeur == null)
-				throw new NotFoundException("Ce professeur existe déjà ", code);
+			Etudiant etudiant = getEtudiant(code);
+			// gestion spécifique pour la non présence de etudiant.
+			if (etudiant == null)
+				throw new NotFoundException("Ce etudiant existe déjà ", code);
 
 			// Ajout au Modèle
-			model.addAttribute("professeur", professeur );
+			model.addAttribute("etudiant", etudiant );
 		} else
-			logger.debug("Utilisation d'un FlashAttribute pour le professeur: " + code);
+			logger.debug("Utilisation d'un FlashAttribute pour le etudiant: " + code);
 		
-		return "professeur/professeur";
+		return "etudiant/etudiant";
 	}
 
 
 
 	// Renvoie un Optional de Etudiant
-	private Professeur getProfesseur(String code) {
-			return professeurDAO.findOne(code) ;
+	private Etudiant getEtudiant(String code) {
+			return etudiantDAO.findOne(code) ;
 		
 	}
 

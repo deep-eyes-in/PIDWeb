@@ -26,6 +26,11 @@ public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 	
 	@Query(value="select nom from TCOURS", nativeQuery=true)
 	List<String> getCoursNomList();
+
+	
+	@Query(value="select code from TMODULE", nativeQuery=true)
+	List<String> getModuleCodeList();
+	
 	
 	@Query("SELECT m FROM TMODULE m WHERE m.moment= ?2 and (?1 MEMBER OF m.cours.sections)")
 	List<Module> getModulesAPMFromSection(String section, Module.MAS mas);
