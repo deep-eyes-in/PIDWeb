@@ -1,11 +1,8 @@
 package com.isfce.pidw.model;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -23,13 +20,17 @@ import javax.validation.constraints.Pattern;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
-import lombok.Getter;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
+
+
 
 @Data
 @NoArgsConstructor
 @Entity(name = "TMODULE")
+@ToString(exclude = {"modules", "sections"})
+@EqualsAndHashCode(exclude = {"modules", "sections"})
 public class Module {
 	public static enum MAS {
 		MATIN, APM, SOIR
@@ -71,7 +72,7 @@ public class Module {
 	@ManyToMany (cascade=CascadeType.PERSIST)
 	@JoinTable(name = "TINSCRIPTION", joinColumns = @JoinColumn(name = "FKMODULE"),
 	    inverseJoinColumns = @JoinColumn(name = "FKETUDIANT"))
-	private Set<Etudiant> etudiants = new HashSet<>();
+	private List<Etudiant> etudiants = new ArrayList<>();  //  HashSet<>();
 
 	public Module(String code, Date dateDebut, Date dateFin, MAS moment, Cours cours,Professeur prof) {
 		super();

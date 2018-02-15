@@ -27,7 +27,7 @@
 	<s:url value="/module/signup" var="moduleActionUrl" />
 
 	<%-- modelAttribute correspond à une clé dans le modèle --%>
-	<sf:form method="POST" class="form-horizontal" modelAttribute="module"
+	<sf:form method="POST" class="form-horizontal" modelAttribute="signUp"
 		action="${moduleActionUrl}">
 
 		<%-- affiche une div avec toutes les erreurs --%>
@@ -36,18 +36,18 @@
 
 
 
-		<s:bind path="code">
+		<s:bind path="modules">
 			<div class="form-group ${status.error ? 'has-error' : ''}">
-				<sf:label path="code" class="col-sm-2 control-label">
+				<sf:label path="modules" class="col-sm-2 control-label">
 					<s:message code="module.code" />
 				</sf:label>
 				<div class="col-sm-5">
 					<s:message code="module.code" var="lblLangue" />
-					<sf:select path="code" class="form-control">
+					<sf:select path="modules" class="form-control">
 						<sf:option value="None" label="${lblLangue}" />
 						<sf:options items="${moduleList}" />
 					</sf:select>
-					<sf:errors path="code" class="control-label" />
+					<sf:errors path="modules" class="control-label" />
 				</div>
 				<div class="col-sm-5"></div>
 
@@ -55,18 +55,18 @@
 		</s:bind>
 		
 		
-		<s:bind path="etudiants">
+		<s:bind path="etudiant">
 			<div class="form-group ${status.error ? 'has-error' : ''}">
-				<sf:label path="code" class="col-sm-2 control-label">
+				<sf:label path="modules" class="col-sm-2 control-label">
 					<s:message code="cours.langue" />
 				</sf:label>
 				<div class="col-sm-5">
 					<s:message code="cours.langue.defaut" var="lblLangue" />
-					<sf:select path="etudiants" class="form-control">
+					<sf:select path="etudiant" class="form-control">
 						<sf:option value="None" label="${lblLangue}" />
 						<sf:options items="${etudiantList}" />
 					</sf:select>
-					<sf:errors path="etudiants" class="control-label" />
+					<sf:errors path="etudiant" class="control-label" />
 				</div>
 				<div class="col-sm-5"></div>
 

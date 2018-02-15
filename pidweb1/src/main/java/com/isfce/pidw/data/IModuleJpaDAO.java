@@ -35,10 +35,7 @@ public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 	@Query("SELECT m FROM TMODULE m WHERE m.moment= ?2 and (?1 MEMBER OF m.cours.sections)")
 	List<Module> getModulesAPMFromSection(String section, Module.MAS mas);
 	
-	
-	//@PreAuthorize("#username == principal.username")
-	@Query(value="select m.* from TMODULE m inner join TINSCRIPTION i on i.FKMODULE=m.CODE where i.FKETUDIANT=?", nativeQuery=true)
-	List<Module> getModulesOfEtudiant(String username);
+
 	
 	@Query("select m from TMODULE m  where m.prof.username=?1")
 	List<Module> readByProfesseurIsNotNull(String username);
@@ -49,9 +46,41 @@ public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 	@Query(value="select * from TCOURS where code=?", nativeQuery=true)
 	Cours getCoursByCode(String code);
 	
-	@Query(value="select * from TINSCRIPTION where fketudiant=?", nativeQuery=true)
-	Set<Etudiant> getEtudiantsOfModule(String code);
+	
+	//@PreAuthorize("#username == principal.username")
+	@Query(value="select m.* from TMODULE m inner join TINSCRIPTION i on i.FKMODULE=m.CODE where i.FKETUDIANT=?", nativeQuery=true)
+	List<Module> getModulesOfEtudiant(String username);
+	
+	
+	@Query(value="select * from TINSCRIPTION where FKMODULE=?", nativeQuery=true)
+	List<Etudiant> getEtudiantsOfModule(String code);
+	
+	
+	@Query(value="select FKETUDIANT from TINSCRIPTION where FKMODULE=?", nativeQuery=true)
+	List<String> getFkEtudiantsOfModule(String code);	
+	
+	@Query(value="select * from TINSCRIPTION ORDER BY FKMODULE", nativeQuery=true)
+	List<Object[]> getAllInscriptions( );
+
+
+	
+	
+	
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

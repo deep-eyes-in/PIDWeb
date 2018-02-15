@@ -220,7 +220,6 @@ public class EtudiantController {
 		String pwd = GeneratePassword.PasswordEncode( etudiant.getPassword()  )  ;
 		etudiant.setPassword(   pwd   );
 		
-		
 		// ajoute le nouveau ou le Etudiant nouvellement modifié
 		etudiant.setRole( Roles.ROLE_ETUDIANT);
 		etudiantDAO.save(etudiant);

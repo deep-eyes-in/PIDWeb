@@ -133,6 +133,8 @@
 		</s:bind>
 		
 		
+		
+		
 		<s:bind path="moment">
 			<div class="form-group ${status.error ? 'has-error' : ''}">
 				<sf:label path="moment" class="col-sm-2 control-label">

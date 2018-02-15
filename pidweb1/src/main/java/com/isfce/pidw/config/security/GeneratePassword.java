@@ -45,10 +45,8 @@ public  class GeneratePassword {
 
 	
 	public static  String PasswordEncode( String str ) {
-		
 		PasswordEncoder gnr = new StandardPasswordEncoder("53cr3t") ;
-		
-		 return gnr.encode( str ) ;
+		return gnr.encode( str ) ;
 	}
 	
 	

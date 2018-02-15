@@ -1,26 +1,9 @@
 package com.isfce.pidw.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import java.util.List;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -29,31 +12,23 @@ public class SignUp {
 
 
 
-	private Set<Etudiant> etudiants = new HashSet<>();
+//	private String module ;
+	List<String> modules = new ArrayList<>();  //  HashSet<>();
+	
+	private String etudiant ;
+	
+	
 		
 	
 	
-	
-	
-	
-//	@OneToMany(mappedBy="cours",cascade=CascadeType.PERSIST)
-//	protected Collection<Module> modules= new ArrayList<>();
 
-	public SignUp(String code, Set<Etudiant> etudiants, short nbPeriodes) {
+	public SignUp( List<String> modules, String etudiant ) {
 		super();
-		this.code = code;
-		this.nom = nom;
+//		this.module = module;
+		this.modules = modules;
+		this.etudiant = etudiant;
 	}
 
-	public void addSection(String section) {
-		sections.add(section);
-	}
-	
-	
-
-	public void removeSection(String section) {
-		sections.remove(section);
-	}
 }
 
 
