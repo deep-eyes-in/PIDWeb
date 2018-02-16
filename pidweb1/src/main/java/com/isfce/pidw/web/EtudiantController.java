@@ -40,6 +40,7 @@ public class EtudiantController {
 	// on recupre la liste de cours et etudiant depois L'usine (factory)
 //	private ICoursJpaDAO coursDAO;
 	private IEtudiantJpaDAO etudiantDAO;
+	private IModuleJpaDAO moduleDAO;
 	
 //	private  List<Etudiant> listeEtudiant ;
 //	private  List<Cours> listeCours  ;
@@ -48,8 +49,9 @@ public class EtudiantController {
 
 	// Création de la liste de données pour le 1er exemple
 	@Autowired
-	public EtudiantController(IEtudiantJpaDAO etudiantDAO) {
+	public EtudiantController(IEtudiantJpaDAO etudiantDAO, IModuleJpaDAO moduleDAO ) {
 		this.etudiantDAO = etudiantDAO;
+		this.moduleDAO = moduleDAO;
 
 //		listeEtudiant = etudiantDAO.findAll() ;
 //		listeCours = coursDAO.findAll() ;
@@ -267,6 +269,11 @@ public class EtudiantController {
 	
 
 	
+	
+	
+	
+	
+	
 	/**
 	 * Réceptionne le traitement de l'exception DuplicateException pour tous les
 	 * déclenchements au sein de ce contrôleur. Cette méthode n'est pas apellée
@@ -300,13 +307,28 @@ public class EtudiantController {
 			if (etudiant == null)
 				throw new NotFoundException("Ce etudiant existe déjà ", code);
 
+			
+			
 			// Ajout au Modèle
 			model.addAttribute("etudiant", etudiant );
+			
+			model.addAttribute("listModules", moduleDAO.getModulesOfEtudiant( etudiant.getUsername()   )    );
+			
+			
 		} else
 			logger.debug("Utilisation d'un FlashAttribute pour le etudiant: " + code);
 		
 		return "etudiant/etudiant";
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 
 

@@ -38,11 +38,32 @@
 
 		<tr>
 			<td colspan="2">
+
 			</td>
 		</tr>
 		<tr>
 		</tr>
 	</table>
+	
+	<h1>
+		Inscription de l'étudiant:
+	</h1>
+	
+				<table>
+					<tr>
+						<td> Desinscrire  </td>
+						<td>Code du module</td>
+						<td>Nom du cours</td>
+					</tr>
+					<c:forEach items="${listModules}" var="module">
+						<tr>
+							<td> <a href="<s:url value = "/module/remove/${module.code}/${etudiant.username}" />"> X </a>  </td>
+							<td><c:out value="${module.code}" /></td>
+							<td><c:out value="${module.cours.nom}" /></td>
+						</tr>
+					</c:forEach>
+
+				</table>
 	
 </div>
 

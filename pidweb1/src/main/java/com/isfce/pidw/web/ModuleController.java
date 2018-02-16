@@ -113,7 +113,8 @@ public class ModuleController {
 		if ( lm != null ) {
 			for(Module c : lm){  
 				c.getCours().setSections(moduleDAO.getCoursSection( c.getCours().getCode() ));
-				c.setEtudiants(moduleDAO.getEtudiantsOfModule( c.getCode() ));
+//				c.setEtudiants(moduleDAO.getEtudiantsOfModule( c.getCode() ));		//	getFkEtudiantsOfModule
+//				c.setFkEtudiants(moduleDAO.getFkEtudiantsOfModule( c.getCode() ));
 			}
 		}
 		
@@ -354,41 +355,66 @@ System.out.println("COUCOUUUUUUUUUU");
 			BindingResult errors,
 			 Model model
 			 ) throws ParseException {
+			
+		//On récupère l'étudiant séléctionné dans le formulaire
+		String selectedUsername = new String();
+		selectedUsername = signUp.getEtudiant();
+				
+		System.out.println(selectedUsername.toString());
 		
+		//On récupère les modules séléctionnés dans le formulaire
+		List<String> selectedModules = new ArrayList();
+		selectedModules = signUp.getModules();
 		
-		System.out.println( "_________________" ) ;
-		System.out.println( model.toString() );
-//		System.out.println( errors.getAllErrors().toString()     );
-		
+		// On récupère toutes les inscriptions dans un tableau 3D
 		List<Object[]> allInscriptions = new ArrayList<>();
 		allInscriptions = moduleDAO.getAllInscriptions() ;
 		
-
-		String mCode = new String();
-		String eUsername = new String();
+		// Variables tampon pour naviguer dans le tableau
+		String actualModuleCode = new String();
+		String actualEtudiantUsername = new String();
 		
-		for (int i = 0; i < allInscriptions.size(); i++) {
-			System.out.println(allInscriptions.get(i)[0] + " " + allInscriptions.get(i)[1]);
+		Module module = new Module();
+		//Etudiant etudiant =  new Etudiant();
+		
+		
+		boolean goNextModule = true;
+		
+		List<String> allModulesCode = new ArrayList();
+		allModulesCode = moduleDAO.getModuleCodeList();
+		
+		
+		for(int i=0 ; i<allModulesCode.size() ; i++) {
+			module =  moduleDAO.findOne( allModulesCode.get(i).toString()  )  ;
+			module.setEtudiants(new ArrayList());
 			
-			if ( mCode.equals(  allInscriptions.get(i)[0]  ) ) {
-				
-				Module module =  moduleDAO.findOne( allInscriptions.get(i)[0].toString()  )  ;
-				for (int j=0 ; j < allInscriptions.size()  ;  j++ )  {
-					if( mCode.equals(  ) ) {
-						
-					}
-					Etudiant e = ( Etudiant ) usersDAO.findOne( allInscriptions.get(i)[1].toString()  )  ;
-				}
-				
-				module.getEtudiants().add( e ) ;
-				
+			
+			for(int k=0 ; k<allInscriptions.size() ; k++) {
+				System.out.println(allInscriptions.get(k).toString() + "////////" + allModulesCode.get(i).toString());
+				if(allInscriptions.get(k)[0].toString() == allModulesCode.get(i).toString()) {
+
+							Etudiant etudiant = ( Etudiant ) usersDAO.findOne( allInscriptions.get(k)[1].toString()  )  ;
+							
+							module.getEtudiants().add( etudiant ) ;
+						}
 			}
 			
-			mCode = allInscriptions.get(i)[0].toString() ;
-			eUsername = allInscriptions.get(i)[1].toString() ;
+				
+			if(selectedModules.contains(allModulesCode.get(i))) {
+				
+					Etudiant etudiant = ( Etudiant ) usersDAO.findOne( selectedUsername  )  ;
+					List<Object[]> testIfExist = moduleDAO.testModuleOfEtudiantExist(allModulesCode.get(i).toString(), selectedUsername);
+					if( testIfExist.size() == 0 ) {
+						module.getEtudiants().add( etudiant ) ;
+					}
+
+			}
+			
+			moduleDAO.save(module);
+			
 		}
-
-
+		
+		
 		return "module/signup" ;
 	}
 	
@@ -397,7 +423,21 @@ System.out.println("COUCOUUUUUUUUUU");
 	
 	
 	
+	//			module/remove/IIBD-1-B/Batistouille
 	
+	
+	@RequestMapping(value = { "remove/{code}/{userName}"  },  method = RequestMethod.GET)
+	public String removeModule(
+			@PathVariable Optional<String> code,
+			@PathVariable Optional<String> userName,
+			Model model /* , Authentication authentication */
+	) {
+		
+		System.out.println( "removeModule°°°°°°°°°°°°°°°°°°START°");
+//		moduleDAO.removeSignUp( code.get() , userName.get() ) ;
+		return "redirect:/etudiant/" + userName.get() ;
+		
+	}
 	
 	
 	

@@ -6,6 +6,14 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+	
+<sec:authorize access="isAuthenticated()" var="logger" />
+<sec:authorize access="hasRole('ROLE_PROF')" var="isProf" />
+<sec:authorize access="hasRole('ROLE_ADMIN')" var="isAdmin" />
+
+
 <html>
 <jsp:include page="../fragments/header.jsp">
 	<jsp:param name="titre" value="Modules Résultats ISFCE" />
@@ -16,6 +24,8 @@
 <c:if test="${fn:length(moduleList) == 0}">
 	<h2>Liste Vide</h2>
 </c:if>
+
+
 <h2>La liste contient: ${fn:length(moduleList)} modules</h2>
 
 <ul class="nivUn">
@@ -44,23 +54,48 @@
 				<li>Dates: <c:out value="${module.moment}  ${dateD} ==> ${dateF}" /> </li>
 				<li><c:out value="${module.prof.nom}" default="---"/></li>
 			</ul>
+			
+			
 					<s:url value="${module.code}" var="moduleUrl" />
 					<button class="btn btn-info" 
 						onclick="location.href='${moduleUrl}'">Détail</button>
 					
 		<!--  -->
 					
+					
+						
+			<c:if test="${  isAdmin   }">
 					<s:url value="/module/${module.code}/update" var="updateUrl" />
 					<button class="btn btn-primary" 
 						onclick="location.href='${updateUrl}'">Update</button>
 					
-					
 					<s:url value="/module/${module.code}/delete" var="deleteUrl" />
 					<button class="btn btn-danger"
 						onclick="this.disabled=true;post('${deleteUrl}')">Delete</button>
+			</c:if>
+
+
+
+
+						
 		</li>
 	</c:forEach>
 </ul>
 </div>
 <jsp:include page="../fragments/footer.jsp" />
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

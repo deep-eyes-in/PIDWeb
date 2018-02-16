@@ -1,12 +1,10 @@
 package com.isfce.pidw.data;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 
 import com.isfce.pidw.model.Cours;
@@ -52,8 +50,10 @@ public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 	List<Module> getModulesOfEtudiant(String username);
 	
 	
-	@Query(value="select * from TINSCRIPTION where FKMODULE=?", nativeQuery=true)
-	List<Etudiant> getEtudiantsOfModule(String code);
+//	@Query(value="select * from TINSCRIPTION where FKMODULE=?", nativeQuery=true)
+	@Query(value="select e.* from TETUDIANT e inner join TINSCRIPTION i on i.FKETUDIANT=e.USERNAME where i.FKMODULE=?", nativeQuery=true)
+	Set<Etudiant> getEtudiantsOfModule(String code);
+	
 	
 	
 	@Query(value="select FKETUDIANT from TINSCRIPTION where FKMODULE=?", nativeQuery=true)
@@ -65,10 +65,23 @@ public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 
 	
 	
+	@Query(value="select * from TINSCRIPTION where FKMODULE=? and FKETUDIANT=?", nativeQuery=true)
+	List<Object[]> testModuleOfEtudiantExist(String username, String module);
+	
+	
+	@Query(value="DELETE FROM TINSCRIPTION where FKMODULE=? and FKETUDIANT=?", nativeQuery=true)
+	void removeSignUp(String username, String module);
+	
+	
+	
+	
 	
 	
 	
 }
+
+
+
 
 
 

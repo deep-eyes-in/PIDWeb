@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -55,8 +56,12 @@ public class CoursController {
 
 	// Méthode Get pour ajouter un cours
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
-	public String addCoursGet(@ModelAttribute Cours cours, Model model) {
+	public String addCoursGet(@ModelAttribute Cours cours, Model model, Authentication authentication ) {
 		logger.debug("affiche la vue pour ajouter un cours ");
+		
+		logger.debug(" user connecté: " + (authentication == null ? " NULL " : authentication.getName()));
+		
+		
 		model.addAttribute("languesList", listeLangues);
 		// Attribut maison pour distinguer un add d'un update
 		// model.addAttribute("savedId", null);

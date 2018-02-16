@@ -3,6 +3,7 @@
 <%--  <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> --%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+	
 <%@ page session="false" language="java"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <head>
@@ -22,6 +23,7 @@
 <s:url value="/logout" var="logoutUrl" />
 <sec:authorize access="isAuthenticated()" var="logger" />
 <sec:authorize access="hasRole('ROLE_PROF')" var="isProf" />
+<sec:authorize access="hasRole('ROLE_ADMIN')" var="isAdmin" />
 
 </head>
 <body>
@@ -84,4 +86,10 @@
 			</sec:authorize>
 			</ul>
 		</div>
+		
+		
+		
 	</nav>
+	
+	
+	

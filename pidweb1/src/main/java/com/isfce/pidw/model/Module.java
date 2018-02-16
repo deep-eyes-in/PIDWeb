@@ -2,7 +2,9 @@ package com.isfce.pidw.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -72,7 +74,8 @@ public class Module {
 	@ManyToMany (cascade=CascadeType.PERSIST)
 	@JoinTable(name = "TINSCRIPTION", joinColumns = @JoinColumn(name = "FKMODULE"),
 	    inverseJoinColumns = @JoinColumn(name = "FKETUDIANT"))
-	private List<Etudiant> etudiants = new ArrayList<>();  //  HashSet<>();
+//	private Set<Etudiant> etudiants = new HashSet<>();      //    ArrayList<>();  //  HashSet<>();
+	private List<Etudiant> etudiants = new ArrayList<>();      //    ArrayList<>();  //  HashSet<>();
 
 	public Module(String code, Date dateDebut, Date dateFin, MAS moment, Cours cours,Professeur prof) {
 		super();
@@ -85,10 +88,58 @@ public class Module {
 		
 //		this.myDate = new Date();		
 	}
+
 	
 	
+//		/*	
+	public void setFkEtudiants(List<String> fkEtudiantsOfModule) {
+		etudiants = new ArrayList<>() ;  //  new HashSet<>();
+		for (int j=0 ; j < fkEtudiantsOfModule.size()  ;  j++ )  {
+			
+			String str = fkEtudiantsOfModule.get(j); 
+			Etudiant e = ( Etudiant ) new Etudiant( str , null, null, null, null, null )  ;
+//			e.setUsername(str) ;
+			etudiants.add(e) ;  //   moduleDAO.getFkEtudiantsOfModule( module.getCode() )    ;
+			
+		}
+	}
+
+
+	public String getFkEtudiants() {
+		return etudiants.toString()  ;
+	}
+	
+//		*/
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

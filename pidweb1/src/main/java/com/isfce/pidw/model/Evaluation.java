@@ -45,6 +45,10 @@ public class Evaluation {
 	private SESSION session;
 
 	
+	@NotNull
+	@Column(nullable = false)
+	private Short resultat;
+	
 	
 	
 	
@@ -62,6 +66,24 @@ public class Evaluation {
 	
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

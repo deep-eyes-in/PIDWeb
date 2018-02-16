@@ -41,8 +41,37 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/cours/**/update", "/cours/**/delete").hasAnyRole("PROF", "ADMIN")
-			.antMatchers(HttpMethod.POST, "/cours/add").hasAnyRole("PROF", "ADMIN")
+			//	module
+			.antMatchers("/module/**/update", "/module/**/delete").hasAnyRole( "ADMIN")
+			.antMatchers(HttpMethod.POST, "/module/add").hasAnyRole( "ADMIN")
+			.antMatchers(HttpMethod.GET, "/module/add").hasAnyRole( "ADMIN")
+			.antMatchers(HttpMethod.POST, "/module/signup").hasAnyRole( "ADMIN")
+			.antMatchers(HttpMethod.GET, "/module/signup").hasAnyRole( "ADMIN")
+		
+			//	cours
+			.antMatchers("/cours/**/update", "/cours/**/delete").hasAnyRole( "ADMIN")
+			.antMatchers(HttpMethod.POST, "/cours/add").hasAnyRole( "ADMIN")
+			.antMatchers(HttpMethod.GET, "/cours/add").hasAnyRole( "ADMIN")
+			
+			//	professeur
+			.antMatchers( "/professeur/**/update", "/professeur/**/delete" ).hasAnyRole( "ADMIN")	//
+			.antMatchers(HttpMethod.POST, "/professeur/add").hasAnyRole( "ADMIN")
+			.antMatchers(HttpMethod.GET, "/professeur/add").hasAnyRole( "ADMIN")
+			
+			//	etudiant
+			.antMatchers( "/etudiant/**/update", "/etudiant/**/delete" ).hasAnyRole( "ADMIN")	//
+			.antMatchers(HttpMethod.POST, "/etudiant/add").hasAnyRole( "ADMIN")
+			.antMatchers(HttpMethod.GET, "/etudiant/add").hasAnyRole( "ADMIN")
+			
+			
+			//	etudiant
+			.antMatchers( "/module/evaluation/**/update", "/module/evaluation/**/delete" ).hasAnyRole( "ADMIN")	//
+			.antMatchers(HttpMethod.POST, "/module/evaluation/add").hasAnyRole( "ADMIN")
+			.antMatchers(HttpMethod.GET, "/module/evaluation/add").hasAnyRole( "ADMIN")
+
+			
+			
+			
 			.antMatchers("/**").access("permitAll")
 			.and()
 				.formLogin().loginPage("/login")
