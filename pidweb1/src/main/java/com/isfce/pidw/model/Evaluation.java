@@ -2,6 +2,8 @@ package com.isfce.pidw.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -37,7 +39,7 @@ public class Evaluation {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "FKMODULE", nullable = false)
-	private Cours cours;
+	private Module module;
 	
 	
 	@NotNull
@@ -55,12 +57,13 @@ public class Evaluation {
 //	@OneToMany(mappedBy="cours",cascade=CascadeType.PERSIST)
 //	protected Collection<Module> modules= new ArrayList<>();
 
-	public Evaluation( Long id, Etudiant etudiant, Cours cours, SESSION session) {
+	public Evaluation( Long id, Etudiant etudiant, Module module, SESSION session, Short resultat) {
 		super();
 		this.id = id;
 		this.etudiant = etudiant;
-		this.cours = cours;
+		this.module = module;
 		this.session = session;
+		this.resultat = resultat;
 	}
 	
 	

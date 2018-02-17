@@ -1,6 +1,7 @@
 package com.isfce.pidw.data;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +17,7 @@ public interface ICoursJpaDAO extends JpaRepository<Cours, String> {
 	
 	
 	@Query(value="select section from TSECTION where FKCOURS=?", nativeQuery=true)
-	List<String> coursSection(String codeCours);
+	Set<String> coursSection(String codeCours);
 	
 	@Query(value="select distinct upper(section) from TSECTION ", nativeQuery=true)
 	List<String> listeSections();

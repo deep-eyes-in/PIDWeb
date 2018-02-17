@@ -52,8 +52,7 @@ public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 	
 //	@Query(value="select * from TINSCRIPTION where FKMODULE=?", nativeQuery=true)
 	@Query(value="select e.* from TETUDIANT e inner join TINSCRIPTION i on i.FKETUDIANT=e.USERNAME where i.FKMODULE=?", nativeQuery=true)
-	Set<Etudiant> getEtudiantsOfModule(String code);
-	
+	List<Etudiant> getEtudiantsOfModule(String code);
 	
 	
 	@Query(value="select FKETUDIANT from TINSCRIPTION where FKMODULE=?", nativeQuery=true)
@@ -62,7 +61,7 @@ public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 	@Query(value="select * from TINSCRIPTION ORDER BY FKMODULE", nativeQuery=true)
 	List<Object[]> getAllInscriptions( );
 
-
+	
 	
 	
 	@Query(value="select * from TINSCRIPTION where FKMODULE=? and FKETUDIANT=?", nativeQuery=true)

@@ -18,9 +18,10 @@ public interface IEtudiantJpaDAO extends IUsersJpaDAO<Etudiant> {
 	
 	
 	//	e.*  //  e.EMAIL, e.NOM, e.PRENOM, e.TEL, e.USERNAME
-	@Query(value="select e.EMAIL,e.NOM,e.PRENOM,e.TEL,e.USERNAME from TETUDIANT e inner join TINSCRIPTION i on i.FKETUDIANT=e.USERNAME where i.FKMODULE=?", nativeQuery=true)
-	Set<Etudiant> getEtudiantsOfModule(String code);
+	//@Query(value="select e.* from TETUDIANT e inner join TINSCRIPTION i on i.FKETUDIANT=e.USERNAME where i.FKMODULE=?", nativeQuery=true)
+	//List<Etudiant> getEtudiantsOfModule(String code);
 
-	
+	@Query(value="select e.EMAIL,e.NOM,e.PRENOM,e.TEL, u.* from TETUDIANT e inner join TINSCRIPTION i on i.FKETUDIANT=e.USERNAME inner join TUSERS u on u.USERNAME=e.USERNAME  where i.FKMODULE=?", nativeQuery=true)
+	List<Etudiant> getEtudiantsOfModule(String code);
 	
 }

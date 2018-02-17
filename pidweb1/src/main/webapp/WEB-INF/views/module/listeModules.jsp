@@ -30,7 +30,12 @@
 
 <ul class="nivUn">
 
+<c:set var="i" value="-1"></c:set>
+
 	<c:forEach items="${moduleList}" var="module">
+
+		<c:set var="i" value="${i + 1}"></c:set>
+		
 		<li id="Code_<c:out value="${module.code}"/>">
 		<c:out	value="${module.code}" /> 
 		
@@ -72,12 +77,28 @@
 					<s:url value="/module/${module.code}/delete" var="deleteUrl" />
 					<button class="btn btn-danger"
 						onclick="this.disabled=true;post('${deleteUrl}')">Delete</button>
+						
+					<s:url value="/module/${module.code}/addeval" var="addEvaluation" />
+					<button class="btn btn-success"
+						onclick="this.disabled=true;post('${addEvaluation}')">Add Evaluation</button>
+						
+					<c:if test="${  nbrSessionList[i] == 1 ||  nbrSessionList[i] == 2 }">
+							<s:url value="/module/${module.code}/addeval" var="updateEvaluation1" />
+							<button class="btn btn-success"
+								onclick="this.disabled=true;post('${addEvaluation}')">Update Evaluation S1</button>
+					</c:if>
+					
+					<c:if test="${  nbrSessionList[i] == 2  }">
+							<s:url value="/module/${module.code}/addeval" var="updateEvaluation1" />
+							<button class="btn btn-success"
+								onclick="this.disabled=true;post('${addEvaluation}')">Update Evaluation S2</button>
+					</c:if>
 			</c:if>
 
 
+			
 
-
-						
+					
 		</li>
 	</c:forEach>
 </ul>
