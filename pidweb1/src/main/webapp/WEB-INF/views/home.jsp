@@ -5,6 +5,11 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication property="principal.username" var="username" />
+</sec:authorize>
+
+
 <html>
 
 <jsp:include page="fragments/header.jsp">
@@ -42,7 +47,8 @@
 	</sec:authorize>
 
 	<p><a href="<s:url value = "/cours/liste" />"> Liste des cours</a></p>
-	<P><a href="<s:url value = "/module/liste" />"> Liste des modules</a></p>
+	<P><a href="<s:url value = "/module/liste" />"> Liste de tout les modules</a></p>
+	<P><a href="<s:url value = "/module/liste/${username}" />"> Liste de mes modules</a></p>
 </div>
 
 <jsp:include page="fragments/footer.jsp" />

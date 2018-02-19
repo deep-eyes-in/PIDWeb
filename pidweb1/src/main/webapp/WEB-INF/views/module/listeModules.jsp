@@ -65,41 +65,42 @@
 					<button class="btn btn-info" 
 						onclick="location.href='${moduleUrl}'">Détail</button>
 					
-		<!--  -->
-					
-					
-						
-			<c:if test="${  isAdmin   }">
+		<!--  --> <c:if test="${ isAdmin }">
 					<s:url value="/module/${module.code}/update" var="updateUrl" />
-					<button class="btn btn-primary" 
+					<button class="btn btn-primary"
 						onclick="location.href='${updateUrl}'">Update</button>
-					
 					<s:url value="/module/${module.code}/delete" var="deleteUrl" />
 					<button class="btn btn-danger"
 						onclick="this.disabled=true;post('${deleteUrl}')">Delete</button>
-						
-					<s:url value="/module/${module.code}/addeval" var="addEvaluation" />
-					<button class="btn btn-success"
-						onclick="this.disabled=true;post('${addEvaluation}')">Add Evaluation</button>
-						
-					<c:if test="${  nbrSessionList[i] == 1 ||  nbrSessionList[i] == 2 }">
-							<s:url value="/module/${module.code}/addeval" var="updateEvaluation1" />
-							<button class="btn btn-success"
-								onclick="this.disabled=true;post('${addEvaluation}')">Update Evaluation S1</button>
+					<c:if test="${ nbrSessionList[i] < 2 }">
+						<s:url value="/module/${module.code}/addeval" var="addEvaluation" />
+						<button class="btn btn-success"
+							onclick="this.disabled=true;post('${addEvaluation}', {'${_csrf.parameterName}': '${_csrf.token}'} )">Add
+							Evaluation</button>
 					</c:if>
-					
-					<c:if test="${  nbrSessionList[i] == 2  }">
-							<s:url value="/module/${module.code}/addeval" var="updateEvaluation1" />
-							<button class="btn btn-success"
-								onclick="this.disabled=true;post('${addEvaluation}')">Update Evaluation S2</button>
+				</c:if>
+					<c:if test="${ nbrSessionList[i] == 1 || nbrSessionList[i] == 2 }">
+						<s:url value="/evaluation/${module.code}/1"
+							var="updateEvaluation1" />
+						<button class="btn btn-success"
+							onclick="this.disabled=true;post('${updateEvaluation1}')">Update
+							Evaluation S1</button>
 					</c:if>
-			</c:if>
+					<c:if test="${ nbrSessionList[i] == 2 }">
+						<s:url value="/evaluation/${module.code}/2"
+							var="updateEvaluation2" />
+						<button class="btn btn-success"
+							onclick="this.disabled=true;post('${updateEvaluation2}')">Update
+							Evaluation S2</button>
+					</c:if>
+				
 
 
-			
 
-					
-		</li>
+
+
+
+			</li>
 	</c:forEach>
 </ul>
 </div>

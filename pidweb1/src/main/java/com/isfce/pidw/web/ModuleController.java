@@ -84,26 +84,74 @@ public class ModuleController {
 	 *            droits de l'utilisateur connecté
 	 * @return nom logique de la vue
 	 */
+	
+	public List<Module> SendListModules(String whatModule, String userName) {
+		List<Module> lm = null;
+		
+		if(whatModule == "all") {
+			lm = moduleDAO.findAll();
+		} else if(whatModule == "ofProf") {
+			lm = moduleDAO.readByProfesseurIsNotNull(userName);
+		} else {
+			lm = moduleDAO.getModulesOfEtudiant(userName);
+		}
+		
+		return lm;
+	}
+	
+	public List<Integer> AddEvalToListModule(List<Module> lm) {
+		List<Integer> nbrSessions = new ArrayList<>();
+		
+		for(int i=0 ; i < lm.size() ; i++) {
+			//System.out.println(getSessionOfEvaluation(lm.get(i).getCode()));
+			nbrSessions.add(getSessionOfEvaluation(lm.get(i).getCode()));
+		}
+		return nbrSessions;
+	}
 
 	@RequestMapping(value = { "/liste/{codeUser}", "/liste" })
 	public String listeModules(@PathVariable Optional<String> codeUser, Model model, Authentication authentication) {
+		
 		List<Module> lm = null;
+		List<Integer> nbrSessions = new ArrayList<>();
+		
 		String texte = null;
 		logger.debug(" user connecté: " + (authentication == null ? " NULL " : authentication.getName()));
+		
 		// si on ne précise pas de "codeUser"
 		if (!codeUser.isPresent()) {
-			lm = moduleDAO.findAll();
+			
+			lm = SendListModules("all", null);
+			if (authentication != null && 
+					(authentication.getName().equals("admin") && 
+					authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_ADMIN.name())))) {
+				
+				nbrSessions = AddEvalToListModule(lm);
+			}
 			texte = "de l'école";
-
+			
 		} else {
+			
 			// role de codeUser
 			Roles roleUser = usersDAO.getUserNameRole(codeUser.get());
-
 			// si le code user est un prof retourne les modules du prof
 			if (Roles.ROLE_PROF.equals(roleUser)) {
-				lm = moduleDAO.readByProfesseurIsNotNull(codeUser.get());
+				System.out.println(authentication.getName());
+				System.out.println(codeUser.get());
+				
+				lm = SendListModules("ofProf", codeUser.get());
+				System.out.println((authentication != null) && 
+						((authentication.getName().equals("admin") || authentication.getName().equals(codeUser.get())) &&
+						authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_PROF.name()))));
+				
+				if ((authentication != null) && 
+						((authentication.getName().equals("admin") || authentication.getName().equals(codeUser.get())) &&
+						authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_PROF.name())))) {
+					nbrSessions = AddEvalToListModule(lm);
+				}
 				texte = "du professeur: " + codeUser.get();
 				logger.debug("Modules du prof " + codeUser.orElse("vide: ") + "NB Modules :" + lm.size());
+				
 			} else // renvoie la liste des modules de l'étudiant (et contrôle les droits)
 			if (Roles.ROLE_ETUDIANT.equals(roleUser)) {
 				// il faut être authentifié et si on est un étudiant on ne peut voir que ses
@@ -113,11 +161,15 @@ public class ModuleController {
 						.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_ETUDIANT.name()))))
 					throw new NoAccessException("Doit être connecté comme prof, admin ou l'étudiant " + codeUser.get());
 				
-				lm = moduleDAO.getModulesOfEtudiant(codeUser.get());
+				lm = SendListModules("ofEtudiant", codeUser.get());
 				texte = "de l'étudiant: " + codeUser.get();
 				logger.debug("Modules de l'étudiant " + codeUser.orElse("vide: ") + "NB Inscriptions :" + lm.size());
 			} else texte= " (user inconnu: "+codeUser.get()+")";
+			
 		}
+		
+		
+		
 		if ( lm != null ) {
 			for(Module c : lm){  
 				c.getCours().setSections(moduleDAO.getCoursSection( c.getCours().getCode() ));
@@ -127,12 +179,7 @@ public class ModuleController {
 		}
 		
 		
-		List<Integer> nbrSession = new ArrayList<>();
-		for(int i=0 ; i < lm.size() ; i++) {
-			nbrSession.add(getSessionOfEvaluation(lm.get(i).getCode()));
-		}
-		
-		model.addAttribute("nbrSessionList", nbrSession);
+		model.addAttribute("nbrSessionList", nbrSessions);
 		model.addAttribute("userModules", texte);// le texte pour indiquer de qui sont les modules
 		model.addAttribute("moduleList", lm);// liste des modules
 		return "module/listeModules";
