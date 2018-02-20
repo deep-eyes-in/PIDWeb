@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
-<%--  <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 	
@@ -45,14 +45,14 @@
 						  <a href="<s:url value = "${isProf ? '/cours/add':'#'}" />">add</a>
 						</li>
 					</ul></li>
-					
+			<c:if test="${ (isAdmin) }">	
 				<li class="dropdown"><a class="dropdown-toggle"
 					data-toggle="dropdown" href="#">Etudiants <span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<li><a href="<s:url value = "/etudiant/liste"/>">liste</a></li>
 						<li><a href="<s:url value = "/etudiant/add" />">add</a></li>
 					</ul></li>
-					
+			</c:if>
 					<li class="dropdown"><a class="dropdown-toggle"
 					data-toggle="dropdown" href="#">Professeur <span class="caret"></span></a>
 					<ul class="dropdown-menu">

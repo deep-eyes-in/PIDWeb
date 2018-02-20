@@ -31,6 +31,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		
 		auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN", "PROF");
+		auth.inMemoryAuthentication().withUser("VO").password("VO").roles("PROF");
+		auth.inMemoryAuthentication().withUser("SM").password("SM").roles("ETUDIANT");
 		
 //		auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
 	}
@@ -62,7 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers( "/etudiant/**/update", "/etudiant/**/delete" ).hasAnyRole( "ADMIN")	//
 			.antMatchers(HttpMethod.POST, "/etudiant/add").hasAnyRole( "ADMIN")
 			.antMatchers(HttpMethod.GET, "/etudiant/add").hasAnyRole( "ADMIN")
-			
+			.antMatchers(HttpMethod.POST, "/etudiant/liste").hasAnyRole( "ADMIN")
+			.antMatchers(HttpMethod.GET, "/etudiant/liste").hasAnyRole( "ADMIN")
 			
 			//	etudiant
 			.antMatchers( "/module/evaluation/**/update", "/module/evaluation/**/delete" ).hasAnyRole( "ADMIN")	//

@@ -13,6 +13,7 @@ public class NotFoundException extends RuntimeException {
 	//identifiant de l'objet recherche
 	private String code;
 
+	
 	public NotFoundException(String message,String code) {
 		super(message);
 		this.code = code;

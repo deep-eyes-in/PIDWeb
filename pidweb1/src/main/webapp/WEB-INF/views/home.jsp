@@ -5,8 +5,11 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<sec:authorize access="isAuthenticated()">
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+
+<sec:authorize access="isAuthenticated()" var="isAuth">
 	<sec:authentication property="principal.username" var="username" />
+	
 </sec:authorize>
 
 
@@ -22,7 +25,7 @@
 	</h1>
 	<h2>
 		<s:message code="resultats.sujet" />
-		: ${prof}
+		
 	</h2>
 
 	<P>The time on the server is ${serverTime}.</P>
@@ -48,7 +51,10 @@
 
 	<p><a href="<s:url value = "/cours/liste" />"> Liste des cours</a></p>
 	<P><a href="<s:url value = "/module/liste" />"> Liste de tout les modules</a></p>
-	<P><a href="<s:url value = "/module/liste/${username}" />"> Liste de mes modules</a></p>
+	<c:if test="${isAuth}">
+		<P><a href="<s:url value = "/module/liste/${username}" />"> Liste de mes modules</a></p>
+		<P><a href="<s:url value = "/${fn:toLowerCase(  fn:substring(roles[0], 5, -1) ) }/${username}" />"> Voir mon profil</a></p>
+	</c:if>
 </div>
 
 <jsp:include page="fragments/footer.jsp" />

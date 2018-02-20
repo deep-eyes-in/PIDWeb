@@ -35,18 +35,22 @@
 			<td>Prénom: </td>
 			<td><c:out value="${professeur.prenom}" /></td>
 		</tr>	
-		
+		<tr>
+			<td colspan="2">
+				&nbsp;
+			</td>
+		</tr>
 			
 		<tr>
-			<td>password: </td>
-			<td><c:out value="${professeur.password}" /></td>
+			<td colspan="2">
+				<s:url value="/module/liste/${professeur.username}" var="showModules" />
+				<button class="btn btn-success" onclick="this.disabled=true;post('${showModules}', {'${_csrf.parameterName}': '${_csrf.token}'})">Voir ses modules
+				</button>
+			</td>
 		</tr>	
 		
 		
-		<tr>
-			<td colspan="2">
-			</td>
-		</tr>
+
 		
 		<tr>
 		</tr>

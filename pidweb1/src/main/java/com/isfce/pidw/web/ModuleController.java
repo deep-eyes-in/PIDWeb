@@ -85,8 +85,21 @@ public class ModuleController {
 	 * @return nom logique de la vue
 	 */
 	
+
+	@RequestMapping(value = "/liste/{codeUser}", method = RequestMethod.POST)
+	public String listeModules(@PathVariable String codeUser, Model model, Authentication authentication) {
+		System.out.println("GOGOG");
+		return "redirect:/module/liste/"  + codeUser;
+	}
+	
+	
+	
+	
+	
+	
+	
 	public List<Module> SendListModules(String whatModule, String userName) {
-		List<Module> lm = null;
+		List<Module> lm = new ArrayList<Module>();
 		
 		if(whatModule == "all") {
 			lm = moduleDAO.findAll();
@@ -109,10 +122,11 @@ public class ModuleController {
 		return nbrSessions;
 	}
 
+	
 	@RequestMapping(value = { "/liste/{codeUser}", "/liste" })
 	public String listeModules(@PathVariable Optional<String> codeUser, Model model, Authentication authentication) {
 		
-		List<Module> lm = null;
+		List<Module> lm = new ArrayList<Module>();
 		List<Integer> nbrSessions = new ArrayList<>();
 		
 		String texte = null;
@@ -122,38 +136,26 @@ public class ModuleController {
 		if (!codeUser.isPresent()) {
 			
 			lm = SendListModules("all", null);
-			if (authentication != null && 
-					(authentication.getName().equals("admin") && 
-					authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_ADMIN.name())))) {
-				
-				nbrSessions = AddEvalToListModule(lm);
-			}
 			texte = "de l'école";
 			
 		} else {
 			
 			// role de codeUser
 			Roles roleUser = usersDAO.getUserNameRole(codeUser.get());
+
+			if ( !usersDAO.exists(codeUser.get() ))
+				throw new NotFoundException("Le user n'existe pas", codeUser.get());
+			
 			// si le code user est un prof retourne les modules du prof
 			if (Roles.ROLE_PROF.equals(roleUser)) {
-				System.out.println(authentication.getName());
-				System.out.println(codeUser.get());
 				
 				lm = SendListModules("ofProf", codeUser.get());
-				System.out.println((authentication != null) && 
-						((authentication.getName().equals("admin") || authentication.getName().equals(codeUser.get())) &&
-						authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_PROF.name()))));
-				
-				if ((authentication != null) && 
-						((authentication.getName().equals("admin") || authentication.getName().equals(codeUser.get())) &&
-						authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_PROF.name())))) {
-					nbrSessions = AddEvalToListModule(lm);
-				}
 				texte = "du professeur: " + codeUser.get();
 				logger.debug("Modules du prof " + codeUser.orElse("vide: ") + "NB Modules :" + lm.size());
 				
 			} else // renvoie la liste des modules de l'étudiant (et contrôle les droits)
 			if (Roles.ROLE_ETUDIANT.equals(roleUser)) {
+				
 				// il faut être authentifié et si on est un étudiant on ne peut voir que ses
 				// propres modules. Déclenche une exception autrement!
 				if (authentication == null || 
@@ -176,14 +178,28 @@ public class ModuleController {
 //				c.setEtudiants(moduleDAO.getEtudiantsOfModule( c.getCode() ));		//	getFkEtudiantsOfModule
 //				c.setFkEtudiants(moduleDAO.getFkEtudiantsOfModule( c.getCode() ));
 			}
+		} else {
+			throw new NoAccessException("Nom d'utilisateur invalide.");
 		}
 		
+		nbrSessions = AddEvalToListModule(lm);
+		
+		
+		model.addAttribute("userName", (!codeUser.isPresent() ? "NULL" : codeUser.get()  )  );
+		model.addAttribute("userConnected", (authentication == null ? "NULL" : authentication.getName()) );
 		
 		model.addAttribute("nbrSessionList", nbrSessions);
 		model.addAttribute("userModules", texte);// le texte pour indiquer de qui sont les modules
 		model.addAttribute("moduleList", lm);// liste des modules
+		
 		return "module/listeModules";
-	}
+	}	
+	
+	
+	
+	
+	
+	
 	
 	
 		
@@ -397,73 +413,9 @@ System.out.println("COUCOUUUUUUUUUU");
 	}
 
 	
+
 	
-	@RequestMapping(value = "/{code}/addeval", method = RequestMethod.GET)
-	public String addEvaluation(@PathVariable String code, Model model) {
-		// Vérifie si on ne recoit pas le module suite à une redirection
-		if (!model.containsAttribute("module")) {
-			logger.debug("Recherche le module: " + code);
-			// recherche le module dans la liste
-			// Vérifie si le module existe
-			Module module = moduleDAO.findOne(code);
-			// gestion spécifique pour la non présence du module.
-			if (module == null) {
-				logger.debug("Problème : Not found");
-				throw new NotFoundException("Ce module existe déjà ", code);
-			}
-			
-			
-			// Ajout au Modèle
-			model.addAttribute("module", module);
-		} else
-			logger.debug("Utilisation d'un FlashAttribute pour le module: " + code);
-		
-		Module module = moduleDAO.findOne(code);
-		Cours c = coursDAO.findOne(module.getCours().getCode());
-		c.setSections(coursDAO.coursSection(c.getCode()));
-		module.setCours(c);
-		module.setEtudiants(etudiantDAO.getEtudiantsOfModule(code));
-		
-		List<String> etudiantOfModule = new ArrayList<>();
-		etudiantOfModule = moduleDAO.getFkEtudiantsOfModule(code);
-
-		Integer nbrSession = getSessionOfEvaluation(code);
-		Evaluation.SESSION theSession = null;
-
-		if(nbrSession == 0) {
-			theSession = Evaluation.SESSION.PREMIERE;
-			
-		} else if(nbrSession == 1) {
-			theSession = Evaluation.SESSION.DEUXIEME;
-		} else {
-			theSession = null;
-		}
-
-		//List<Evaluation> eval = new ArrayList<>();
-		
-		if(theSession != null) {
-			for(int i=0 ; i < etudiantOfModule.size() ; i++) {
-
-				Evaluation evaluation = new Evaluation();
-				
-				evaluation.setId(evaluationDAO.generateId() + 1);
-				evaluation.setEtudiant(etudiantDAO.findOne(etudiantOfModule.get(i)));
-				evaluation.setModule(module);
-				Short result = new Short("0");
-				evaluation.setResultat(result); 
-				evaluation.setSession(theSession);	
-				
-
-				System.out.println(evaluation.toString());
-				evaluationDAO.save(evaluation);
-			}
-			
-			
-		}
-
-		
-		return "redirect:/module/liste";
-	}
+	
 	
 	
 	
@@ -657,13 +609,15 @@ System.out.println("COUCOUUUUUUUUUU");
 	}
 	
 	
+	
 	public Integer getSessionOfEvaluation(String code) {
 		List<Evaluation.SESSION> allSessionOfModule = new ArrayList<>();
 		allSessionOfModule = evaluationDAO.getSessionsOfModule(code);
 		
-		
 		return allSessionOfModule.size();
 	}
+	
+	
 	
 
 }

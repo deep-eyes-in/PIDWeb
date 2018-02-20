@@ -7,6 +7,7 @@ import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -269,9 +270,7 @@ public class EtudiantController {
 	
 
 	
-	
-	
-	
+		
 	
 	
 	/**
@@ -296,7 +295,7 @@ public class EtudiantController {
 
 	// Affichage du détail d'un Etudiant
 	@RequestMapping(value = "/{code}", method = RequestMethod.GET)
-	public String detailEtudiant(@PathVariable String code, Model model) {
+	public String detailEtudiant(@PathVariable String code, Model model,  Authentication authentication) {
 		// Vérifie si on ne recoit pas le Etudiant suite à une redirection
 		if (!model.containsAttribute("etudiant")) {
 			logger.debug("Recherche le etudiant: " + code);
@@ -305,14 +304,27 @@ public class EtudiantController {
 			Etudiant etudiant = getEtudiant(code);
 			// gestion spécifique pour la non présence de etudiant.
 			if (etudiant == null)
-				throw new NotFoundException("Ce etudiant existe déjà ", code);
+				throw new NotFoundException("Cet etudiant n'existe pas : ", code);
+			
+			String userConnected = new String();
+			if(authentication != null) {
+				
+				userConnected = authentication.getName();	
+			} else {
+				userConnected = "";
+			}
 
 			
+			if(code.equals(userConnected)) {
+				model.addAttribute("etudiant", etudiant );
+				
+				model.addAttribute("listModules", moduleDAO.getModulesOfEtudiant( etudiant.getUsername()   )    );
+			} else {
+				throw new NoAccessException("Doit être connecté admin ou l'étudiant " + code);
+			}
 			
 			// Ajout au Modèle
-			model.addAttribute("etudiant", etudiant );
-			
-			model.addAttribute("listModules", moduleDAO.getModulesOfEtudiant( etudiant.getUsername()   )    );
+
 			
 			
 		} else

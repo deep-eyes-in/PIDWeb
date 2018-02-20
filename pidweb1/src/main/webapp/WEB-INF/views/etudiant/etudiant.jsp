@@ -38,7 +38,15 @@
 
 		<tr>
 			<td colspan="2">
-
+				&nbsp;
+			</td>
+		</tr>
+			
+		<tr>
+			<td colspan="2">
+				<s:url value="/module/liste/${etudiant.username}" var="showModules" />
+				<button class="btn btn-success" onclick="this.disabled=true;post('${showModules}', {'${_csrf.parameterName}': '${_csrf.token}'})">Voir ses modules
+				</button>
 			</td>
 		</tr>
 		<tr>

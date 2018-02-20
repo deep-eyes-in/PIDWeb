@@ -5,6 +5,9 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 <%-- <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> --%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+<sec:authorize access="hasRole('ROLE_ADMIN')" var="isAdmin" />
 
 <html>
 <jsp:include page="../fragments/header.jsp">
@@ -30,6 +33,7 @@
 			<button class="btn btn-info" 
 				onclick="location.href='${professeurUrl}'">Détail</button>
 			
+		<c:if test="${ (isAdmin) }">
 			<s:url value="/professeur/${professeur.username}/update" var="updateUrl" />
 			<button class="btn btn-primary" 
 				onclick="location.href='${updateUrl}'">Update</button>
@@ -38,7 +42,7 @@
 			<s:url value="/professeur/${professeur.username}/delete" var="deleteUrl" />
 			<button class="btn btn-danger"
 				onclick="this.disabled=true;post('${deleteUrl}')">Delete</button>
-
+		</c:if>
 
 			<ul class="nivDeux">
 				<li>	Nom:  <c:out value="${professeur.nom}" />		</li>
