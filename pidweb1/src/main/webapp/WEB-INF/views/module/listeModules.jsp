@@ -10,7 +10,7 @@
 	uri="http://www.springframework.org/security/tags"%>
 	
 <sec:authorize access="isAuthenticated()" var="logger" />
-<sec:authorize access="hasRole('ROLE_PROF')" var="isProf" />
+<sec:authorize access="hasRole('ROLE_PROFFESSEUR')" var="isProf" />
 <sec:authorize access="hasRole('ROLE_ADMIN')" var="isAdmin" />
 
 

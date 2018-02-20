@@ -147,7 +147,7 @@ public class ModuleController {
 				throw new NotFoundException("Le user n'existe pas", codeUser.get());
 			
 			// si le code user est un prof retourne les modules du prof
-			if (Roles.ROLE_PROF.equals(roleUser)) {
+			if (Roles.ROLE_PROFESSEUR.equals(roleUser)) {
 				
 				lm = SendListModules("ofProf", codeUser.get());
 				texte = "du professeur: " + codeUser.get();

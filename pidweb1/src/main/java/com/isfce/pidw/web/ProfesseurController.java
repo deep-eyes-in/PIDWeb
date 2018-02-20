@@ -222,7 +222,7 @@ public class ProfesseurController {
 		
 		
 		// ajoute le nouveau ou le Professeur nouvellement modifié
-		professeur.setRole( Roles.ROLE_PROF );
+		professeur.setRole( Roles.ROLE_PROFESSEUR );
 		professeurDAO.save(professeur);
 
 		// Préparation des attribut Flash pour survivre à la redirection

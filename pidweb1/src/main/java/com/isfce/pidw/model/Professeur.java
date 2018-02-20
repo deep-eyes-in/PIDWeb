@@ -26,7 +26,7 @@ public class Professeur extends Users {
 	private static final long serialVersionUID = 1L;
 
 	public Professeur(String username, String password, String nom, String prenom, String email) {
-		super(username, password, Roles.ROLE_PROF);
+		super(username, password, Roles.ROLE_PROFESSEUR);
 		this.nom = nom;
 		this.prenom = prenom;
 		this.email = email;
