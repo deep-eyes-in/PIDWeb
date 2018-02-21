@@ -60,17 +60,13 @@
 					</h4>
 			</div>
 
-
-	
 <!--	 BT DELETE UPDATE DETAIL	-->
 					
 					<button class="btn btn-info" 
 						onclick="location.href='${detailUrl}'"> Détail</button>
 					
-					
 					<button class="btn btn-primary" 
 						onclick="location.href='${updateUrl}'">Update</button>
-					
 					
 					<button class="btn btn-danger"
 						onclick="
@@ -82,10 +78,10 @@
 				</div>
 		
 		</c:forEach>
-	
 			
-		
 	</div>
+	
+	
 
 
 </div>

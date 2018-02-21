@@ -1,65 +1,83 @@
 <!DOCTYPE html>
-
+<%@ include file="/WEB-INF/views/fragments/taglibs.jspf" %>
 
 
 <html>
 <jsp:include page="../fragments/header.jsp">
 	<jsp:param name="titre" value="Modules Résultats ISFCE" />
 </jsp:include>
+
+
+	<div class="jumbotron text-center">
+		<h1>Liste des modules <c:out value=" ${userModules}" default=""/></h1>
+		
+		<c:if test="${fn:length(moduleList) == 0}">
+			<h2>Liste Vide</h2>
+		</c:if>
+		<h2>La liste contient: ${fn:length(moduleList)} modules</h2>
+	</div>
+	
+
+
+
+
 <div class="container">
-<h1>Liste des modules <c:out value=" ${userModules}" default=""/></h1>
 
-<c:if test="${fn:length(moduleList) == 0}">
-	<h2>Liste Vide</h2>
-</c:if>
+	<!--	 Block avec 3 cours per line	-->
+	<div class='row'>
+		<c:set var="i" value="0"></c:set>
+		<c:forEach items="${moduleList}" var="module">
+			<!-- VAR URL -->
+			<s:url value="${module.code}" var="detailUrl" />				
+			<s:url value="/module/${module.code}/update" var="updateUrl" />
+			<s:url value="/module/${module.code}/delete" var="deleteUrl" />
+			
+			<c:if test="${ userName != 'NULL' }">
+				<s:url value="../${module.code}" var="detailUrl" />
+			</c:if>
 
-
-<h2>La liste contient: ${fn:length(moduleList)} modules</h2>
-
-<ul class="nivUn">
-
-<c:set var="i" value="0"></c:set>
-
-	<c:forEach items="${moduleList}" var="module">
-
-		
-		
-		<li id="Code_<c:out value="${module.code}"/>">
-		<c:out	value="${module.code}" /> 
-		
-
-			<ul class="nivDeux">
 			<fmt:formatDate value="${module.dateDebut}" pattern="dd/MM/yyyy" var="dateD"/>
 			<fmt:formatDate value="${module.dateFin}" pattern="dd/MM/yyyy" var="dateF"/>
-				<li><c:out value="${module.cours.nom}" /></li>
-				<li>Dates: <c:out value="${module.moment}  ${dateD} ==> ${dateF}" /> </li>
-				<li><c:out value="${module.prof.nom}" default="---"/></li>
-			</ul>
 			
-			
-				<c:if test="${ userName == 'NULL' }">
-					<s:url value="${module.code}" var="moduleUrl" />
+				<div class='col-sm-4'>
+				
+			<div  onclick="location.href='${detailUrl}'">
+					<h1>
+						<c:out	value="${module.code}" />
+					</h1> 
+					<h4>
+						<c:out value="${module.cours.nom}" />
+					</h4>
+					<h4>
+						Dates: <c:out value="${module.moment}  ${dateD} ==> ${dateF}" />
+					</h4>
+					<h4>
+						Prof: <c:out value="${module.prof.nom}"  default="---" />
+					</h4>
 					
-				</c:if>
-				
-				<c:if test="${ userName != 'NULL' }">
-					<s:url value="../${module.code}" var="moduleUrl" />
-				</c:if>
-				
+
+									
+			</div>
+
+<!--	 BT DELETE UPDATE DETAIL	-->
+					
 					<button class="btn btn-info" 
-						onclick="location.href='${moduleUrl}'">Détail</button>
-					
-					
+						onclick="location.href='${detailUrl}'"> Détail</button>
+						
+						
 		<!--  --> 
 		<c:if test="${ userName == 'NULL' }">
 				<c:if test="${ isAdmin}">
-					<s:url value="/module/${module.code}/update" var="updateUrl" />
-					<button class="btn btn-primary"
+
+					<button class="btn btn-primary" 
 						onclick="location.href='${updateUrl}'">Update</button>
 						
-					<s:url value="/module/${module.code}/delete" var="deleteUrl" />
 					<button class="btn btn-danger"
-						onclick="this.disabled=true;post('${deleteUrl}')">Delete</button>
+						onclick="
+						if (confirm('Are you sure ?')) {
+						 this.disabled=true;
+		                 post('${deleteUrl}',{'${_csrf.parameterName}': '${_csrf.token}'})}                             
+		                                              ">Delete</button>	
 				</c:if> 
 				
 				<c:if test="${ (isAdmin) || isProf &&  (userName == userConnected) }">
@@ -88,19 +106,21 @@
 					</c:if>
 				</c:if>
 		</c:if>
+								
+					
 
+					
 
-
-
-
-
-
-
-			</li>
+				
+				</div>
+		<c:set var="i" value="${i + 1}"></c:set>
+		</c:forEach>
 			
-			<c:set var="i" value="${i + 1}"></c:set>
-	</c:forEach>
-</ul>
+	</div>
+	
+
+
+
 </div>
 <jsp:include page="../fragments/footer.jsp" />
 </html>
