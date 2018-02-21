@@ -1,22 +1,10 @@
 <!DOCTYPE html>
-<%@ page session="false" language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-<%@ taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
-	
-<sec:authorize access="isAuthenticated()" var="logger" />
-<sec:authorize access="hasRole('ROLE_PROFFESSEUR')" var="isProf" />
-<sec:authorize access="hasRole('ROLE_ADMIN')" var="isAdmin" />
 
 
 <html>
 <jsp:include page="../fragments/header.jsp">
-	<jsp:param name="titre" value="Modules RÃ©sultats ISFCE" />
+	<jsp:param name="titre" value="Modules Résultats ISFCE" />
 </jsp:include>
 <div class="container">
 <h1>Liste des modules <c:out value=" ${userModules}" default=""/></h1>
@@ -59,7 +47,7 @@
 				</c:if>
 				
 					<button class="btn btn-info" 
-						onclick="location.href='${moduleUrl}'">DÃ©tail</button>
+						onclick="location.href='${moduleUrl}'">Détail</button>
 					
 					
 		<!--  --> 

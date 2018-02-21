@@ -1,63 +1,118 @@
 <!DOCTYPE html>
-<%@ page session="false" language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
-<%-- <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> --%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
-<sec:authorize access="hasRole('ROLE_ADMIN')" var="isAdmin" />
+<%@ include file="/WEB-INF/views/fragments/taglibs.jspf" %>
+
+
 
 <html>
 <jsp:include page="../fragments/header.jsp">
-	<jsp:param name="titre" value="Professeur RÃ©sultats ISFCE" />
+	<jsp:param name="titre" value="Professeur Résultats ISFCE" />
 </jsp:include>
-<div class="container">
-<h1>Liste des Professeurs</h1>
 
-<c:if test="${fn:length(professeurList) == 0}">
-	<h2>Liste Vide</h2>
-</c:if>
-<h2>La liste contient: ${fn:length(professeurList)} professeur</h2>
-<a href="<s:url value = "/professeur/add" />"> Ajout d'un professeur</a>
-<s:url value="">Ajout d'un professeur</s:url>
 
-<ul class="nivUn">
-
-	<c:forEach items="${professeurList}" var="professeur">	
-		<li id="Code_<c:out value="${professeur.username}"/>">
-		<c:out	value="${professeur.username}" /> 
+	<div class="jumbotron text-center">
+		<h1>Liste des Professeurs</h1>
 		
-			<s:url value="${professeur.username}" var="professeurUrl" />
-			<button class="btn btn-info" 
-				onclick="location.href='${professeurUrl}'">DÃ©tail</button>
-			
-		<c:if test="${ (isAdmin) }">
-			<s:url value="/professeur/${professeur.username}/update" var="updateUrl" />
-			<button class="btn btn-primary" 
-				onclick="location.href='${updateUrl}'">Update</button>
-			
-			
-			<s:url value="/professeur/${professeur.username}/delete" var="deleteUrl" />
-			<button class="btn btn-danger"
-				onclick="this.disabled=true;post('${deleteUrl}')">Delete</button>
+		<c:if test="${fn:length(professeurList) == 0}">
+			<h2>Liste Vide</h2>
 		</c:if>
+		<h2>La liste contient: ${fn:length(professeurList)} professeur</h2>
+	</div>
+	
 
-			<ul class="nivDeux">
-				<li>	Nom:  <c:out value="${professeur.nom}" />		</li>
-				<li>	Prenom: <c:out value="${professeur.prenom}" /></li>
-				<li>	email:  <c:out value="${professeur.email}" />		</li>
 
-			</ul>
+
+<div class="container">
+
+
+	<div class='row'>
+		<h3>
+			<a href="<s:url value = "/professeur/add" />">  Ajout d'un professeur </a>
+		</h3>
+	</div>
+	
+
+
+
+	<!--	 Block avec 3 cours per line	-->
+	<div class='row'>
+		
+		<c:forEach items="${professeurList}" var="professeur">	
+			<!-- VAR URL -->
+			<s:url value="${professeur.username}" var="detailUrl" />
+			<s:url value="/professeur/${professeur.username}/update" var="updateUrl" />
+			<s:url value="/professeur/${professeur.username}/delete" var="deleteUrl" />
+			
+				<div class='col-sm-4'>
+				
+			<div  onclick="location.href='${detailUrl}'">
+					<h1>
+						<c:out	value="${professeur.username}" />
+					</h1> 
+					<h4>
+						<c:out value="${professeur.nom}" />
+						<c:out value="${professeur.prenom}" />
+					</h4>
+					<h4>
+						
+					</h4>
+					<h4>
+						Email: <c:out value="${professeur.email}" />
+					</h4>
+			</div>
+
+
+	
+<!--	 BT DELETE UPDATE DETAIL	-->
+					
+					<button class="btn btn-info" 
+						onclick="location.href='${detailUrl}'"> Détail</button>
+					
+					
+					<button class="btn btn-primary" 
+						onclick="location.href='${updateUrl}'">Update</button>
+					
+					
+					<button class="btn btn-danger"
+						onclick="
+						if (confirm('Are you sure ?')) {
+						 this.disabled=true;
+		                 post('${deleteUrl}',{'${_csrf.parameterName}': '${_csrf.token}'})}                             
+		                                              ">Delete</button>	
+				
+				</div>
+		
+		</c:forEach>
+	
 			
 		
-					
+	</div>
 
-		</li>
-	</c:forEach>
 
-</ul>
 </div>
+
+
+
 <jsp:include page="../fragments/footer.jsp" />
+
+
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

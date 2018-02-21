@@ -1,56 +1,94 @@
 <!DOCTYPE html>
-<%@ page session="false" language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
-<%-- <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> --%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ include file="/WEB-INF/views/fragments/taglibs.jspf" %>
+
+
 
 <html>
-<jsp:include page="../fragments/header.jsp">
-	<jsp:param name="titre" value="Cours RÃ©sultats ISFCE" />
-</jsp:include>
-<div class="container">
-<h1>Liste des cours</h1>
 
-<c:if test="${fn:length(coursList) == 0}">
-	<h2>Liste Vide</h2>
-</c:if>
-<h2>La liste contient: ${fn:length(coursList)} cours</h2>
-<a href="<s:url value = "/cours/add" />"> Ajout d'un cours</a>
-<s:url value="">Ajout d'un cours</s:url>
-<ul class="nivUn">
-
-	<c:forEach items="${coursList}" var="cours">
-		<li id="Code_<c:out value="${cours.code}"/>">
-		<c:out	value="${cours.code}" /> 
+	<jsp:include page="../fragments/header.jsp">
+		<jsp:param name="titre" value="Cours Résultats ISFCE" />
+	</jsp:include>
+	
+	
+	
+	<div class="jumbotron text-center">
+		<h1>Liste des cours</h1>
 		
-			<s:url value="${cours.code}" var="coursUrl" />
-			<button class="btn btn-info" 
-				onclick="location.href='${coursUrl}'">DÃ©tail</button>
-			
+		<c:if test="${fn:length(coursList) == 0}">
+			<h2>Liste Vide</h2>
+		</c:if>
+		<h2>La liste contient: ${fn:length(coursList)} cours</h2>
+	</div>
+
+
+
+<div class="container">
+
+	<div class='row'>
+		<h3>
+			<a href="<s:url value = "/cours/add" />">  Ajout d'un cours </a>
+		</h3>
+	</div>
+	
+
+
+
+	<!--	 Block avec 3 cours per line	-->
+	<div class='row'>
+		
+		<c:forEach items="${coursList}" var="cours">
+			<!-- VAR URL -->
+			<s:url value="${cours.code}" var="detailUrl" />
 			<s:url value="/cours/${cours.code}/update" var="updateUrl" />
-			<button class="btn btn-primary" 
-				onclick="location.href='${updateUrl}'">Update</button>
-			
-			
 			<s:url value="/cours/${cours.code}/delete" var="deleteUrl" />
-			<button class="btn btn-danger"
-				onclick="
-				if (confirm('Suppression du cours  ?')) {
-				 this.disabled=true;
-                 post('${deleteUrl}',{'${_csrf.parameterName}': '${_csrf.token}'})}                             
-                                              ">Delete</button>
+			
+				<div class='col-sm-4'>
+				
+			<div  onclick="location.href='${coursUrl}'">
+					<h1>
+						<c:out	value="${cours.code}" />
+					</h1> 
+					<h4>
+						<c:out value="${cours.nom}" />
+					</h4>
+					<h4>
+						Nb Périodes: <c:out value="${cours.nbPeriodes}" />
+					</h4>
+			</div>
 
-			<ul class="nivDeux">
-				<li><c:out value="${cours.nom}" /></li>
-				<li>Nb PÃ©riodes: <c:out value="${cours.nbPeriodes}" />
-				</li>
-			</ul>
+	
+	
+<!--	 BT DELETE UPDATE DETAIL	-->
+					
+					<button class="btn btn-info" 
+						onclick="location.href='${detailUrl}'"> Détail</button>
+					
+					
+					<button class="btn btn-primary" 
+						onclick="location.href='${updateUrl}'">Update</button>
+					
+					
+					<button class="btn btn-danger"
+						onclick="
+						if (confirm('Suppression du cours  ?')) {
+						 this.disabled=true;
+		                 post('${deleteUrl}',{'${_csrf.parameterName}': '${_csrf.token}'})}                             
+		                                              ">Delete</button>	
+				
+				</div>
+		
+		</c:forEach>
+	
+			
+		
+	</div>
 
-		</li>
-	</c:forEach>
-</ul>
+
+
+
+
+
+
 </div>
 <jsp:include page="../fragments/footer.jsp" />
 </html>
