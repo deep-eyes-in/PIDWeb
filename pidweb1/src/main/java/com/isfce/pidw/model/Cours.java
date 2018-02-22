@@ -45,6 +45,7 @@ public class Cours {
 	@Column(nullable = false)
 	private short nbPeriodes;
 
+	
 	@Getter // ne crée pas de setter
 	@ElementCollection
 	@CollectionTable(name = "TSECTION", // nom de la table

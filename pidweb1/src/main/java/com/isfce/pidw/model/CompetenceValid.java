@@ -28,12 +28,12 @@ public class CompetenceValid {
 	
 	@Id
 	@ManyToOne
-	@JoinColumn(name = "FKEVALUATION", nullable = false)
-	private Evaluation evaluation ;
+	@JoinColumn(name = "FKETUDIANT", nullable = false)
+	private Etudiant etudiant ;
 	
-	public CompetenceValid( Competence competence, Evaluation evaluation ) {
+	public CompetenceValid( Competence competence, Etudiant etudiant ) {
 		this.competence = competence ;
-		this.evaluation = evaluation ;
+		this.etudiant = etudiant ;
 	}
 	
 	

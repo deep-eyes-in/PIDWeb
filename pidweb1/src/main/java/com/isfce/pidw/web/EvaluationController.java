@@ -22,8 +22,10 @@ import com.isfce.pidw.data.IEvaluationJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
 import com.isfce.pidw.data.IProfesseurJpaDAO;
 import com.isfce.pidw.data.IUsersJpaDAO;
+import com.isfce.pidw.filter.EvaluationKey;
 import com.isfce.pidw.model.Cours;
 import com.isfce.pidw.model.Evaluation;
+import com.isfce.pidw.model.ListeEvaluations;
 import com.isfce.pidw.model.Module;
 import com.isfce.pidw.model.Users;
 
@@ -93,20 +95,75 @@ public class EvaluationController {
 	@RequestMapping(value = { "/{code}/{session}"  },  method = RequestMethod.GET)  
 	public String addUpdateEvaluation(
 			@PathVariable Optional<String> code,
-			@PathVariable Optional<String> session,
-			@ModelAttribute Module module, Model model /* , Authentication authentication */) {
-		
-//		evaluationDAO
-//		evalua
-		
+			@PathVariable Optional<Integer> session,
+//			@ModelAttribute ListeEvaluations listeEvaluations,
+			Model model /* , Authentication authentication */) {
+
 		
 		
-		return "" ;
+		
+
+		List<Evaluation> evaluationList = new ArrayList<Evaluation>();
+		evaluationList = evaluationDAO.getEvaluationsOfModule(code.get(), session.get() - 1);
+		
+		ListeEvaluations listeEvaluations = new ListeEvaluations() ;
+		
+		for( int i = 0 ; i < evaluationList.size()  ; i++) {
+//			ListeEvaluations listeEvalTemp = new ListeEvaluations(  ) ;		//		evaluationList.get(i).getModule()  , evaluationList.get(i).getEtudiant() , evaluationList.get(i).getSession()
+//			listeEvalTemp.getInfos().put(arg0, arg1) ;
+
+			EvaluationKey keyTemp = new EvaluationKey();
+			keyTemp.setModule( evaluationList.get(i).getModule() );
+			keyTemp.setEtudiant( evaluationList.get(i).getEtudiant() );
+			keyTemp.setSession( evaluationList.get(i).getSession() );
+			
+
+			listeEvaluations.getInfos().put(keyTemp,  evaluationList.get(i).getResultat() ) ;
+			
+
+		}
+		
+//		ListeEvaluations
+		
+		
+		model.addAttribute( "evaluationList", listeEvaluations );
+
+//		*/
+		
+		return "module/addEvaluation" ;
 	}
 	
 	
 	
 	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@RequestMapping(value = { "/update"  },  method = RequestMethod.POST)  
+	public String addUpdateEvaluationPost(@ModelAttribute List<Evaluation> evaluation,
+			Model model /* , Authentication authentication */) {
+		
+		System.out.println(model);
+		
+	
+		return "module/listeModules" ;
+	}
 	
 	
 
@@ -158,11 +215,11 @@ public class EvaluationController {
 
 				Evaluation evaluation = new Evaluation();
 				
-				evaluation.setId(evaluationDAO.generateId() + 1);
+//				evaluation.setId(evaluationDAO.generateId() + 1);
 				evaluation.setEtudiant(etudiantDAO.findOne(etudiantOfModule.get(i)));
 				evaluation.setModule(module);
-				Short result = new Short("0");
-				evaluation.setResultat(result); 
+//				Short result = new Short("0");
+				evaluation.setResultat( 0 ); 
 				evaluation.setSession(theSession);	
 				
 

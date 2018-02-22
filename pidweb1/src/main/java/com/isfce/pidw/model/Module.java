@@ -7,9 +7,12 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -23,6 +26,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -71,11 +75,22 @@ public class Module {
 	@JoinColumn(name = "FKProf")
 	private Professeur prof;
 
+	
 	@ManyToMany (cascade=CascadeType.PERSIST)
 	@JoinTable(name = "TINSCRIPTION", joinColumns = @JoinColumn(name = "FKMODULE"),
 	    inverseJoinColumns = @JoinColumn(name = "FKETUDIANT"))
-//	private Set<Etudiant> etudiants = new HashSet<>();      //    ArrayList<>();  //  HashSet<>();
 	private List<Etudiant> etudiants = new ArrayList<>();      //    ArrayList<>();  //  HashSet<>();
+	
+//	private Set<Etudiant> etudiants = new HashSet<>();      //    ArrayList<>();  //  HashSet<>();
+	
+	
+
+	
+	
+	
+	
+
+	
 
 	public Module(String code, Date dateDebut, Date dateFin, MAS moment, Cours cours,Professeur prof) {
 		super();
