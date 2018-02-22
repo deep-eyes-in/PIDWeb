@@ -53,8 +53,8 @@
 					data-toggle="dropdown" href="#">Cours <span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<li><a href="<s:url value = "/cours/liste"/>">liste</a></li>
-						<li class="${isProf ? '':'disabled'}"><a
-							href="<s:url value = "${isProf ? '/cours/add':'#'}" />">add</a></li>
+						<li class="${isAdmin ? '':'disabled'}"><a
+							href="<s:url value = "${isAdmin ? '/cours/add':'#'}" />">add</a></li>
 					</ul></li>
 				<c:if test="${ (isAdmin) }">
 					<li class="dropdown"><a class="dropdown-toggle"

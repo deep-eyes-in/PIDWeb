@@ -80,30 +80,32 @@
 		                                              ">Delete</button>	
 				</c:if> 
 				
+				
 				<c:if test="${ (isAdmin) || isProf &&  (userName == userConnected) }">
-
-					<c:if test="${ nbrSessionList[i] < 2   }">
-						<s:url value="/evaluation/${module.code}/add" var="addEvaluation" />
-						<button class="btn btn-success"
-							onclick="this.disabled=true;post('${addEvaluation}', {'${_csrf.parameterName}': '${_csrf.token}'} )">Add
-							Evaluation</button>
-					</c:if>
-
-
-					<c:if test="${ nbrSessionList[i] == 1 || nbrSessionList[i] == 2 }">
-						<s:url value="/evaluation/${module.code}/1"
-							var="updateEvaluation1" />
-						<button class="btn btn-success"
-							onclick="this.disabled=true;post('${updateEvaluation1}')">Update
-							Evaluation S1</button>
-					</c:if>
-					<c:if test="${ nbrSessionList[i] == 2 }">
-						<s:url value="/evaluation/${module.code}/2"
-							var="updateEvaluation2" />
-						<button class="btn btn-success"
-							onclick="this.disabled=true;post('${updateEvaluation2}')">Update
-							Evaluation S2</button>
-					</c:if>
+					<p>
+						<c:if test="${ nbrSessionList[i] < 2   }">
+							<s:url value="/evaluation/${module.code}/add" var="addEvaluation" />
+							<button class="btn btn-success"
+								onclick="location.href='${addEvaluation}' "> Add
+								Evaluation</button>
+						</c:if>
+	
+	
+						<c:if test="${ nbrSessionList[i] == 1 || nbrSessionList[i] == 2 }">
+							<s:url value="/evaluation/${module.code}/1"
+								var="updateEvaluation1" />
+							<button class="btn btn-success"
+								onclick="location.href='${updateEvaluation1}' ">Update
+								Evaluation S1</button>
+						</c:if>
+						<c:if test="${ nbrSessionList[i] == 2 }">
+							<s:url value="/evaluation/${module.code}/2"
+								var="updateEvaluation2" />
+							<button class="btn btn-success"
+								onclick="location.href='${updateEvaluation2}' ">Update
+								Evaluation S2</button>
+						</c:if>
+					</p>
 				</c:if>
 		</c:if>
 								

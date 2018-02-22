@@ -1,5 +1,7 @@
 package com.isfce.pidw.web;
 
+import static org.mockito.Matchers.booleanThat;
+
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
@@ -314,8 +316,11 @@ public class EtudiantController {
 				userConnected = "";
 			}
 
-			
-			if(code.equals(userConnected)) {
+			boolean isAdmin = false ;
+			if ( authentication != null )
+				isAdmin = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_ADMIN.name()))  ;
+
+			if(code.equals(userConnected) || isAdmin ) {
 				model.addAttribute("etudiant", etudiant );
 				
 				model.addAttribute("listModules", moduleDAO.getModulesOfEtudiant( etudiant.getUsername()   )    );

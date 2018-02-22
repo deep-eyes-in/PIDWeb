@@ -59,11 +59,10 @@
 	
 	
 <!--	 BT DELETE UPDATE DETAIL	-->
-					
 					<button class="btn btn-info" 
 						onclick="location.href='${detailUrl}'"> Détail</button>
 					
-					
+			<c:if test="${ isAdmin}">
 					<button class="btn btn-primary" 
 						onclick="location.href='${updateUrl}'">Update</button>
 					
@@ -74,7 +73,7 @@
 						 this.disabled=true;
 		                 post('${deleteUrl}',{'${_csrf.parameterName}': '${_csrf.token}'})}                             
 		                                              ">Delete</button>	
-				
+			</c:if>
 				</div>
 		
 		</c:forEach>

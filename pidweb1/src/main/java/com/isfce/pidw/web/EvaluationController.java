@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -76,6 +77,7 @@ public class EvaluationController {
 		
 		System.out.printf( "["+  this.getClass().getSimpleName() + "]"  +  "[listeModules]"  +  "[]" );
 		
+		
 		model.addAttribute("module", null );
 		
 		return "" ;
@@ -85,23 +87,29 @@ public class EvaluationController {
 	
 	
 	
+//	evaluation/IVTE-1-A/1
 	
 	
-	
-	
-	
-	
-	
-	@RequestMapping(value = "/{code}/addeval", method = RequestMethod.GET)
-	public String addEvaluationGet(@PathVariable String code, Model model) {
-		return "redirect:/evaluation/"  + code + "/add" ;
+	@RequestMapping(value = { "/{code}/{session}"  },  method = RequestMethod.GET)  
+	public String addUpdateEvaluation(
+			@PathVariable Optional<String> code,
+			@PathVariable Optional<String> session,
+			@ModelAttribute Module module, Model model /* , Authentication authentication */) {
+		
+//		evaluationDAO
+//		evalua
+		
+		
+		
+		return "" ;
 	}
 	
-	@RequestMapping(value = "/{code}/addeval", method = RequestMethod.POST)
-	public String addEvaluationPost(@PathVariable String code, Model model) {
-		return "redirect:/evaluation/"  + code + "/add" ;
-	}
 	
+	
+	
+	
+	
+
 	@RequestMapping(value = "/{code}/add" )
 	public String addEvaluation(@PathVariable String code, Model model) {
 		// Vérifie si on ne recoit pas le module suite à une redirection
