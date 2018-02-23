@@ -22,31 +22,35 @@ public class Evaluation {
 	public static enum SESSION {
 		PREMIERE, DEUXIEME
 	}
-	
 
-	@Id
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "FKETUDIANT", nullable = false)
-	private Etudiant etudiant;
 	
 	
 	@Id
-	@NotNull
+//	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "FKMODULE", nullable = false)
 	private Module module;
 	
 	
+	
 	@Id
-	@NotNull
+//	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "FKETUDIANT", nullable = false)
+	private Etudiant etudiant;
+	
+	
+
+	
+	@Id
+//	@NotNull
 	@Column(nullable = false)
 	private SESSION session;
 
 	
-	@NotNull
+//	@NotNull
 	@Column(nullable = false)
-	private Integer resultat;
+	private Integer resultat = 0;
 	
 	
 	

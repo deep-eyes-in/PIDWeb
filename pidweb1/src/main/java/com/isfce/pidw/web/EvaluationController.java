@@ -61,7 +61,7 @@ public class EvaluationController {
     @ResponseBody
 	@RequestMapping(value = "/json")
 	public String testJson(Model model) {
-	    System.out.printf( "["+  this.getClass().getSimpleName() + "]"  +  "[testJson]"  +  "[]" );
+	    System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[testJson]"  +  "[]" );
 	    
         // Converts a collection object into JSON string
         Gson gson = new Gson();
@@ -76,8 +76,7 @@ public class EvaluationController {
     
 	@RequestMapping(value = { "/liste/{codeUser}", "/liste" })
 	public String listeModules(@PathVariable Optional<String> codeUser, Model model, Authentication authentication) {
-		
-		System.out.printf( "["+  this.getClass().getSimpleName() + "]"  +  "[listeModules]"  +  "[]" );
+		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[listeModules]"  +  "[]" );
 		
 		
 		model.addAttribute("module", null );
@@ -98,6 +97,8 @@ public class EvaluationController {
 			@PathVariable Optional<Integer> session,
 //			@ModelAttribute ListeEvaluations listeEvaluations,
 			Model model /* , Authentication authentication */) {
+
+		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[addUpdateEvaluation]"  +  "[]" );
 
 		
 		
@@ -159,6 +160,7 @@ public class EvaluationController {
 	public String addUpdateEvaluationPost(@ModelAttribute List<Evaluation> evaluation,
 			Model model /* , Authentication authentication */) {
 		
+		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[addUpdateEvaluationPost]"  +  "[]" );
 		System.out.println(model);
 		
 	
@@ -169,6 +171,9 @@ public class EvaluationController {
 
 	@RequestMapping(value = "/{code}/add" )
 	public String addEvaluation(@PathVariable String code, Model model) {
+		
+		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[addEvaluation]"  +  "[]" );
+		
 		// Vérifie si on ne recoit pas le module suite à une redirection
 		if (!model.containsAttribute("module")) {
 			logger.debug("Recherche le module: " + code);
@@ -197,6 +202,8 @@ public class EvaluationController {
 		etudiantOfModule = moduleDAO.getFkEtudiantsOfModule(code);
 
 		Integer nbrSession = getSessionOfEvaluation(code);
+		System.out.println("__XX__");
+		
 		Evaluation.SESSION theSession = null;
 
 		if(nbrSession == 0) {
@@ -208,6 +215,18 @@ public class EvaluationController {
 			theSession = null;
 		}
 
+		
+		Evaluation evaluation = new Evaluation();
+		evaluation.setSession(theSession);
+		evaluation.setModule(module);
+		evaluation.setEtudiant( null ) ;
+		System.out.println(evaluation.toString());
+		System.out.println(evaluation.getModule().getCode().toString());
+		
+		Evaluation eval = evaluationDAO.save(evaluation);
+		
+		
+/*
 		//List<Evaluation> eval = new ArrayList<>();
 		
 		if(theSession != null) {
@@ -216,20 +235,19 @@ public class EvaluationController {
 				Evaluation evaluation = new Evaluation();
 				
 //				evaluation.setId(evaluationDAO.generateId() + 1);
-				evaluation.setEtudiant(etudiantDAO.findOne(etudiantOfModule.get(i)));
-				evaluation.setModule(module);
+//				evaluation.setEtudiant(etudiantDAO.findOne(etudiantOfModule.get(i)));
+//				evaluation.setModule(module);
 //				Short result = new Short("0");
 				evaluation.setResultat( 0 ); 
 				evaluation.setSession(theSession);	
 				
 
-				System.out.println(evaluation.toString());
-				evaluationDAO.save(evaluation);
+//				System.out.println(evaluation.toString());
+//				evaluationDAO.save(evaluation);
 			}
-			
-			
 		}
-
+*/
+		
 		
 		return "redirect:/module/liste";
 	}
@@ -244,6 +262,9 @@ public class EvaluationController {
 	
 	
 	public Integer getSessionOfEvaluation(String code) {
+		
+		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[getSessionOfEvaluation]"  +  "[]" );
+		
 		List<Evaluation.SESSION> allSessionOfModule = new ArrayList<>();
 		allSessionOfModule = evaluationDAO.getSessionsOfModule(code);
 		
