@@ -18,8 +18,10 @@ import com.isfce.pidw.config.security.Roles;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity(name = "TUSERS")
 @Inheritance(strategy = InheritanceType.JOINED)

@@ -20,12 +20,16 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor()
 @Entity(name = "TCOURS")
+@ToString(exclude = {"sections"})
+@EqualsAndHashCode(exclude = {"sections"})
 public class Cours {
 
 	@Pattern(regexp = "[A-Z]{2,8}[0-9]{0,3}", message = "{cours.code}")

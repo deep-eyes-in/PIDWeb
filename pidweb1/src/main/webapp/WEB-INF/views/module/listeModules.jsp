@@ -92,17 +92,22 @@
 	
 	
 						<c:if test="${ nbrSessionList[i] == 1 || nbrSessionList[i] == 2 }">
-							<s:url value="/evaluation/${module.code}/1"
+							<s:url value="/evaluation/${module.code}/" 
 								var="updateEvaluation1" />
 							<button class="btn btn-success"
-								onclick="location.href='${updateEvaluation1}' ">Update
+								onclick="
+					                 post('${updateEvaluation1}', {'${_csrf.parameterName}': '${_csrf.token}'}   )                 
+					                                              ">Update
 								Evaluation S1</button>
+								
 						</c:if>
 						<c:if test="${ nbrSessionList[i] == 2 }">
 							<s:url value="/evaluation/${module.code}/2"
 								var="updateEvaluation2" />
 							<button class="btn btn-success"
-								onclick="location.href='${updateEvaluation2}' ">Update
+								onclick="
+					                 post('${updateEvaluation2}',  {'session':'2','${_csrf.parameterName}': '${_csrf.token}'}   )                  
+					                                              ">Update
 								Evaluation S2</button>
 						</c:if>
 					</p>

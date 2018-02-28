@@ -31,8 +31,10 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @Entity(name = "TMODULE")
-@ToString(exclude = {"modules", "sections"})
-@EqualsAndHashCode(exclude = {"modules", "sections"})
+//@ToString(exclude = {"modules", "sections"})
+//@EqualsAndHashCode(exclude = {"modules", "sections"})
+@EqualsAndHashCode( exclude = {"etudiants"})
+@ToString( exclude = {"etudiants"})
 public class Module {
 	public static enum MAS {
 		MATIN, APM, SOIR

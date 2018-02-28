@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
@@ -22,8 +25,10 @@ import com.isfce.pidw.data.IEvaluationJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
 import com.isfce.pidw.data.IProfesseurJpaDAO;
 import com.isfce.pidw.data.IUsersJpaDAO;
+import com.isfce.pidw.filter.EvaluationKey;
 import com.isfce.pidw.model.Cours;
 import com.isfce.pidw.model.Evaluation;
+import com.isfce.pidw.model.ListeEvaluations;
 import com.isfce.pidw.model.Module;
 import com.isfce.pidw.model.Users;
 
@@ -87,22 +92,79 @@ public class EvaluationController {
 	
 	
 	
+	
+//		/*
+	@RequestMapping(value = { "/{code}"  },  method = RequestMethod.GET)  
+	public String addUpdateEvaluationTest(
+			
+			@PathVariable Optional<String> code,
+			@ModelAttribute Evaluation evaluation,
+//			@RequestParam(value = "session", required = true) String session,
+			
+//			@RequestParam(value = "session", required = false) Optional<Integer> session,
+			
+			Model model
+			, HttpServletRequest request
+	) {
+		
+		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[addUpdateEvaluationTest]"  +  "[] \n" );
+		
+		System.out.println(  model.toString()      );
+		System.out.println(  code.get()      );
+		System.out.println(  request.toString()      );
+		
+		
+		return "module/addEvaluation" ;
+	}
+//		*/
+	
+	
+	
 //	evaluation/IVTE-1-A/1
 	
 	
-	@RequestMapping(value = { "/{code}/{session}"  },  method = RequestMethod.GET)  
+	@RequestMapping(value = { "/{code}/"  },  method = RequestMethod.POST)  	//		, "/{code}/{session}"
 	public String addUpdateEvaluation(
+//			HttpServletRequest request,
 			@PathVariable Optional<String> code,
-			@PathVariable Optional<String> session,
-			@ModelAttribute Module module, Model model /* , Authentication authentication */) {
+//			@RequestParam(value="session", required=false) Optional<Integer> session,
+			@ModelAttribute Evaluation evaluation,
+			Model model /* , Authentication authentication */
+	) {
 		
-//		evaluationDAO
-//		evalua
+		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[addUpdateEvaluation]"  +  "[] \n" );
+		
+		System.out.println(  model.toString()      );
+		System.out.println(  code.get()      );
 		
 		
+//		System.out.println(  request.getParameterMap().toString()      );
 		
-		return "" ;
+		return "module/addEvaluation" ;
+		
+		
+
 	}
+	
+	
+	
+	
+	
+	
+	@RequestMapping(value = { "/update"  },  method = RequestMethod.POST)  
+	public String addUpdateEvaluationPost(
+			
+			@ModelAttribute List<Evaluation> evaluation,
+			Model model /* , Authentication authentication */) {
+		
+		
+		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[addUpdateEvaluationPost]"  +  "[]" );
+		System.out.println(model);
+		
+	
+		return "module/listeModules" ;
+	}
+	
 	
 	
 	
@@ -112,6 +174,9 @@ public class EvaluationController {
 
 	@RequestMapping(value = "/{code}/add" )
 	public String addEvaluation(@PathVariable String code, Model model) {
+		
+		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[addEvaluation]"  +  "[]" );
+		
 		// Vérifie si on ne recoit pas le module suite à une redirection
 		if (!model.containsAttribute("module")) {
 			logger.debug("Recherche le module: " + code);
@@ -161,8 +226,8 @@ public class EvaluationController {
 				evaluation.setId(evaluationDAO.generateId() + 1);
 				evaluation.setEtudiant(etudiantDAO.findOne(etudiantOfModule.get(i)));
 				evaluation.setModule(module);
-				Short result = new Short("0");
-				evaluation.setResultat(result); 
+//				Short result = new Short("0");
+				evaluation.setResultat( 0 ); 
 				evaluation.setSession(theSession);	
 				
 
@@ -187,6 +252,9 @@ public class EvaluationController {
 	
 	
 	public Integer getSessionOfEvaluation(String code) {
+		
+		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[getSessionOfEvaluation]"  +  "[]" );
+		
 		List<Evaluation.SESSION> allSessionOfModule = new ArrayList<>();
 		allSessionOfModule = evaluationDAO.getSessionsOfModule(code);
 		

@@ -19,4 +19,7 @@ public interface IEvaluationJpaDAO extends JpaRepository<Evaluation, String> {
 	
 	@Query(value=" select coalesce(MAX( ID ), 0) from TEVALUATION ", nativeQuery=true) 
 	Long generateId();
+
+	@Query(value="select *  from TEVALUATION where FKMODULE = ? and SESSION = ?", nativeQuery=true)
+	List<Evaluation> getEvaluationsOfModule(String code, Integer session);
 }
