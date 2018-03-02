@@ -22,4 +22,13 @@ public interface IEvaluationJpaDAO extends JpaRepository<Evaluation, String> {
 
 	@Query(value="select *  from TEVALUATION where FKMODULE = ? and SESSION = ?", nativeQuery=true)
 	List<Evaluation> getEvaluationsOfModule(String code, Integer session);
+
+
+	@Query(value="select CASE WHEN ID IS NULL THEN 'False' ELSE 'True' END   from TEVALUATION where ID = ?", nativeQuery=true)
+	boolean exists( Long id );
+
+	@Query(value="select *  from TEVALUATION where ID = ?", nativeQuery=true)
+	Evaluation findOne(Long id);
+	
+
 }

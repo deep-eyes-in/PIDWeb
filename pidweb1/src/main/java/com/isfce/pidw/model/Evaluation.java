@@ -33,8 +33,6 @@ public class Evaluation {
 	private Etudiant etudiant;
 	
 	
-
-	
 	
 	@NotNull
 	@ManyToOne
@@ -42,9 +40,11 @@ public class Evaluation {
 	private Module module;
 	
 	
+	
 	@NotNull
 	@Column(nullable = false)
 	private SESSION session;
+	
 
 	
 	@NotNull

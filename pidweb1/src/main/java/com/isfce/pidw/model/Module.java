@@ -78,6 +78,9 @@ public class Module {
 	    inverseJoinColumns = @JoinColumn(name = "FKETUDIANT"))
 //	private Set<Etudiant> etudiants = new HashSet<>();      //    ArrayList<>();  //  HashSet<>();
 	private List<Etudiant> etudiants = new ArrayList<>();      //    ArrayList<>();  //  HashSet<>();
+	
+	
+	
 
 	public Module(String code, Date dateDebut, Date dateFin, MAS moment, Cours cours,Professeur prof) {
 		super();
