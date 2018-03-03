@@ -387,10 +387,26 @@ System.out.println("COUCOUUUUUUUUUU");
 	}
 
 
+	
+	
+	
+	
+	
+	
+	
 
 	// Affichage du détail d'un module
 	@RequestMapping(value = "/{code}", method = RequestMethod.GET)
-	public String detailModule(@PathVariable String code, Model model) {
+	public String detailModule(
+			@PathVariable String code, 
+			Model model, Authentication authentication
+	) {
+		
+		System.out.printf( "["+  this.getClass().getSimpleName() + "]"  +  "[detailModule]"  +  "[]" );
+		
+		logger.debug(" user connecté: " + (authentication == null ? " NULL " : authentication.getName() ));
+		
+		
 		// Vérifie si on ne recoit pas le module suite à une redirection
 		if (!model.containsAttribute("module")) {
 			logger.debug("Recherche le module: " + code);
@@ -406,8 +422,36 @@ System.out.println("COUCOUUUUUUUUUU");
 			
 			// Ajout au Modèle
 			model.addAttribute("module", module);
+			
+			
+			
+			System.out.println(  authentication.isAuthenticated()  );
+			
+			
+			if ( authentication.isAuthenticated()  ) {
+				
+				if ( getRole( authentication ) ==  Roles.ROLE_ADMIN      ) {
+					
+					model.addAttribute("etudiantList", etudiantDAO.getEtudiantsOfModule( module.getCode() ));
+					
+				}else if ( getRole( authentication ) ==   Roles.ROLE_PROFESSEUR    ) {
+					if ( module.getProf().getUsername().equals(  authentication.getName() ) ) {
+						model.addAttribute("etudiantList", etudiantDAO.getEtudiantsOfModule( module.getCode() ));
+					}
+				}
+			}
+			
+			
+			
+			
+			
 		} else
 			logger.debug("Utilisation d'un FlashAttribute pour le module: " + code);
+		
+		
+
+		
+		
 		
 		return "module/module";
 	}
@@ -415,7 +459,23 @@ System.out.println("COUCOUUUUUUUUUU");
 	
 
 	
+	public Roles getRole(  Authentication authentication  ) {
+		Roles role ;
+		if ( authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_ADMIN.name())) ) {
+			role = Roles.ROLE_ADMIN ;
+		}else if ( authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_PROFESSEUR.name())) ) {
+			role = Roles.ROLE_PROFESSEUR ;
+		}else {
+			role = Roles.ROLE_ETUDIANT ;
+		}
+		
+		return role  ;
+	}
 	
+	
+	public Boolean isRole(  Authentication authentication , Roles role ) {
+		return authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals( role.name() ))  ;
+	}
 	
 	
 	

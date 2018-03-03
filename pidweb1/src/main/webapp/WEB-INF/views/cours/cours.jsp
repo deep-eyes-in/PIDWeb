@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<%@ include file="/WEB-INF/views/fragments/taglibs.jspf" %>
+
+
 <%@ page session="false" language="java"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -31,6 +34,18 @@
 			<td><c:out value="${cours.langue}" /></td>
 		</tr>
 		<tr>
+			<td>Compétences:</td>
+			<td>
+				<c:forEach items="${competenceList}" var="competence">
+					<c:out value="${competence.description}" />
+					<c:if test="${ isAdmin}">
+						<s:url value="/competence/update/${competence.id}" var="updateUrl" />
+						<button class="btn btn-info" 
+							onclick="location.href='${updateUrl}'">Modifier</button>
+					</c:if>
+					<br />
+				</c:forEach>
+			</td>
 		</tr>
 	</table>
 </div>	

@@ -76,11 +76,6 @@
 			
 			
 
-
-
-
-		
-
 			
 		</tr>
 		<tr>
@@ -89,6 +84,10 @@
 	
 	
 	<sf:input path="id" id="id"	type="hidden" />
+	
+	<button type="submit" class="btn-lg btn-primary pull-right">
+		Modifier
+	</button>
 	
 	</sf:form>
 	

@@ -1,9 +1,18 @@
 package com.isfce.pidw.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -20,16 +29,16 @@ import lombok.NoArgsConstructor;
 public class Competence {
 
 	
-	@Id
-	@Column(length = 10)
-	private Long id;
+	@Id 
+	@GeneratedValue(strategy=GenerationType.AUTO) 
+	Long id;
 
 	
 	
 	@NotNull
 	@Size(min = 4, max = 60, message = "{elem.competence}")
 	@Column(nullable = false, length = 50)
-	private String competence;	
+	private String description;	
 	
 	
 
@@ -39,14 +48,17 @@ public class Competence {
 	private Cours cours;
 
 	
-	
+	@ManyToMany (cascade=CascadeType.PERSIST, fetch=FetchType.EAGER)
+	@JoinTable(name = "TCOMPETENCE_VALID", joinColumns = @JoinColumn(name = "FKCOMPETENCE"),
+	    inverseJoinColumns = @JoinColumn(name = "FKETUDIANT"))
+	private List<Etudiant> etudiant = new ArrayList<>(); 
 	
 
 
-	public Competence(Long id, String competence, Cours cours) {
+	public Competence(Long id, String description, Cours cours) {
 		super();
 		this.id = id;
-		this.competence = competence;
+		this.description = description;
 		this.cours = cours ;
 	}
 

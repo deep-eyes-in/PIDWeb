@@ -1,43 +1,57 @@
 package com.isfce.pidw.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.isfce.pidw.filter.CompetenceValidKey;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
 
+
 @Data
 @NoArgsConstructor()
-@Entity(name = "TCOMPETENCE_VALID")
-@IdClass(  CompetenceValidKey.class  )
 public class CompetenceValid {
+
+
+
+
+	private Long competenceId ;	
 	
 	
+	private String  username;
+
 	
-	@Id
-	@ManyToOne
-	@JoinColumn(name = "FKCOMPETENCE", nullable = false)
-	private Competence competence;
 	
-	@Id
-	@ManyToOne
-	@JoinColumn(name = "FKEVALUATION", nullable = false)
-	private Evaluation evaluation ;
-	
-	public CompetenceValid( Competence competence, Evaluation evaluation ) {
-		this.competence = competence ;
-		this.evaluation = evaluation ;
+
+
+	public CompetenceValid(Long competenceId, String username ) {
+		super();
+		this.competenceId = competenceId;
+		this.username = username;
+
 	}
-	
-	
+
+
 }
+
+
+
+
+
 
 
 
