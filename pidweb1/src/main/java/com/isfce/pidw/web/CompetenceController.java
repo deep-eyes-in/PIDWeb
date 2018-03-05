@@ -21,9 +21,11 @@ import com.isfce.pidw.data.IModuleJpaDAO;
 import com.isfce.pidw.data.IProfesseurJpaDAO;
 import com.isfce.pidw.data.IUsersJpaDAO;
 import com.isfce.pidw.model.Competence;
+import com.isfce.pidw.model.CompetenceValid;
 //import com.isfce.pidw.model.CompetenceValid;
 import com.isfce.pidw.model.Cours;
 import com.isfce.pidw.model.Etudiant;
+import com.isfce.pidw.model.Module;
 import com.isfce.pidw.model.Users;
 
 @Controller
@@ -110,30 +112,74 @@ public class CompetenceController {
 	
 	
 	
-	
+
 	
 
 	@RequestMapping(value = { "/{code}/{username}" })
-	public String etudiantCompetence(@PathVariable Optional<String> code, @PathVariable Optional<String> username,
-			Model model, @ModelAttribute Competence competence) {
+	public String etudiantCompetence(@PathVariable String code, @PathVariable String username,
+			Model model, @ModelAttribute CompetenceValid CompetenceValid) {
 
 		System.out.printf("*[" + this.getClass().getSimpleName() + "]" + "[etudiantCompetence]" + "[] \n");
+		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 		
-		List<Etudiant> etudiantList = etudiantDAO.getEtudiantsOfModule( code.get() );
+		List<Competence> competencesList = null;
+		Etudiant etudiant = null;
+		Module m = null;
+		
+		if(etudiantDAO.exists(username)) {
+			etudiant = etudiantDAO.findOne(username);
+			if(moduleDAO.exists(code)) {
+				m = moduleDAO.findOne(code) ;
+				competencesList = competenceDAO.getCompetencesOfCours( m.getCours().getCode() );
+				System.out.println(competencesList.toString());
+			} else {
 
-		System.out.println( etudiantList.toString() );
+			}
+		} else {
+			
+			
+		}
+			
 		
 		
+		List<CompetenceValid> validedCompetences = new ArrayList<>();
 		
-//		model.addAttribute("competenceList", competenceDAO.getCompetencesOfModule( module.getCours.getCode() ));
+		System.out.println("uuuuuuuuuuuuuuuuuuuuu");
 		
+		
+		for ( Competence comp : competencesList  )  {
+			CompetenceValid cv = new CompetenceValid();
+			
+			System.out.println(comp.getDescription());
+			cv.setValided(false);
+			cv.setCompetenceId(comp.getId());
+			cv.setDescription(comp.getDescription());
+			
+			
+			for ( Etudiant etud : comp.getEtudiants()  )  {
+				
+				System.out.println(etud.getUsername());
+				System.out.println(etudiant.getUsername());
+				
+				if(etud.getUsername().equals(etudiant.getUsername()) ) {
+					cv.setUsername(etud.getUsername());
+					cv.setValided(true);
+					
+					System.out.println("xxxxxxxxxxxxxxxxxxxxxxx");
+					break;
+				}
+				
+			}
+			validedCompetences.add(cv);
+		}
+		
+		System.out.println(validedCompetences.toString());
+		model.addAttribute("validedCompetences", validedCompetences );
+		model.addAttribute("module", m );
+		model.addAttribute("etudiant", etudiantDAO.findOne(username) );
 
-		
-		
 
-
-		// return "/competence/addCompetence" ;
-		return "";
+		return "/competence/updateCompetence" ;
 
 	}
 
@@ -144,12 +190,68 @@ public class CompetenceController {
 
 
 
+	
+//	competence/${module.code}/${competenceId}/${etudiant.username}/true
+//  competence/${module.code}/${competenceId}/${etudiant.username}/false
+	
+	
+	@RequestMapping(value = { "/{code}/{competenceId}/{username}/{value}"  })
+	public String updateEtudiantCompetence(
+			@PathVariable String code, 
+			@PathVariable Long competenceId,
+			@PathVariable String username, 
+			@PathVariable Boolean value,
+			Model model ) {
+		
+		System.out.printf("*[" + this.getClass().getSimpleName() + "]" + "[updateEtudiantCompetence]" + "[] \n");
+		
+		List<Etudiant> etudiantList = etudiantDAO.getEtudiantsOfModule( code );
+		
+		Competence competence = competenceDAO.findOne( competenceId ) ;
 
 
+			//	VERIFIER TOUT LES ETUDIANTS INSCRITS
+			for ( Etudiant et : etudiantList  )  {
+				
+				System.out.println( et.getUsername()  );
+				System.out.println( username  );
+				
+				// SI ETUDIANT EST BIEN INSCRIT AU MODULE
+				if ( et.getUsername().equals( username ) ) {
+					// ON AJOUTE SA COMPETENCE DANS LA LISTE
+					
+					if ( value ) {
+						// ON AJOUTE
+						competence.getEtudiants().add( et );
+					}else {
+						// ON RETIRE
+						competence.getEtudiants().remove( et ) ;
+					}
+					competenceDAO.save(competence);
+					break ;
+				}
+			}
+		
 
-	@RequestMapping(value = { "/{code}/{username}" } , method = RequestMethod.POST )
-	public String updateEtudiantCompetence(@PathVariable Optional<String> code, @PathVariable Optional<String> username,
-			Model model, @ModelAttribute Competence competence) {
+
+			
+
+		
+		
+		return "redirect:/competence/" + code + "/"+ username  ;    //IVTE-1-A/SM
+	}
+	
+	
+
+
+	
+	
+	
+	
+
+	@RequestMapping(value = { "/etudiantupdate" } , method = RequestMethod.POST )
+	public String updateEtudiantCompetence2(@PathVariable Optional<String> code, @PathVariable Optional<String> username,
+			Model model, @ModelAttribute CompetenceValid CompetenceValid) {
 	
 		System.out.printf("*[" + this.getClass().getSimpleName() + "]" + "[etudiantCompetence]" + "[] \n");
 		
@@ -158,9 +260,7 @@ public class CompetenceController {
 		System.out.println( etudiantList.toString() );
 		
 		
-	
-		
-		
+
 		
 		for ( Etudiant et : etudiantList  )  {
 			
@@ -170,9 +270,9 @@ public class CompetenceController {
 			
 			if ( et.getUsername().equals( username.get() ) ) {
 				Etudiant etudiantX = etudiantDAO.findOne(username.get());
-				competence = competenceDAO.findOne(2L);
-				competence.getEtudiant().add(etudiantX);
-				competenceDAO.save(competence);
+				//competence = competenceDAO.findOne(2L);
+				//competence.getEtudiants().add(etudiantX);
+				//competenceDAO.save(competence);
 			}
 		}
 		

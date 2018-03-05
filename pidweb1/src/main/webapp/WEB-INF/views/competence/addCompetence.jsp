@@ -6,7 +6,18 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf"%>
 <%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%> --%>
 <%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%> --%>
+
+
+
+
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<%
+       request.setCharacterEncoding("UTF-8");
+%>
+
+
 <html>
+
 <jsp:include page="../fragments/header.jsp">
 	<jsp:param name="titre" value="Cours Résultats ISFCE" />
 </jsp:include>
@@ -30,7 +41,7 @@
 	<s:url value="/competence/add" var="actionUrl" />
 
 	<%-- modelAttribute correspond à une clé dans le modèle --%>
-	<sf:form method="POST" class="form-horizontal" modelAttribute="competence"
+	<sf:form method="POST" class="form-horizontal" modelAttribute="competence"  acceptCharset="UTF-8"
 		action="${actionUrl}">
 		
 

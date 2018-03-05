@@ -13,7 +13,7 @@ import com.isfce.pidw.model.Competence;
 public interface ICompetenceJpaDAO extends JpaRepository<Competence, String> {
 	
 	@Query(value="select * from TCOMPETENCE where FKCours=?", nativeQuery=true)
-	List<Competence> getCompetencesOfCours(String code);
+	List<Competence> getCompetencesOfCours(String cours);
 
 	@Query(value="select *  from TCOMPETENCE where ID = ?", nativeQuery=true)
 	Competence findOne(Long id);

@@ -1,7 +1,9 @@
 package com.isfce.pidw.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -48,10 +50,12 @@ public class Competence {
 	private Cours cours;
 
 	
+	
 	@ManyToMany (cascade=CascadeType.PERSIST, fetch=FetchType.EAGER)
 	@JoinTable(name = "TCOMPETENCE_VALID", joinColumns = @JoinColumn(name = "FKCOMPETENCE"),
 	    inverseJoinColumns = @JoinColumn(name = "FKETUDIANT"))
-	private List<Etudiant> etudiant = new ArrayList<>(); 
+//	private List<Etudiant> etudiants = new ArrayList<>(); 
+	protected Set<Etudiant> etudiants = new HashSet<>();
 	
 
 
