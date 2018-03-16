@@ -62,13 +62,17 @@
 						<td> Desinscrire  </td>
 						<td>Code du module</td>
 						<td>Nom du cours</td>
+						<td>Status</td>
 					</tr>
+					<c:set var="i" value="0"></c:set>
 					<c:forEach items="${listModules}" var="module">
 						<tr>
 							<td> <a href="<s:url value = "/module/remove/${module.code}/${etudiant.username}" />"> X </a>  </td>
 							<td><c:out value="${module.code}" /></td>
 							<td><c:out value="${module.cours.nom}" /></td>
+							<td><c:out value="${statusModules[i]}" /></td>
 						</tr>
+						<c:set var="i" value="${i + 1}"></c:set>
 					</c:forEach>
 
 				</table>

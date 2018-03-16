@@ -1,8 +1,7 @@
 package com.isfce.pidw.web;
 
-import static org.mockito.Matchers.booleanThat;
-
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -23,15 +22,15 @@ import org.springframework.web.util.UriUtils;
 
 import com.isfce.pidw.config.security.GeneratePassword;
 import com.isfce.pidw.config.security.Roles;
-import com.isfce.pidw.data.ICoursJpaDAO;
+import com.isfce.pidw.data.ICompetenceJpaDAO;
 //import com.isfce.pidw.data.ICoursJpaDAO;
 import com.isfce.pidw.data.IEtudiantJpaDAO;
+import com.isfce.pidw.data.IEvaluationJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
-import com.isfce.pidw.data.IEtudiantJpaDAO;
-import com.isfce.pidw.data.IUsersJpaDAO;
+import com.isfce.pidw.model.Competence;
 import com.isfce.pidw.model.Etudiant;
-import com.isfce.pidw.model.Etudiant;
-import com.isfce.pidw.model.Users;
+import com.isfce.pidw.model.Evaluation;
+import com.isfce.pidw.model.Module;
 
 @Controller
 @RequestMapping("/etudiant")
@@ -44,6 +43,8 @@ public class EtudiantController {
 //	private ICoursJpaDAO coursDAO;
 	private IEtudiantJpaDAO etudiantDAO;
 	private IModuleJpaDAO moduleDAO;
+	private IEvaluationJpaDAO evaluationDAO;
+	private ICompetenceJpaDAO competenceDAO;
 	
 //	private  List<Etudiant> listeEtudiant ;
 //	private  List<Cours> listeCours  ;
@@ -52,30 +53,17 @@ public class EtudiantController {
 
 	// Création de la liste de données pour le 1er exemple
 	@Autowired
-	public EtudiantController(IEtudiantJpaDAO etudiantDAO, IModuleJpaDAO moduleDAO ) {
+	public EtudiantController(IEtudiantJpaDAO etudiantDAO, IModuleJpaDAO moduleDAO, IEvaluationJpaDAO evaluationDAO, ICompetenceJpaDAO competenceDAO ) {
 		this.etudiantDAO = etudiantDAO;
 		this.moduleDAO = moduleDAO;
+		this.evaluationDAO = evaluationDAO;
+		this.competenceDAO = competenceDAO;
 
 //		listeEtudiant = etudiantDAO.findAll() ;
 //		listeCours = coursDAO.findAll() ;
 		
 	}
 
-	
-/*
-	private IUsersJpaDAO<Etudiant> profDAO;
-
-	@Autowired
-	public ModuleController(IModuleJpaDAO moduleDAO, IUsersJpaDAO<Users> usersDAO, ICoursJpaDAO coursDAO, IUsersJpaDAO<Etudiant> profDAO) {
-		super();
-		this.moduleDAO	 = moduleDAO;
-		this.usersDAO	 = usersDAO;
-		this.coursDAO	 = coursDAO;
-		this.profDAO	 = profDAO ;
-	}	
- */
-	
-	
 	
 	// Liste des profs
 	@RequestMapping("/liste")
@@ -321,9 +309,21 @@ public class EtudiantController {
 				isAdmin = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_ADMIN.name()))  ;
 
 			if(code.equals(userConnected) || isAdmin ) {
-				model.addAttribute("etudiant", etudiant );
 				
-				model.addAttribute("listModules", moduleDAO.getModulesOfEtudiant( etudiant.getUsername()   )    );
+				List<Module> modules = moduleDAO.getModulesOfEtudiant(etudiant.getUsername());
+				
+				model.addAttribute("etudiant", etudiant );
+								
+				model.addAttribute("listModules", modules    );
+				
+				List<String> statusModules = getInfosOfModule(modules, etudiant);
+				
+				for(int i=0;i<statusModules.size();i++) {
+					System.out.println(statusModules.get(i).toString());
+				}
+				
+				model.addAttribute("statusModules", statusModules    );
+				
 			} else {
 				throw new NoAccessException("Doit être connecté admin ou l'étudiant " + code);
 			}
@@ -341,7 +341,34 @@ public class EtudiantController {
 	
 	
 	
-	
+	private List<String> getInfosOfModule(List<Module> modules, Etudiant etudiant) {
+		
+		List<String> allInfos = new ArrayList<>();
+		for(Module module : modules) {
+			
+			List<Evaluation.SESSION> sessions = evaluationDAO.getSessionsOfModule(module.getCode());
+			//System.out.println(module.getCode() + " " + (sessions.size() - 1) + " " + etudiant.getUsername());
+			Evaluation evaluation = evaluationDAO.getEvaluationOfModuleOfEtudiant(module.getCode(), (sessions.size()-1), etudiant.getUsername() );
+			
+			List<Competence> competences = competenceDAO.getCompetencesOfCours(module.getCours().getCode());
+			List<Object[]> validedComp = competenceDAO.getCompetencesValidOfEtudiant(etudiant.getUsername(), module.getCours().getCode());
+			//System.out.println(evaluation.size());
+			
+			if(evaluation != null) {
+				if(evaluation.getResultat() >= 50) {
+					allInfos.add("Réussi (" + evaluation.getResultat() + "%)");
+				} else {
+					allInfos.add("Raté");
+				} 
+			}
+			else {
+				allInfos.add("En cours");
+			}
+			System.out.println(allInfos.size());
+		}
+		
+		return allInfos;
+	}
 	
 	
 	

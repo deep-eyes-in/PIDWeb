@@ -1,6 +1,3 @@
-
-
-
 <%@ include file="/WEB-INF/views/fragments/taglibs.jspf" %>
 
 

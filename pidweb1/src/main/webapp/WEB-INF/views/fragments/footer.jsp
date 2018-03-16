@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
+
 <div class="container"
 >
 	<hr>
@@ -32,6 +33,7 @@
 
 <s:url value="/resources/js/monApplication.js" var="MyAppJs" />
 <s:url value="/resources/js/bootstrap.min.js" var="BootstrapJs" />
+
 
 <script src="${JQuery}"></script>
 <script src="${Popper}"></script>

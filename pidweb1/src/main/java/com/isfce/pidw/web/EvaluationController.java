@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
+import com.isfce.pidw.data.ICompetenceJpaDAO;
 import com.isfce.pidw.data.ICoursJpaDAO;
 import com.isfce.pidw.data.IEtudiantJpaDAO;
 import com.isfce.pidw.data.IEvaluationJpaDAO;
@@ -27,6 +28,7 @@ import com.isfce.pidw.data.IProfesseurJpaDAO;
 import com.isfce.pidw.data.IUsersJpaDAO;
 import com.isfce.pidw.filter.EvaluationKey;
 import com.isfce.pidw.model.Cours;
+import com.isfce.pidw.model.Etudiant;
 import com.isfce.pidw.model.Evaluation;
 import com.isfce.pidw.model.ListeEvaluations;
 import com.isfce.pidw.model.Module;
@@ -44,17 +46,22 @@ public class EvaluationController {
 	private IEtudiantJpaDAO etudiantDAO;
 	private IUsersJpaDAO<Users> usersDAO;
 	private IEvaluationJpaDAO evaluationDAO;
+	private ICompetenceJpaDAO competenceDAO ;
 	
 	private String className = "EvaluationController" ;
 
 	@Autowired
-	public EvaluationController(IModuleJpaDAO moduleDAO, IProfesseurJpaDAO professeurDAO, ICoursJpaDAO coursDAO, IEtudiantJpaDAO etudiantDAO, IUsersJpaDAO<Users> usersDAO, IEvaluationJpaDAO evaluationDAO ) {
+	public EvaluationController(IModuleJpaDAO moduleDAO, IProfesseurJpaDAO professeurDAO,
+			ICoursJpaDAO coursDAO, IEtudiantJpaDAO etudiantDAO, IUsersJpaDAO<Users> usersDAO,
+			IEvaluationJpaDAO evaluationDAO, ICompetenceJpaDAO competenceDAO  ) {
 		super();
 		this.moduleDAO	 = moduleDAO;
 		this.professeurDAO	 = professeurDAO;
 		this.coursDAO	 = coursDAO;
 		this.etudiantDAO	 = etudiantDAO ;
 		this.evaluationDAO = evaluationDAO;
+		
+		this.competenceDAO = competenceDAO ; 
 
 		this.usersDAO = usersDAO;
 	}
@@ -387,7 +394,18 @@ public class EvaluationController {
 		System.out.println(  evaluation.toString() );
 		
 		
-		
+		if( resultat > 50 ) {
+			Etudiant etu = evaluation.getEtudiant()  ;
+			Cours cours = evaluation.getModule().getCours()  ;
+			
+			int nbrCompValid  = competenceDAO.getCompetencesValidOfEtudiant(etu.getUsername(), cours.getCode()).size() ;
+			int nbrComp = competenceDAO.getCompetencesOfCours(cours.getCode()).size() ;
+
+			if ( nbrCompValid != nbrComp ) {
+//				logger.debug("Le cours Existe:" + cours.getCode() + " savedId ");
+				throw new DuplicateException(" Impossible d'entrer une note supérieure à 50% si toutes les compétences ne sont pas acquises ");
+			}
+		}
 		
 		
 		// ajoute le nouveau ou l evaluation nouvellement modifié

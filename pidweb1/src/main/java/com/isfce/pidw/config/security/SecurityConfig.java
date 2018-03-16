@@ -67,10 +67,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.POST, "/etudiant/liste").hasAnyRole( "ADMIN")
 			.antMatchers(HttpMethod.GET, "/etudiant/liste").hasAnyRole( "ADMIN")
 			
-			//	etudiant
+			///evaluation/IVTE-1-A/add' 
+			//	evaluation
 			.antMatchers( "/module/evaluation/**/update", "/module/evaluation/**/delete" ).hasAnyRole( "ADMIN")	//
+			
+			.antMatchers(HttpMethod.POST, "/evaluation/**/add").hasAnyRole( "ADMIN", "PROFESSEUR")	
+			.antMatchers(HttpMethod.GET, "/evaluation/**/add").hasAnyRole( "ADMIN", "PROFESSEUR")
+			
 			.antMatchers(HttpMethod.POST, "/module/evaluation/add").hasAnyRole( "ADMIN")
 			.antMatchers(HttpMethod.GET, "/module/evaluation/add").hasAnyRole( "ADMIN")
+			
+			
+			
+			//	/WPID/competence/IVTE-1-A/2/SM/true
+			.antMatchers( "/competence/**/**/true",  "/competence/**/**/false" ).hasAnyRole( "ADMIN", "PROFESSEUR")	//
 
 			
 			

@@ -1,32 +1,43 @@
 <!DOCTYPE html>
-<%@ page session="false" language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="s"%>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf"%>
-<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%> --%>
-<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%> --%>
+<%@ include file="/WEB-INF/views/fragments/taglibs.jspf" %>
+
+
+
+
 <html>
 <jsp:include page="../fragments/header.jsp">
-	<jsp:param name="titre" value="Cours RÃ©sultats ISFCE" />
+	<jsp:param name="titre" value="Cours Résultats ISFCE" />
 </jsp:include>
 
+
+
+
+
+	<div class="jumbotron text-center">
+	
+		<c:choose>
+			<%--  Pour un Ajout le paramètre "savedId" ne doit pas exister --%>
+			
+			<c:when test="${empty savedId}">
+				<h1><s:message code="cours.creer"/></h1>
+			</c:when>
+			<c:otherwise>
+				<h1><s:message code="cours.modifier"/></h1>
+			</c:otherwise>
+		</c:choose>
+
+	</div>
+	
+
+
+
+
 <div class="container">
-	<c:choose>
-		<%--  Pour un Ajout le paramÃ¨tre "savedId" ne doit pas exister --%>
-		
-		<c:when test="${empty savedId}">
-			<h1><s:message code="cours.creer"/></h1>
-		</c:when>
-		<c:otherwise>
-			<h1><s:message code="cours.modifier"/></h1>
-		</c:otherwise>
-	</c:choose>
-	<br />
+
 
 	<s:url value="/cours/add" var="coursActionUrl" />
 
-	<%-- modelAttribute correspond Ã  une clÃ© dans le modÃ¨le --%>
+	<%-- modelAttribute correspond à une clé dans le modèle --%>
 	<sf:form method="POST" class="form-horizontal" modelAttribute="cours"
 		action="${coursActionUrl}">
 
@@ -69,7 +80,7 @@
 				</sf:label>
 				<div class="col-sm-10">
 					<sf:input path="nbPeriodes" id="nbPeriodes" class="form-control"
-						placeholder="Nombre de pÃ©riodes du cours" />
+						placeholder="Nombre de périodes du cours" />
 					<sf:errors path="nbPeriodes" class="control-label" />
 				</div>
 			</div>

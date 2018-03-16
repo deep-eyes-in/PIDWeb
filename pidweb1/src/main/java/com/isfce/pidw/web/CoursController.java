@@ -1,16 +1,19 @@
 package com.isfce.pidw.web;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +29,7 @@ import org.springframework.web.util.UriUtils;
 import com.isfce.pidw.data.ICompetenceJpaDAO;
 import com.isfce.pidw.data.ICoursJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
+import com.isfce.pidw.filter.ConsoleColors;
 import com.isfce.pidw.model.Competence;
 import com.isfce.pidw.model.Cours;
 import com.isfce.pidw.model.Module;
@@ -38,25 +42,42 @@ public class CoursController {
 	final static Logger logger = Logger.getLogger(CoursController.class);
 
 	private ICoursJpaDAO coursDAO;
+	private IModuleJpaDAO moduleDAO ;
 	private ICompetenceJpaDAO competenceDAO;
 	
 	// Liste des langues
 	private List<String> listeLangues;
-
 	// Création de la liste de données pour le 1er exemple
+	
+	
+	
+	
 	@Autowired
-	public CoursController(ICoursJpaDAO coursDAO, ICompetenceJpaDAO competenceDAO) {
+	public CoursController(ICoursJpaDAO coursDAO, IModuleJpaDAO moduleDAO, ICompetenceJpaDAO competenceDAO) {
 		this.coursDAO = coursDAO;
+		this.moduleDAO = moduleDAO ;
 		this.competenceDAO = competenceDAO;
 		listeLangues = creeListeLangues();
 	}
 
+	
+	
+	
 	// Liste des cours
 	@RequestMapping("/liste")
 	public String listeCours(Model model,Principal principal) {
+		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[listeCours]"  +  "[]" );
+		
 		model.addAttribute("coursList",coursDAO.findAll());
+		
+		
 		return "cours/listeCours";
 	}
+	
+	
+	
+	
+	
 
 	// Méthode Get pour ajouter un cours
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
@@ -216,10 +237,25 @@ public class CoursController {
 	// m.setViewName("error");// nom logique de la page d'erreur
 	// return m;
 	// }
+	
+/*
+	<%@ page session="false" language="java"
+			contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+*/
 
 	// Affichage du détail d'un cours
-	@RequestMapping(value = "/{code}", method = RequestMethod.GET)
-	public String detailCours(@PathVariable String code, Model model) {
+	@RequestMapping(value = "/{code}", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8;pageEncoding=UTF-8")
+	public String detailCours(@PathVariable String code, Model model
+
+	) {
+		
+		logger.warn( ConsoleColors.f( "*["+  this.getClass().getSimpleName() + "]"  +  "[detailCours]"  +  "[]" , 
+				ConsoleColors.BLUE_BACKGROUND_BRIGHT  )   );
+		
+		
+		
+		
+		
 		// Vérifie si on ne recoit pas le cours suite à une redirection
 		if (!model.containsAttribute("cours")) {
 			logger.debug("Recherche le cours: " + code);
@@ -235,8 +271,42 @@ public class CoursController {
 			model.addAttribute("competenceList", competences);
 		} else
 			logger.debug("Utilisation d'un FlashAttribute pour le cours: " + code);
+		
+		
+		List<Module> moduleList = moduleDAO.getModulesCours(code) ;
+		
+		System.out.println( moduleList );
+		
+		model.addAttribute("moduleList",  moduleList );
+		
+		
 		return "cours/cours";
 	}
+	
+	
+
+	@Bean
+	public StringHttpMessageConverter stringHttpMessageConverter() {
+		
+		logger.warn( ConsoleColors.f( "*["+  this.getClass().getSimpleName() + "]"  +  "[stringHttpMessageConverter]"  +  "[]" , 
+				ConsoleColors.CYAN_BACKGROUND_BRIGHT  )   );
+		
+		
+		StringHttpMessageConverter shmc = new  StringHttpMessageConverter(StandardCharsets.UTF_8) ;
+		
+		List<MediaType> supportedMediaTypes = shmc.getSupportedMediaTypes() ;
+		
+		System.out.println( supportedMediaTypes.toString()  ) ;
+		
+		shmc.setSupportedMediaTypes(supportedMediaTypes) ;
+		
+//	    return new StringHttpMessageConverter(Charset.forName("UTF-8"));
+		return shmc ;
+	}
+	
+	
+
+	
 
 	// crée un vecteur avec la liste des langues
 	private List<String> creeListeLangues() {

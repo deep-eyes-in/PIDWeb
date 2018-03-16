@@ -123,6 +123,9 @@ public class ModuleController {
 	}
 
 	
+	
+	
+	
 	@RequestMapping(value = { "/liste/{codeUser}", "/liste" })
 	public String listeModules(@PathVariable Optional<String> codeUser, Model model, Authentication authentication) {
 		
@@ -423,25 +426,25 @@ System.out.println("COUCOUUUUUUUUUU");
 			// Ajout au Modèle
 			model.addAttribute("module", module);
 			
+	
 			
-			
-			System.out.println(  authentication.isAuthenticated()  );
-			
-			
-			if ( authentication.isAuthenticated()  ) {
+			if ( authentication!=null &&  authentication.isAuthenticated()  ) {
+				System.out.println(  module.getProf().getUsername() + " / "  +  authentication.getName()  );
 				
-				if ( getRole( authentication ) ==  Roles.ROLE_ADMIN      ) {
-					
-					model.addAttribute("etudiantList", etudiantDAO.getEtudiantsOfModule( module.getCode() ));
-					
-				}else if ( getRole( authentication ) ==   Roles.ROLE_PROFESSEUR    ) {
-					if ( module.getProf().getUsername().equals(  authentication.getName() ) ) {
+					if ( getRole( authentication ) ==  Roles.ROLE_ADMIN      ) {
+						
 						model.addAttribute("etudiantList", etudiantDAO.getEtudiantsOfModule( module.getCode() ));
+						
+					}else if ( getRole( authentication ) ==   Roles.ROLE_PROFESSEUR    ) {
+						// Connecté en tant que prof & le cour lui apartient.
+						if ( module.getProf().getUsername().equals(  authentication.getName() ) ) {
+							
+							model.addAttribute("etudiantList", etudiantDAO.getEtudiantsOfModule( module.getCode() ));
+							
+							model.addAttribute("moduleOwner" , true  ) ;
+						}
 					}
-				}
 			}
-			
-			
 			
 			
 			
