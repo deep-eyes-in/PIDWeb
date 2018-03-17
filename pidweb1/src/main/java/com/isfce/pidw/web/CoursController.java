@@ -252,31 +252,24 @@ public class CoursController {
 		logger.warn( ConsoleColors.f( "*["+  this.getClass().getSimpleName() + "]"  +  "[detailCours]"  +  "[]" , 
 				ConsoleColors.BLUE_BACKGROUND_BRIGHT  )   );
 		
-		
-		
-		
-		
-		// Vérifie si on ne recoit pas le cours suite à une redirection
-		if (!model.containsAttribute("cours")) {
-			logger.debug("Recherche le cours: " + code);
-			// recherche le cours dans la liste
-			// Vérifie si le cours existe
-			Cours cours = coursDAO.findOne(code);
+
+		logger.debug("Recherche le cours: " + code);
+
 			// gestion spécifique pour la non présence du cours.
-			if (cours == null)
-				throw new NotFoundException("Ce cours existe déjà ", code);
-			// Ajout au Modèle
-			model.addAttribute("cours", cours);
-			List<Competence> competences = competenceDAO.getCompetencesOfCours(cours.getCode());
-			model.addAttribute("competenceList", competences);
-		} else
-			logger.debug("Utilisation d'un FlashAttribute pour le cours: " + code);
-		
-		
+		if ( !coursDAO.exists(code) )
+			throw new NotFoundException("Ce cours existe déjà ", code);
+
+
+			
+		List<Competence> competences = competenceDAO.getCompetencesOfCours( code );
+			
+
 		List<Module> moduleList = moduleDAO.getModulesCours(code) ;
-		
 		System.out.println( moduleList );
 		
+		// Ajout des model
+		model.addAttribute("cours", coursDAO.findOne(code) );
+		model.addAttribute("competenceList", competences);
 		model.addAttribute("moduleList",  moduleList );
 		
 		

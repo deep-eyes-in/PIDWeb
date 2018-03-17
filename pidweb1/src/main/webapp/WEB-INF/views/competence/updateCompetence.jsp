@@ -53,7 +53,9 @@
 							</div>
 							
 							<div class="divTableCell"> <c:out	value="${comptValid.description}" /> 	 </div>
-							<div class="divTableCell"> 
+							
+							
+							<div class="divTableCell">
 								
 								<c:if test="${comptValid.valided}">	
 									<sf:form method="POST" class="form-horizontal" modelAttribute="CompetenceValid"

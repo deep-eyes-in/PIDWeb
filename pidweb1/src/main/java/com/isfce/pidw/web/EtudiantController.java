@@ -252,7 +252,7 @@ public class EtudiantController {
 			throw new NotFoundException("Etudiant non trouvé pour suppression", code );
 		}
 		etudiantDAO.delete(code);
-		logger.debug("Supression du etudiant: " + code);
+		logger.debug("Suppression de l'etudiant: " + code);
 		
 		return "redirect:/etudiant/liste";
 
@@ -316,16 +316,18 @@ public class EtudiantController {
 								
 				model.addAttribute("listModules", modules    );
 				
-				List<String> statusModules = getInfosOfModule(modules, etudiant);
+				List<String> statusModules = getResultOfModules(modules, etudiant);
+				List<String> infosCompetences = getInfosOfCompetences(modules, etudiant);
 				
 				for(int i=0;i<statusModules.size();i++) {
 					System.out.println(statusModules.get(i).toString());
 				}
 				
 				model.addAttribute("statusModules", statusModules    );
+				model.addAttribute("infosCompetences", infosCompetences    );
 				
 			} else {
-				throw new NoAccessException("Doit être connecté admin ou l'étudiant " + code);
+				throw new NoAccessException("Doit être connecté en admin ou l'étudiant " + code);
 			}
 			
 			// Ajout au Modèle
@@ -340,34 +342,53 @@ public class EtudiantController {
 	
 	
 	
-	
-	private List<String> getInfosOfModule(List<Module> modules, Etudiant etudiant) {
-		
+	private List<String> getInfosOfCompetences(List<Module> modules, Etudiant etudiant) {
 		List<String> allInfos = new ArrayList<>();
+		String info = new String();
+		
+		for(Module module : modules) {
+			List<Competence> competences = competenceDAO.getCompetencesOfCours(module.getCours().getCode());
+			List<Object[]> validedComp = competenceDAO.getCompetencesValidOfEtudiant(etudiant.getUsername(), module.getCours().getCode());
+			
+			info = validedComp.size() +" sur " + competences.size();
+			if(validedComp.size() == competences.size() && validedComp.size() > 0)
+				info += " Bravo !";
+			
+			allInfos.add(info);
+		}
+
+		
+		return allInfos;
+	}
+	
+	
+	
+	private List<String> getResultOfModules(List<Module> modules, Etudiant etudiant) {
+		
+		List<String> allResults = new ArrayList<>();
 		for(Module module : modules) {
 			
 			List<Evaluation.SESSION> sessions = evaluationDAO.getSessionsOfModule(module.getCode());
-			//System.out.println(module.getCode() + " " + (sessions.size() - 1) + " " + etudiant.getUsername());
 			Evaluation evaluation = evaluationDAO.getEvaluationOfModuleOfEtudiant(module.getCode(), (sessions.size()-1), etudiant.getUsername() );
 			
-			List<Competence> competences = competenceDAO.getCompetencesOfCours(module.getCours().getCode());
-			List<Object[]> validedComp = competenceDAO.getCompetencesValidOfEtudiant(etudiant.getUsername(), module.getCours().getCode());
-			//System.out.println(evaluation.size());
+
 			
 			if(evaluation != null) {
-				if(evaluation.getResultat() >= 50) {
-					allInfos.add("Réussi (" + evaluation.getResultat() + "%)");
-				} else {
-					allInfos.add("Raté");
-				} 
+				if(evaluation.getResultat() >= 50) 
+					allResults.add("Réussi (" + evaluation.getResultat() + "%)");
+				else if(evaluation.getResultat() < 0) 
+					allResults.add("Abandon");	
+				 else 
+					allResults.add("Raté");
+				
 			}
 			else {
-				allInfos.add("En cours");
+				allResults.add("En cours");
 			}
-			System.out.println(allInfos.size());
+			System.out.println(allResults.size());
 		}
 		
-		return allInfos;
+		return allResults;
 	}
 	
 	

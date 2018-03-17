@@ -35,23 +35,36 @@
 			<td>Langue:</td>
 			<td><c:out value="${cours.langue}" /></td>
 		</tr>
-		<tr>
-			<td>Compétences:</td>
-			<td>
-				<c:forEach items="${competenceList}" var="competence">
-					<c:out value="${competence.description}" />
-					<c:if test="${ isAdmin}">
-						<s:url value="/competence/update/${competence.id}" var="updateUrl" />
-						<button class="btn btn-info" 
-							onclick="location.href='${updateUrl}'">Modifier</button>
-					</c:if>
-					<br />
-				</c:forEach>
-			</td>
-		</tr>
 	</table>
 	
+	<br />
 	
+	<div class="divTable blueTable">
+		<div class="divTableHeading">
+			<div class="divTableRow">
+			<div class="divTableHead">Description</div>
+			<c:if test="${ isAdmin }">
+				<div class="divTableHead">Modifier</div>
+			</c:if>
+		</div>
+		
+		</div>
+		<div class="divTableBody">
+			<c:forEach items="${competenceList}" var="competence">
+				<div class="divTableRow">
+				<div class="divTableCell"><c:out value="${competence.description}" /></div>
+				<c:if test="${ isAdmin }">
+					<div class="divTableCell">  
+						<s:url value="/competence/update/${competence.id}" var="updateUrl" />
+						<button class="btn btn-info" onclick="location.href='${updateUrl}'">Modifier</button>
+					</div>
+				</c:if>
+				</div>
+			</c:forEach>
+		</div>
+	</div>
+	
+	<br />
 
 <c:if test="${fn:length(moduleList) > 0}">
 	

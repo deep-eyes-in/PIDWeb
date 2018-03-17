@@ -111,12 +111,7 @@
 					</p>
 				</c:if>
 		</c:if>
-								
-					
 
-					
-
-				
 				</div>
 		<c:set var="i" value="${i + 1}"></c:set>
 		</c:forEach>

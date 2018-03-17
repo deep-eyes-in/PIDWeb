@@ -147,7 +147,7 @@ public class ModuleController {
 			Roles roleUser = usersDAO.getUserNameRole(codeUser.get());
 
 			if ( !usersDAO.exists(codeUser.get() ))
-				throw new NotFoundException("Le user n'existe pas", codeUser.get());
+				throw new NotFoundException("L'étudiant n'existe pas", codeUser.get());
 			
 			// si le code user est un prof retourne les modules du prof
 			if (Roles.ROLE_PROFESSEUR.equals(roleUser)) {
@@ -448,13 +448,9 @@ System.out.println("COUCOUUUUUUUUUU");
 			
 			
 			
-		} else
-			logger.debug("Utilisation d'un FlashAttribute pour le module: " + code);
+		}
 		
-		
-
-		
-		
+	
 		
 		return "module/module";
 	}

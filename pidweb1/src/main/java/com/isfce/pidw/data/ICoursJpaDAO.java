@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.isfce.pidw.model.Cours;
+import com.isfce.pidw.model.Module;
 
 
 @Repository
@@ -15,6 +16,8 @@ public interface ICoursJpaDAO extends JpaRepository<Cours, String> {
 	
 	List<Cours> readBySectionsIgnoringCase(String section);
 	
+	@Query(value="select m.code from TMODULE m where FKCours=?", nativeQuery=true)
+	List<String> getModulesOfCours(String codeCours);
 	
 	@Query(value="select section from TSECTION where FKCOURS=?", nativeQuery=true)
 	Set<String> coursSection(String codeCours);
