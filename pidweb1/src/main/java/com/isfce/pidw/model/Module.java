@@ -31,8 +31,10 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @Entity(name = "TMODULE")
-@ToString(exclude = {"modules", "sections"})
-@EqualsAndHashCode(exclude = {"modules", "sections"})
+//@ToString(exclude = {"modules", "sections"})
+//@EqualsAndHashCode(exclude = {"modules", "sections"})
+@EqualsAndHashCode( exclude = {"etudiants"})
+@ToString( exclude = {"etudiants"})
 public class Module {
 	public static enum MAS {
 		MATIN, APM, SOIR
@@ -76,6 +78,9 @@ public class Module {
 	    inverseJoinColumns = @JoinColumn(name = "FKETUDIANT"))
 //	private Set<Etudiant> etudiants = new HashSet<>();      //    ArrayList<>();  //  HashSet<>();
 	private List<Etudiant> etudiants = new ArrayList<>();      //    ArrayList<>();  //  HashSet<>();
+	
+	
+	
 
 	public Module(String code, Date dateDebut, Date dateFin, MAS moment, Cours cours,Professeur prof) {
 		super();

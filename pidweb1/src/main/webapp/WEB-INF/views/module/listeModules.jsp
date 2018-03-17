@@ -45,15 +45,18 @@
 					<h1>
 						<c:out	value="${module.code}" />
 					</h1> 
-					<h4>
+					<h5>
 						<c:out value="${module.cours.nom}" />
-					</h4>
-					<h4>
-						Dates: <c:out value="${module.moment}  ${dateD} ==> ${dateF}" />
-					</h4>
-					<h4>
+					</h5>
+					<h5>
+						Moment: <c:out value="${module.moment}" />
+					</h5>
+					<h5>
+						Periode: <c:out value="${dateD} ==> ${dateF}" />
+					</h5>
+					<h5>
 						Prof: <c:out value="${module.prof.nom}"  default="---" />
-					</h4>
+					</h5>
 					
 
 									
@@ -108,12 +111,7 @@
 					</p>
 				</c:if>
 		</c:if>
-								
-					
 
-					
-
-				
 				</div>
 		<c:set var="i" value="${i + 1}"></c:set>
 		</c:forEach>

@@ -3,7 +3,6 @@ package com.isfce.pidw.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
@@ -16,39 +15,39 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor()
 @Entity(name = "TEVALUATION")
-@IdClass(  EvaluationKey.class  )
 public class Evaluation {
 
 	public static enum SESSION {
 		PREMIERE, DEUXIEME
 	}
+	
 
-	
-	
 	@Id
-//	@NotNull
+	private Long id;
+	
+	
+	
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "FKETUDIANT", nullable = false)
+	private Etudiant etudiant;
+	
+	
+	
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "FKMODULE", nullable = false)
 	private Module module;
 	
 	
 	
-	@Id
-//	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "FKETUDIANT", nullable = false)
-	private Etudiant etudiant;
-	
-	
-
-	
-	@Id
-//	@NotNull
+	@NotNull
 	@Column(nullable = false)
 	private SESSION session;
+	
 
 	
-//	@NotNull
+	@NotNull
 	@Column(nullable = false)
 	private Integer resultat = 0;
 	
@@ -58,12 +57,23 @@ public class Evaluation {
 //	@OneToMany(mappedBy="cours",cascade=CascadeType.PERSIST)
 //	protected Collection<Module> modules= new ArrayList<>();
 
-	public Evaluation(  Etudiant etudiant, SESSION session, Integer resultat) {
+	public Evaluation( Long id, Etudiant etudiant, Module module, SESSION session, Integer resultat) {
+		super();
+		this.id = id;
 		this.etudiant = etudiant;
+		this.module = module;
 		this.session = session;
 		this.resultat = resultat;
 	}
 	
+	public Evaluation( EvaluationKey infos,  Integer resultat ) {
+		   
+		this.etudiant = infos.getEtudiant() ;
+		this.module = infos.getModule();
+		this.session = infos.getSession();
+		this.resultat = resultat;
+		
+	}
 	
 	
 }

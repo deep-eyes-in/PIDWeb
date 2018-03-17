@@ -1,24 +1,25 @@
 <!DOCTYPE html>
-<%@ page session="false" language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ include file="/WEB-INF/views/fragments/taglibs.jspf" %>
 
 
 
-<%@ taglib uri="http://www.springframework.org/tags" prefix="s"%>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf"%>
-<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%> --%>
-<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%> --%>
+
+
+
 
 
 
 <html>
 <jsp:include page="../fragments/header.jsp" >
- <jsp:param name="titre" value="Cours RÃ©sultats ISFCE"/>
+ <jsp:param name="titre" value="Module Résultats ISFCE"/>
 </jsp:include>
+
+
+
+
 <div class="container">
 	<h1>
-		DÃ©tail du module:
+		Détail du module:
 		<c:out value="${module.code}" default="-----"></c:out>
 	</h1>
 
@@ -32,7 +33,7 @@
 			<td><c:out value="${module.cours.nom}" /></td>
 		</tr>
 		<tr>
-			<td>Nombre de pÃ©riodes:</td>
+			<td>Nombre de périodes:</td>
 			<td><c:out value="${module.cours.nbPeriodes}" /></td>
 		</tr>
 		<tr>
@@ -44,10 +45,100 @@
 			<td><c:out value="${module.prof.nom}" /></td>
 		</tr>
 	</table>
+	
+	
+	
+	<h1>
+		Détail des etudiants du module:
+	</h1>
+	
+	
+	
+<div class="divTable blueTable">
+	<div class="divTableHeading">
+		<div class="divTableRow">
+		<div class="divTableHead">Students</div>
+		<div class="divTableHead">email</div>
+		<div class="divTableHead">Mananger</div>
+		</div>
+	</div>
+	<div class="divTableBody">
+	
+		<c:forEach items="${etudiantList}" var="etudiant">
+			<!-- VAR URL -->
+			<s:url value="/etudiant/${etudiant.username}" var="detailUrl" />
+			<s:url value="/competence/${module.code}/${etudiant.username}" var="competencesUrl" />
+			
+			
+
+			
+		
+			<div class="divTableRow">
+				<div class="divTableCell"> <c:out	value="${etudiant.nom}" />  <c:out	value="${etudiant.prenom}" />	 </div>
+				<div class="divTableCell"> <c:out	value="${etudiant.email}" /> </div>
+				<div class="divTableCell">
+				
+<!--	 BT DELETE UPDATE DETAIL	-->
+
+					<button class="btn btn-info" 
+						onclick="location.href='${detailUrl}'"> Détail etudiant</button>
+						
+					<button class="btn btn-info" 
+						onclick="location.href='${competencesUrl}'"> Valider competences </button>
+						
+
+									
+				</div>
+			</div>
+						
+
+						
+						
+		</c:forEach>
+							
+
+	</div>
+</div>
+
+
+
+
+	
+	
+	
 </div>	
+
+
+
 
 
 
 	<jsp:include page="../fragments/footer.jsp" />
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

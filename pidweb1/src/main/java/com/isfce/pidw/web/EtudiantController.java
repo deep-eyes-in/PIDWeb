@@ -3,6 +3,7 @@ package com.isfce.pidw.web;
 import static org.mockito.Matchers.booleanThat;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -23,13 +24,18 @@ import org.springframework.web.util.UriUtils;
 
 import com.isfce.pidw.config.security.GeneratePassword;
 import com.isfce.pidw.config.security.Roles;
+import com.isfce.pidw.data.ICompetenceJpaDAO;
 import com.isfce.pidw.data.ICoursJpaDAO;
 //import com.isfce.pidw.data.ICoursJpaDAO;
 import com.isfce.pidw.data.IEtudiantJpaDAO;
+import com.isfce.pidw.data.IEvaluationJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
 import com.isfce.pidw.data.IEtudiantJpaDAO;
 import com.isfce.pidw.data.IUsersJpaDAO;
+import com.isfce.pidw.model.Competence;
 import com.isfce.pidw.model.Etudiant;
+import com.isfce.pidw.model.Evaluation;
+import com.isfce.pidw.model.Module;
 import com.isfce.pidw.model.Etudiant;
 import com.isfce.pidw.model.Users;
 
@@ -44,6 +50,8 @@ public class EtudiantController {
 //	private ICoursJpaDAO coursDAO;
 	private IEtudiantJpaDAO etudiantDAO;
 	private IModuleJpaDAO moduleDAO;
+	private IEvaluationJpaDAO evaluationDAO;
+	private ICompetenceJpaDAO competenceDAO;
 	
 //	private  List<Etudiant> listeEtudiant ;
 //	private  List<Cours> listeCours  ;
@@ -52,30 +60,17 @@ public class EtudiantController {
 
 	// Création de la liste de données pour le 1er exemple
 	@Autowired
-	public EtudiantController(IEtudiantJpaDAO etudiantDAO, IModuleJpaDAO moduleDAO ) {
+	public EtudiantController(IEtudiantJpaDAO etudiantDAO, IModuleJpaDAO moduleDAO, IEvaluationJpaDAO evaluationDAO, ICompetenceJpaDAO competenceDAO ) {
 		this.etudiantDAO = etudiantDAO;
 		this.moduleDAO = moduleDAO;
+		this.evaluationDAO = evaluationDAO;
+		this.competenceDAO = competenceDAO;
 
 //		listeEtudiant = etudiantDAO.findAll() ;
 //		listeCours = coursDAO.findAll() ;
 		
 	}
 
-	
-/*
-	private IUsersJpaDAO<Etudiant> profDAO;
-
-	@Autowired
-	public ModuleController(IModuleJpaDAO moduleDAO, IUsersJpaDAO<Users> usersDAO, ICoursJpaDAO coursDAO, IUsersJpaDAO<Etudiant> profDAO) {
-		super();
-		this.moduleDAO	 = moduleDAO;
-		this.usersDAO	 = usersDAO;
-		this.coursDAO	 = coursDAO;
-		this.profDAO	 = profDAO ;
-	}	
- */
-	
-	
 	
 	// Liste des profs
 	@RequestMapping("/liste")
@@ -264,7 +259,7 @@ public class EtudiantController {
 			throw new NotFoundException("Etudiant non trouvé pour suppression", code );
 		}
 		etudiantDAO.delete(code);
-		logger.debug("Supression du etudiant: " + code);
+		logger.debug("Suppression de l'etudiant: " + code);
 		
 		return "redirect:/etudiant/liste";
 
@@ -321,11 +316,25 @@ public class EtudiantController {
 				isAdmin = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_ADMIN.name()))  ;
 
 			if(code.equals(userConnected) || isAdmin ) {
-				model.addAttribute("etudiant", etudiant );
 				
-				model.addAttribute("listModules", moduleDAO.getModulesOfEtudiant( etudiant.getUsername()   )    );
+				List<Module> modules = moduleDAO.getModulesOfEtudiant(etudiant.getUsername());
+				
+				model.addAttribute("etudiant", etudiant );
+								
+				model.addAttribute("listModules", modules    );
+				
+				List<String> statusModules = getResultOfModules(modules, etudiant);
+				List<String> infosCompetences = getInfosOfCompetences(modules, etudiant);
+				
+				for(int i=0;i<statusModules.size();i++) {
+					System.out.println(statusModules.get(i).toString());
+				}
+				
+				model.addAttribute("statusModules", statusModules    );
+				model.addAttribute("infosCompetences", infosCompetences    );
+				
 			} else {
-				throw new NoAccessException("Doit être connecté admin ou l'étudiant " + code);
+				throw new NoAccessException("Doit être connecté en admin ou l'étudiant " + code);
 			}
 			
 			// Ajout au Modèle
@@ -340,8 +349,52 @@ public class EtudiantController {
 	
 	
 	
+	private List<String> getInfosOfCompetences(List<Module> modules, Etudiant etudiant) {
+		List<String> allInfos = new ArrayList<>();
+		String info = new String();
+		
+		for(Module module : modules) {
+			List<Competence> competences = competenceDAO.getCompetencesOfCours(module.getCours().getCode());
+			List<Object[]> validedComp = competenceDAO.getCompetencesValidOfEtudiant(etudiant.getUsername(), module.getCours().getCode());
+			
+			info = validedComp.size() +" sur " + competences.size();
+			if(validedComp.size() == competences.size() && validedComp.size() > 0)
+				info += " Bravo !";
+			
+			allInfos.add(info);
+		}
+
+		
+		return allInfos;
+	}
 	
 	
+	
+	private List<String> getResultOfModules(List<Module> modules, Etudiant etudiant) {
+		
+		List<String> allResults = new ArrayList<>();
+		for(Module module : modules) {
+			
+			List<Evaluation.SESSION> sessions = evaluationDAO.getSessionsOfModule(module.getCode());
+			Evaluation evaluation = evaluationDAO.getEvaluationOfModuleOfEtudiant(module.getCode(), (sessions.size()-1), etudiant.getUsername() );
+			
+
+			
+			if(evaluation != null) {
+				if(evaluation.getResultat() >= 50) {
+					allResults.add("Réussi (" + evaluation.getResultat() + "%)");
+				} else {
+					allResults.add("Raté");
+				} 
+			}
+			else {
+				allResults.add("En cours");
+			}
+			System.out.println(allResults.size());
+		}
+		
+		return allResults;
+	}
 	
 	
 	

@@ -25,9 +25,18 @@
 	<!-- chargement des styles avec bootstrap first -->
 	<%-- <s:url value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" var="bootstrapCss" /> --%>
 	<s:url value="/resources/css/bootstrap.min.css" var="bootstrapCss" />
-	<s:url value="/resources/css/style.css" var="styleCss" />
+	
 	<link rel="stylesheet" href="${bootstrapCss}" />
+	
+	
+	<s:url value="/resources/css/style.css" var="styleCss" />
 	<link rel="stylesheet" href="${styleCss}" />
+	
+	<s:url value="/resources/css/divTable.css" var="divTableCss" />
+	<link rel="stylesheet" href="${divTableCss}" />
+	
+	
+	
 	
 	<s:url value="/login" var="loginUrl" />
 	<s:url value="/logout" var="logoutUrl" />

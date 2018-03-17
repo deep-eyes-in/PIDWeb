@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
 import com.isfce.pidw.data.ICoursJpaDAO;
@@ -61,7 +64,7 @@ public class EvaluationController {
     @ResponseBody
 	@RequestMapping(value = "/json")
 	public String testJson(Model model) {
-	    System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[testJson]"  +  "[]" );
+	    System.out.printf( "["+  this.getClass().getSimpleName() + "]"  +  "[testJson]"  +  "[]" );
 	    
         // Converts a collection object into JSON string
         Gson gson = new Gson();
@@ -76,13 +79,141 @@ public class EvaluationController {
     
 	@RequestMapping(value = { "/liste/{codeUser}", "/liste" })
 	public String listeModules(@PathVariable Optional<String> codeUser, Model model, Authentication authentication) {
-		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[listeModules]"  +  "[]" );
+		
+		System.out.printf( "["+  this.getClass().getSimpleName() + "]"  +  "[listeModules]"  +  "[]" );
 		
 		
 		model.addAttribute("module", null );
 		
-		return "" ;
+		return ""  ;
 	}
+	
+	
+	
+	
+	@RequestMapping(value = { "/view/{codeUser}", "/view" })
+	public String viewEvaluation(
+			@PathVariable Optional<Long> codeUser, 
+			Model model, 
+			Authentication authentication
+	) {
+		
+		System.out.printf( "["+  this.getClass().getSimpleName() + "]"  +  "[viewEvaluation]"  +  "[]" );
+		Long id = new Long( codeUser.get() ) ;
+		
+		
+		if ( evaluationDAO.exists (  id ) ) {
+			Evaluation eva = evaluationDAO.findOne( id ) ;
+			model.addAttribute("evaluation", eva );
+		}else {
+			model.addAttribute("evaluation", null );
+		}
+		
+		
+		return "evaluation/addEvaluation" ;
+	}	
+	
+	
+	
+//		/*
+	@RequestMapping(value = { "/{code}/{session}"  },  method = RequestMethod.GET)  
+	public String addUpdateEvaluationTest(
+			@PathVariable Optional<Integer> session,
+			@PathVariable Optional<String> code,
+			//@ModelAttribute Evaluation evaluation,
+//			@RequestParam(value = "session", required = true) String session,
+			
+//			@RequestParam(value = "session", required = false) Optional<Integer> session,
+			
+			Model model, RedirectAttributes rModel
+			, HttpServletRequest request
+	) {
+		
+		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[addUpdateEvaluationTest]"  +  "[] \n" );
+		
+		System.out.println(  model.toString()      );
+		System.out.println(  code.get()      );
+		System.out.println(  request.toString()      );
+		
+		
+		List<Evaluation> evaluationList = new ArrayList<Evaluation>();
+		evaluationList = evaluationDAO.getEvaluationsOfModule(code.get(), session.get() - 1);
+		
+		ListeEvaluations listeEvaluations = new ListeEvaluations() ;
+		
+		for( int i = 0 ; i < evaluationList.size()  ; i++) {
+
+			EvaluationKey keyTemp = new EvaluationKey();
+			
+			keyTemp.setModule( evaluationList.get(i).getModule() );
+			keyTemp.setEtudiant( evaluationList.get(i).getEtudiant() );
+			keyTemp.setSession( evaluationList.get(i).getSession() );
+			
+
+//			listeEvaluations.getInfos().put(keyTemp,  evaluationList.get(i).getResultat() ) ;
+			
+			listeEvaluations.add( evaluationList.get(i).getId(), keyTemp ,  evaluationList.get(i).getResultat()   ) ;
+
+			
+
+		}
+		
+//		System.out.println( listeEvaluations.getEvaluations().toString() );
+		
+
+		rModel.addFlashAttribute("listeEvaluations", listeEvaluations );
+		
+		
+
+		return "redirect:/evaluation/temp" ;
+//		return "" ;
+		
+	}
+//		*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@RequestMapping(value = { "/temp"  },  method = RequestMethod.GET)
+	public String redirectToForm(
+			@ModelAttribute ListeEvaluations listeEvaluations,
+//			@ModelAttribute Evaluation Evaluation,
+			Model model) {
+		System.out.println( model.toString() );
+		
+		System.out.println( listeEvaluations.getEvaluations().toString() );
+		
+		
+
+		
+//	 "" ) ; //
+		
+//		model.addAttribute( "evaluation", Evaluation.class );
+		
+		System.out.println(  model.containsAttribute("listeEvaluations")  );
+		
+		if ( listeEvaluations.size() != 0 ) {
+			model.addAttribute( "module",  listeEvaluations.getEvaluations().get(0).getModule().getCode()  );	
+			model.addAttribute( "session",    listeEvaluations.getEvaluations().get(0).getSession().ordinal() + 1  );
+			model.addAttribute( "evaluationList", listeEvaluations.getEvaluations() );
+		}else {
+			return "redirect:/module/liste" ;
+		}
+		
+
+
+		
+		return "evaluation/listeEvaluation" ;
+		
+	}
+	
+	
+	
 	
 	
 	
@@ -91,47 +222,31 @@ public class EvaluationController {
 //	evaluation/IVTE-1-A/1
 	
 	
-	@RequestMapping(value = { "/{code}/{session}"  },  method = RequestMethod.GET)  
-	public String addUpdateEvaluation(
-			@PathVariable Optional<String> code,
-			@PathVariable Optional<Integer> session,
-//			@ModelAttribute ListeEvaluations listeEvaluations,
-			Model model /* , Authentication authentication */) {
 
-		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[addUpdateEvaluation]"  +  "[]" );
-
+	
+	
+	
+//	/evaluation/${eval.id}/update
+	
+	@RequestMapping(value = "/{id}/update" )
+	public String updateEvaluation(
+			@PathVariable Long id, 
+			Model model) {
+		
+		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[addUpdateEvaluation]"  +  "[] \n" );
 		
 		
 		
-
-		List<Evaluation> evaluationList = new ArrayList<Evaluation>();
-		evaluationList = evaluationDAO.getEvaluationsOfModule(code.get(), session.get() - 1);
-		
-		ListeEvaluations listeEvaluations = new ListeEvaluations() ;
-		
-		for( int i = 0 ; i < evaluationList.size()  ; i++) {
-//			ListeEvaluations listeEvalTemp = new ListeEvaluations(  ) ;		//		evaluationList.get(i).getModule()  , evaluationList.get(i).getEtudiant() , evaluationList.get(i).getSession()
-//			listeEvalTemp.getInfos().put(arg0, arg1) ;
-
-			EvaluationKey keyTemp = new EvaluationKey();
-			keyTemp.setModule( evaluationList.get(i).getModule() );
-			keyTemp.setEtudiant( evaluationList.get(i).getEtudiant() );
-			keyTemp.setSession( evaluationList.get(i).getSession() );
-			
-
-			listeEvaluations.getInfos().put(keyTemp,  evaluationList.get(i).getResultat() ) ;
-			
-
+		if ( evaluationDAO.exists( id ) ) {
+			Evaluation eva = evaluationDAO.findOne( id ) ;
+			model.addAttribute( "evaluation", eva  );
+		}else {
+			model.addAttribute( "evaluation", null  );
 		}
 		
-//		ListeEvaluations
-		
-		
-		model.addAttribute( "evaluationList", listeEvaluations );
-
-//		*/
-		
-		return "module/addEvaluation" ;
+	
+	
+	return "/evaluation/addEvaluation" ;
 	}
 	
 	
@@ -139,33 +254,6 @@ public class EvaluationController {
 	
 	
 	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@RequestMapping(value = { "/update"  },  method = RequestMethod.POST)  
-	public String addUpdateEvaluationPost(@ModelAttribute List<Evaluation> evaluation,
-			Model model /* , Authentication authentication */) {
-		
-		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[addUpdateEvaluationPost]"  +  "[]" );
-		System.out.println(model);
-		
-	
-		return "module/listeModules" ;
-	}
 	
 	
 
@@ -202,8 +290,6 @@ public class EvaluationController {
 		etudiantOfModule = moduleDAO.getFkEtudiantsOfModule(code);
 
 		Integer nbrSession = getSessionOfEvaluation(code);
-		System.out.println("__XX__");
-		
 		Evaluation.SESSION theSession = null;
 
 		if(nbrSession == 0) {
@@ -215,18 +301,6 @@ public class EvaluationController {
 			theSession = null;
 		}
 
-		
-		Evaluation evaluation = new Evaluation();
-		evaluation.setSession(theSession);
-		evaluation.setModule(module);
-		evaluation.setEtudiant( null ) ;
-		System.out.println(evaluation.toString());
-		System.out.println(evaluation.getModule().getCode().toString());
-		
-		Evaluation eval = evaluationDAO.save(evaluation);
-		
-		
-/*
 		//List<Evaluation> eval = new ArrayList<>();
 		
 		if(theSession != null) {
@@ -234,23 +308,27 @@ public class EvaluationController {
 
 				Evaluation evaluation = new Evaluation();
 				
-//				evaluation.setId(evaluationDAO.generateId() + 1);
-//				evaluation.setEtudiant(etudiantDAO.findOne(etudiantOfModule.get(i)));
-//				evaluation.setModule(module);
+				evaluation.setId(evaluationDAO.generateId() + 1);
+				evaluation.setEtudiant(etudiantDAO.findOne(etudiantOfModule.get(i)));
+				evaluation.setModule(module);
 //				Short result = new Short("0");
 				evaluation.setResultat( 0 ); 
 				evaluation.setSession(theSession);	
 				
 
-//				System.out.println(evaluation.toString());
-//				evaluationDAO.save(evaluation);
+				System.out.println(evaluation.toString());
+				evaluationDAO.save(evaluation);
 			}
+			
+			
 		}
-*/
-		
+
 		
 		return "redirect:/module/liste";
 	}
+	
+	
+	
 	
 	
 	
@@ -272,6 +350,62 @@ public class EvaluationController {
 	}
 	
 
+	
+	
+	
+	
+	
+	
+	
+/////////////////////////////////////////////////////////////////////////
+//   DEAD CODE                                                         //
+/////////////////////////////////////////////////////////////////////////
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	@RequestMapping(value = { "/update"  },  method = RequestMethod.POST)  
+	public String addUpdateEvaluationPost(
+			
+			@ModelAttribute Evaluation evaluation,
+			Model model /* , Authentication authentication */) {
+		
+		
+		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[addUpdateEvaluationPost]"  +  "[]" );
+		System.out.println(model);
+		
+		Integer resultat = evaluation.getResultat() ;
+		evaluation = evaluationDAO.findOne(evaluation.getId() ) ;
+		evaluation.setResultat(resultat);
+		
+		System.out.println(  evaluation.toString() );
+		
+		
+		
+		
+		
+		// ajoute le nouveau ou l evaluation nouvellement modifié
+		evaluationDAO.save(   evaluation   );
+		
+		
+		
+// 		"/{code}/{session}"
+	
+		return "redirect:/evaluation/" + evaluation.getModule().getCode() + "/" +  (evaluation.getSession().ordinal()+1)  ;
+	}
+	
+	
+	
+	
+	
+	
+	
 }
 
 
@@ -283,8 +417,26 @@ public class EvaluationController {
 
 
 
+/////////////////////////////////////////////////////////////////////////
+//  TRASH                                                              //
+/////////////////////////////////////////////////////////////////////////
 
 
+
+
+
+/*
+listeEvaluations.getInfos().forEach((key, value) -> {
+    System.out.println( key ) ; 
+    System.out.println( value ) ;
+    
+	model.addAttribute( "module", key.getModule().getCode()  );
+	model.addAttribute( "session", key.getSession().ordinal() + 1  );
+	model.addAttribute( "evaluationList", listeEvaluations.getInfos() );		    
+
+});
+
+*/
 
 
 

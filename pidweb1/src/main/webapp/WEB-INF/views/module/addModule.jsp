@@ -23,16 +23,9 @@
 
 <div class="container">
 
-	<c:choose>
-		<%--  Pour un Ajout le paramètre "savedId" ne doit pas exister --%>
-		
-		<c:when test="${empty savedId}">
-			<h1><s:message code="module.creer"/></h1>
-		</c:when>
-		<c:otherwise>
-			<h1><s:message code="module.modifier"/></h1>
-		</c:otherwise>
-	</c:choose>
+
+	<h1><s:message code="module.modifier"/></h1>
+
 	
 	
 	<br />

@@ -42,9 +42,8 @@
 			<s:url value="/professeur/${professeur.username}/update" var="updateUrl" />
 			<s:url value="/professeur/${professeur.username}/delete" var="deleteUrl" />
 			
-				<div class='col-sm-4'>
-				
-			<div  onclick="location.href='${detailUrl}'">
+			<div class='col-sm-4'>
+				<div  onclick="location.href='${detailUrl}'">
 					<h1>
 						<c:out	value="${professeur.username}" />
 					</h1> 
@@ -58,38 +57,30 @@
 					<h4>
 						Email: <c:out value="${professeur.email}" />
 					</h4>
-			</div>
+				</div>
 
-<!--	 BT DELETE UPDATE DETAIL	-->
+				<button class="btn btn-info" 
+					onclick="location.href='${detailUrl}'"> Détail</button>
 					
-					<button class="btn btn-info" 
-						onclick="location.href='${detailUrl}'"> Détail</button>
-					
+				<c:if test="${ isAdmin }">
 					<button class="btn btn-primary" 
 						onclick="location.href='${updateUrl}'">Update</button>
 					
 					<button class="btn btn-danger"
-						onclick="
-						if (confirm('Are you sure ?')) {
+						onclick="if (confirm('Are you sure ?')) {
 						 this.disabled=true;
-		                 post('${deleteUrl}',{'${_csrf.parameterName}': '${_csrf.token}'})}                             
-		                                              ">Delete</button>	
+		                 post('${deleteUrl}',{'${_csrf.parameterName}': '${_csrf.token}'})
+		                 }">Delete
+					</button>	
+				</c:if>
 				
-				</div>
-		
+			</div>
 		</c:forEach>
-			
 	</div>
-	
-	
-
 
 </div>
 
-
-
 <jsp:include page="../fragments/footer.jsp" />
-
 
 </html>
 

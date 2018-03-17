@@ -14,9 +14,9 @@ import lombok.Data;
 
 @Data
 public class EvaluationKey implements Serializable {
+	
 	   private Module module ;
 	   private Etudiant etudiant;
 	   private Evaluation.SESSION session;
-	}
-
-
+	   
+}

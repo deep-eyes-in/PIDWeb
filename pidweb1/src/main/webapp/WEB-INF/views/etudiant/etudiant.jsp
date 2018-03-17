@@ -45,8 +45,7 @@
 		<tr>
 			<td colspan="2">
 				<s:url value="/module/liste/${etudiant.username}" var="showModules" />
-				<button class="btn btn-success" onclick="this.disabled=true;post('${showModules}', {'${_csrf.parameterName}': '${_csrf.token}'})">Voir ses modules
-				</button>
+				<button class="btn btn-success" onclick="this.disabled=true;post('${showModules}', {'${_csrf.parameterName}': '${_csrf.token}'})">Voir la liste des modules</button>
 			</td>
 		</tr>
 		<tr>
@@ -57,21 +56,43 @@
 		Inscription de l'étudiant:
 	</h1>
 	
-				<table>
-					<tr>
-						<td> Desinscrire  </td>
-						<td>Code du module</td>
-						<td>Nom du cours</td>
-					</tr>
-					<c:forEach items="${listModules}" var="module">
-						<tr>
-							<td> <a href="<s:url value = "/module/remove/${module.code}/${etudiant.username}" />"> X </a>  </td>
-							<td><c:out value="${module.code}" /></td>
-							<td><c:out value="${module.cours.nom}" /></td>
-						</tr>
-					</c:forEach>
 
-				</table>
+				
+	<div class="divTable blueTable">
+		<div class="divTableHeading">
+			<div class="divTableRow">
+			<c:if test="${ isAdmin }">
+				<div class="divTableHead">Desinscrire</div>
+			</c:if>
+			<div class="divTableHead">Code du module</div>
+			<div class="divTableHead">Nom du cours</div>
+			<div class="divTableHead">Nombre de compétences validées</div>
+			<div class="divTableHead">Status</div>
+		</div>
+		</div>
+		<div class="divTableBody">
+			<c:set var="i" value="0"></c:set>
+			<c:forEach items="${listModules}" var="module">
+				<!-- VAR URL -->
+				<s:url value="/evaluation/view/${eval.id}" var="detailUrl" />
+
+			<div class="divTableRow">
+				<c:if test="${ isAdmin }">
+					<div class="divTableCell">  <a href="<s:url value = "/module/remove/${module.code}/${etudiant.username}" />"> X </a> </div>
+				</c:if>
+				<div class="divTableCell"><c:out value="${module.code}" /></div>
+				<div class="divTableCell"><c:out value="${module.cours.nom}" /></div>
+				<div class="divTableCell">
+					<c:out value="${infosCompetences[i]}" />&nbsp;&nbsp;
+					<a href="../competence/${module.code}/${etudiant.username}">Détails</a>
+				</div>
+				<div class="divTableCell"><c:out value="${statusModules[i]}" /></div>
+			</div>
+			<c:set var="i" value="${i + 1}"></c:set>
+			</c:forEach>
+
+		</div>
+	</div>
 	
 </div>
 

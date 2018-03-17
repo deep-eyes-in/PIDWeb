@@ -41,6 +41,7 @@
 			<s:url value="${cours.code}" var="detailUrl" />
 			<s:url value="/cours/${cours.code}/update" var="updateUrl" />
 			<s:url value="/cours/${cours.code}/delete" var="deleteUrl" />
+			<s:url value="/competence/${cours.code}/add" var="addCompetUrl" />
 			
 				<div class='col-sm-4'>
 				
@@ -59,22 +60,26 @@
 	
 	
 <!--	 BT DELETE UPDATE DETAIL	-->
-					<button class="btn btn-info" 
-						onclick="location.href='${detailUrl}'"> Détail</button>
+				<button class="btn btn-info" 
+					onclick="location.href='${detailUrl}'"> Détail</button>
 					
-			<c:if test="${ isAdmin}">
-					<button class="btn btn-primary" 
-						onclick="location.href='${updateUrl}'">Update</button>
-					
-					
-					<button class="btn btn-danger"
-						onclick="
-						if (confirm('Suppression du cours  ?')) {
-						 this.disabled=true;
-		                 post('${deleteUrl}',{'${_csrf.parameterName}': '${_csrf.token}'})}                             
-		                                              ">Delete</button>	
-			</c:if>
-				</div>
+				<c:if test="${ isAdmin}">
+				
+						<button class="btn btn-primary" 
+							onclick="location.href='${updateUrl}'">Update</button>
+						
+						
+						<button class="btn btn-danger"
+							onclick="
+							if (confirm('Suppression du cours  ?')) {
+							 this.disabled=true;
+			                 post('${deleteUrl}',{'${_csrf.parameterName}': '${_csrf.token}'})}">Delete
+						</button>
+						<button class="btn btn-success" 
+							onclick="location.href='${addCompetUrl}'">Add compétence
+						</button>
+				</c:if>
+			</div>
 		
 		</c:forEach>
 	

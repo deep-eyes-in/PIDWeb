@@ -23,8 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
+import com.isfce.pidw.data.ICompetenceJpaDAO;
 import com.isfce.pidw.data.ICoursJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
+import com.isfce.pidw.model.Competence;
 import com.isfce.pidw.model.Cours;
 import com.isfce.pidw.model.Module;
 
@@ -36,14 +38,16 @@ public class CoursController {
 	final static Logger logger = Logger.getLogger(CoursController.class);
 
 	private ICoursJpaDAO coursDAO;
+	private ICompetenceJpaDAO competenceDAO;
 	
 	// Liste des langues
 	private List<String> listeLangues;
 
 	// Création de la liste de données pour le 1er exemple
 	@Autowired
-	public CoursController(ICoursJpaDAO coursDAO) {
+	public CoursController(ICoursJpaDAO coursDAO, ICompetenceJpaDAO competenceDAO) {
 		this.coursDAO = coursDAO;
+		this.competenceDAO = competenceDAO;
 		listeLangues = creeListeLangues();
 	}
 
@@ -227,6 +231,13 @@ public class CoursController {
 				throw new NotFoundException("Ce cours existe déjà ", code);
 			// Ajout au Modèle
 			model.addAttribute("cours", cours);
+			
+			List<Competence> competences = competenceDAO.getCompetencesOfCours(cours.getCode());
+			model.addAttribute("competenceList", competences);
+			logger.debug("oooooooooooooooooooooo");
+			List<String> modules = coursDAO.getModulesOfCours(cours.getCode());
+			model.addAttribute("moduleList", modules);
+			logger.debug("bbbbbbbbbbbbbbbbbbbbb");
 		} else
 			logger.debug("Utilisation d'un FlashAttribute pour le cours: " + code);
 		return "cours/cours";
