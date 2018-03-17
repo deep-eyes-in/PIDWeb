@@ -264,7 +264,7 @@ public class CoursController {
 		List<Competence> competences = competenceDAO.getCompetencesOfCours( code );
 			
 
-		List<Module> moduleList = moduleDAO.getModulesCours(code) ;
+		List<Module> moduleList = moduleDAO.getModulesOfCours(code) ;
 		System.out.println( moduleList );
 		
 		// Ajout des model

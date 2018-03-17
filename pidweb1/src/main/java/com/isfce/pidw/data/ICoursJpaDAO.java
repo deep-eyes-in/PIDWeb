@@ -16,8 +16,7 @@ public interface ICoursJpaDAO extends JpaRepository<Cours, String> {
 	
 	List<Cours> readBySectionsIgnoringCase(String section);
 	
-	@Query(value="select m.code from TMODULE m where FKCours=?", nativeQuery=true)
-	List<String> getModulesOfCours(String codeCours);
+
 	
 	@Query(value="select section from TSECTION where FKCOURS=?", nativeQuery=true)
 	Set<String> coursSection(String codeCours);

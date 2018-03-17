@@ -14,6 +14,11 @@ import com.isfce.pidw.model.Module;
 @Repository
 public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 	
+	
+	@Query(value="select m.* from TMODULE m where FKCours=?", nativeQuery=true)
+	List<Module> getModulesOfCours(String codeCours);
+	
+	
 	@Query(value="select code, nom from TCOURS order by nom ASC", nativeQuery=true)
 	List<Object[]> getCoursCodeNomList();
 	
@@ -51,6 +56,8 @@ public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 //	@Query(value="select * from TINSCRIPTION where FKMODULE=?", nativeQuery=true)
 	@Query(value="select e.* from TETUDIANT e inner join TINSCRIPTION i on i.FKETUDIANT=e.USERNAME where i.FKMODULE=?", nativeQuery=true)
 	List<Etudiant> getEtudiantsOfModule(String code);
+	
+	
 	
 	
 	@Query(value="select FKETUDIANT from TINSCRIPTION where FKMODULE=?", nativeQuery=true)
