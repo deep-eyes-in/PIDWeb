@@ -26,6 +26,7 @@ import com.isfce.pidw.data.IEvaluationJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
 import com.isfce.pidw.data.IProfesseurJpaDAO;
 import com.isfce.pidw.data.IUsersJpaDAO;
+import com.isfce.pidw.filter.ConsoleColors;
 import com.isfce.pidw.filter.EvaluationKey;
 import com.isfce.pidw.model.Cours;
 import com.isfce.pidw.model.Etudiant;
@@ -97,23 +98,32 @@ public class EvaluationController {
 	
 	
 	
+
+	// LEGACY FOR OLD LINKS SUPPORT
+	@RequestMapping(value = { "/view/{codeUser}" })
+	public String viewEvaluationLegacy(	@PathVariable Optional<String> codeUser	) {
+		logger.warn( ConsoleColors.f( "*["+  this.getClass().getSimpleName() + "]"  +  "[viewEvaluationLegacy]"  +  "[]" , 
+				ConsoleColors.RED_BACKGROUND_BRIGHT  )   );
+		return "redirect:/evaluation/" + codeUser.get() ;
+	}
+			
 	
-	@RequestMapping(value = { "/view/{codeUser}", "/view" })
+	@RequestMapping(value = { "/{codeUser}" })   // "/view/{codeUser}", "/view"
 	public String viewEvaluation(
 			@PathVariable Optional<Long> codeUser, 
 			Model model, 
 			Authentication authentication
 	) {
+		logger.warn( ConsoleColors.f( "*["+  this.getClass().getSimpleName() + "]"  +  "[viewEvaluation]"  +  "[]" , 
+				ConsoleColors.CYAN_BACKGROUND_BRIGHT  )   );
 		
-		System.out.printf( "["+  this.getClass().getSimpleName() + "]"  +  "[viewEvaluation]"  +  "[]" );
 		Long id = new Long( codeUser.get() ) ;
-		
 		
 		if ( evaluationDAO.exists (  id ) ) {
 			Evaluation eva = evaluationDAO.findOne( id ) ;
 			model.addAttribute("evaluation", eva );
 		}else {
-			model.addAttribute("evaluation", null );
+			return "redirect:/evaluation/"  ;			// model.addAttribute("evaluation", new Evaluation() );
 		}
 		
 		
@@ -172,37 +182,27 @@ public class EvaluationController {
 		
 		
 
-		return "redirect:/evaluation/temp" ;
+		return "redirect:/evaluation/" ;
 //		return "" ;
 		
 	}
 //		*/
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	@RequestMapping(value = { "/temp"  },  method = RequestMethod.GET)
+
+
+	@RequestMapping(value = { "/"  },  method = RequestMethod.GET)
 	public String redirectToForm(
 			@ModelAttribute ListeEvaluations listeEvaluations,
 //			@ModelAttribute Evaluation Evaluation,
 			Model model) {
+		
 		System.out.println( model.toString() );
 		
 		System.out.println( listeEvaluations.getEvaluations().toString() );
-		
-		
 
-		
-//	 "" ) ; //
-		
-//		model.addAttribute( "evaluation", Evaluation.class );
-		
 		System.out.println(  model.containsAttribute("listeEvaluations")  );
+		
 		
 		if ( listeEvaluations.size() != 0 ) {
 			model.addAttribute( "module",  listeEvaluations.getEvaluations().get(0).getModule().getCode()  );	
@@ -214,7 +214,6 @@ public class EvaluationController {
 		
 
 
-		
 		return "evaluation/listeEvaluation" ;
 		
 	}

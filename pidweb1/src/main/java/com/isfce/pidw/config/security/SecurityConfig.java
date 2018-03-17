@@ -12,12 +12,15 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	
 	@Autowired
 	private UserDetailsService userDetailsService;
 
@@ -36,12 +39,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 //		auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
 	}
+	
+
 
 	// A redéfinir pour configurer la manière dont les requêtes doivent être
 	// sécurisées
 	// !! PROF ==> ROLE_PROF (ROLE_ est rajouté automatiquement)
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		
+		// UTF-8 
+        CharacterEncodingFilter filter = new CharacterEncodingFilter();
+        filter.setEncoding("UTF-8");
+        filter.setForceEncoding(true);
+        http.addFilterBefore(filter,CsrfFilter.class);
+        //rest of your code  
+        
 		http.authorizeRequests()
 			//	module
 			.antMatchers("/module/**/update", "/module/**/delete").hasAnyRole( "ADMIN")
@@ -82,8 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			//	/WPID/competence/IVTE-1-A/2/SM/true
 			.antMatchers( "/competence/**/**/true",  "/competence/**/**/false" ).hasAnyRole( "ADMIN", "PROFESSEUR")	//
 
-			
-			
+
 			
 			.antMatchers("/**").access("permitAll")
 			.and()
@@ -93,5 +105,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 				.exceptionHandling().accessDeniedPage("/403");
 	}
+	
+	
+	
+
+	
+
+    
+    
 
 }

@@ -27,7 +27,7 @@ public interface IEvaluationJpaDAO extends JpaRepository<Evaluation, String> {
 	Evaluation getEvaluationOfModuleOfEtudiant(String code, Integer session, String etudiant);
 
 
-	@Query(value="select CASE WHEN ID IS NULL THEN 'False' ELSE 'True' END   from TEVALUATION where ID = ?", nativeQuery=true)
+	@Query(value="select CASE WHEN COUNT(ID)  > 0  THEN 'True' ELSE 'False' END   from TEVALUATION where ID = ?", nativeQuery=true)
 	boolean exists( Long id );
 
 	@Query(value="select *  from TEVALUATION where ID = ?", nativeQuery=true)
