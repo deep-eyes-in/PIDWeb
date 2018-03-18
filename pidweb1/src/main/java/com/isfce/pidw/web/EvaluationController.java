@@ -268,6 +268,7 @@ public class EvaluationController {
 		
 		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[addEvaluation]"  +  "[]" );
 		
+		
 		// Vérifie si on ne recoit pas le module suite à une redirection
 		if (!model.containsAttribute("module")) {
 			logger.debug("Recherche le module: " + code);
@@ -277,7 +278,7 @@ public class EvaluationController {
 			// gestion spécifique pour la non présence du module.
 			if (module == null) {
 				logger.debug("Problème : Not found");
-				throw new NotFoundException("Ce module existe déjà ", code);
+				throw new NotFoundException("Ce module n'existe pas ", code);
 			}
 			
 			
@@ -292,17 +293,19 @@ public class EvaluationController {
 		module.setCours(c);
 		module.setEtudiants(etudiantDAO.getEtudiantsOfModule(code));
 		
-		List<String> etudiantOfModule = new ArrayList<>();
-		etudiantOfModule = moduleDAO.getFkEtudiantsOfModule(code);
 
 		Integer nbrSession = getSessionOfEvaluation(code);
 		Evaluation.SESSION theSession = null;
-
+		
+		List<String> etudiantOfModule = new ArrayList<>();
+		
+		
 		if(nbrSession == 0) {
 			theSession = Evaluation.SESSION.PREMIERE;
-			
+			etudiantOfModule = moduleDAO.getFkEtudiantsOfModule(code);
 		} else if(nbrSession == 1) {
 			theSession = Evaluation.SESSION.DEUXIEME;
+			etudiantOfModule = etudiantDAO.get2ndSessionFkEtudiantsOfModule(code);
 		} else {
 			theSession = null;
 		}
