@@ -102,7 +102,7 @@ public class EvaluationController {
 	// LEGACY FOR OLD LINKS SUPPORT
 	@RequestMapping(value = { "/view/{codeUser}" })
 	public String viewEvaluationLegacy(	@PathVariable Optional<String> codeUser	) {
-		logger.warn( ConsoleColors.f( "*["+  this.getClass().getSimpleName() + "]"  +  "[viewEvaluationLegacy]"  +  "[]" , 
+		logger.warn( ConsoleColors.f( "*["+  this.getClass().getSimpleName() + "]"  +  "[viewEvaluationLegacy]"  +  "[redirect:/evaluation/]" , 
 				ConsoleColors.RED_BACKGROUND_BRIGHT  )   );
 		return "redirect:/evaluation/" + codeUser.get() ;
 	}
@@ -387,8 +387,11 @@ public class EvaluationController {
 		System.out.println(model);
 		
 		Integer resultat = evaluation.getResultat() ;
+		String  comments = evaluation.getComments() ;
+		
 		evaluation = evaluationDAO.findOne(evaluation.getId() ) ;
 		evaluation.setResultat(resultat);
+		evaluation.setComments(comments);
 		
 		System.out.println(  evaluation.toString() );
 		

@@ -51,6 +51,10 @@ public class Evaluation {
 	@Column(nullable = false)
 	private Integer resultat = 0;
 	
+
+	@Column(name = "comments", nullable = true)
+	private String comments = "";
+	
 	
 	
 	
