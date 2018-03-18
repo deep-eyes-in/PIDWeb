@@ -3,9 +3,6 @@
 
 
 
-<%@ page session="false" language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
 
 
 <head>
@@ -99,6 +96,15 @@
 					<li><a href="${loginUrl}"><span
 							class="glyphicon glyphicon-log-in"></span> Login</a></li>
 				</sec:authorize>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+		        <form>
+		            <select id="language" name="locale" onchange="submit()">
+		                <option value="en" ${language == 'en' ? 'selected' : ''}>English</option>
+		                <option value="nl" ${language == 'nl' ? 'selected' : ''}>Nederlands</option>
+		                <option value="fr" ${language == 'fr' ? 'selected' : ''}>Français</option>
+		            </select>
+		        </form>
 			</ul>
 		</div>
 

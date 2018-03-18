@@ -41,11 +41,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     return resolver;
   }
   
+  
   // ne pas traiter les ressources statiques
   @Override
   public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
     configurer.enable();
   }
+  
   
   //définit le mapping pour les ressources statiques
   @Override
@@ -53,6 +55,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
        //super.addResourceHandlers(registry);
     registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
   }
+  
   
   /**
    * Définition de l'endroit où trouver les fichiers de traduction
@@ -73,15 +76,18 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 //    return messageSource;
   }
   
+  
   // Comment et où mémoriser la locale
   @Bean
   public LocaleResolver localeResolver(){
 	CookieLocaleResolver resolver = new CookieLocaleResolver();
 	resolver.setDefaultLocale(new Locale("fr"));
-	resolver.setCookieName("maLocaleCookie");
+//	resolver.setCookieName("maLocaleCookie");
+	resolver.setCookieName("language");
 	resolver.setCookieMaxAge(3600);
 	return resolver;
   }
+  
   
   // Changer la locale en fonction d'un paramètre de l'URL
   @Override
@@ -89,8 +95,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	  //permet de changer la locale au niveau d'une requête
 	LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
 	//interceptor.setParamName("malocale");// par défaut le nom est "locale"
+	interceptor.setParamName("locale");  //  language
 	registry.addInterceptor(interceptor);
   } 
+  
   
 //permet d'activer un contrôleur pour notre page de login personnelle
   @Override

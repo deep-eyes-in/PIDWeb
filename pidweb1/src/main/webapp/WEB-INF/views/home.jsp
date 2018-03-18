@@ -1,23 +1,22 @@
 <!DOCTYPE html>
 <%@ include file="/WEB-INF/views/fragments/taglibs.jspf" %>
-<%@ page session="false" language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 
 
 <html>
 
 
 <jsp:include page="fragments/header.jsp">
-	<jsp:param name="titre" value="Home page Résultats ISFCE" />
+	<jsp:param name="titre" value="Home page Resultats ISFCE" />
 </jsp:include>
 
 
 <div class="jumbotron text-center">
 	<h1>
-		<s:message code="resultats.titre" />
+		<s:message code="home.titre" />
 	</h1>
 	<h2>
-		<s:message code="resultats.sujet" />
+		<s:message code="home.sujet" />
 	</h2>
 </div>
 
@@ -37,7 +36,7 @@
 	<p>Serveur: ${pageContext.request.serverName}</p>
 	<p>Adresse Locale: ${pageContext.request.localAddr}</p>
 	<p>Locale: ${pageContext.request.locale }</p>
-	<p>Locale cookie : ${cookie['maLocaleCookie'].value}</p>
+	<p>Locale cookie : ${cookie['language'].value}</p>
 		</div>
 		
 		
