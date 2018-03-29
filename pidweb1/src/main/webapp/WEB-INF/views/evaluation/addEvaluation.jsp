@@ -55,29 +55,51 @@
 			<td>prenom:</td>
 			<td><c:out value="${evaluation.etudiant.prenom}" /></td>
 		</tr>
+		
 		<tr>
 			<td>resultat:</td>
 			<td>
-			
+
 				<s:bind path="evaluation">
 					<div class="form-group ${status.error ? 'has-error' : ''}">
-
 						<div class="col-sm-10">
 							<sf:input path="resultat" id="resultat" class="form-control"
 								placeholder="Code du cours" />
 							<sf:errors path="resultat" class="control-label" />
-		
 						</div>
-		
 					</div>
 				</s:bind>
 			
 			</td>
-			
-			
-
-			
 		</tr>
+		
+		<tr>
+			<td>Abandon: </td>
+			<td><input type="checkbox" id="myCheck"  onclick="abandon()"></td>
+		</tr>
+		
+		
+		
+		<tr>
+			<td>Comments:</td>
+			<td>
+
+				<s:bind path="evaluation">
+					<div class="form-group ${status.error ? 'has-error' : ''}">
+						<div class="col-sm-10">
+							<sf:textarea path="comments" rows="5" cols="50" class="form-control"
+								placeholder="Code du cours" />
+
+							<sf:errors path="comments" class="control-label" />
+						</div>
+					</div>
+				</s:bind>
+			
+			</td>
+		</tr>
+		
+
+		
 		<tr>
 		</tr>
 	</table>
@@ -100,6 +122,26 @@
 
 
 	<jsp:include page="../fragments/footer.jsp" />
+	
+<script>
+var checkBox = document.getElementById("myCheck");
+var text = document.getElementById("resultat");
+
+function abandon() {
+    if (checkBox.checked == true){
+        text.style.display = "none";
+        text.value = -1 ;
+    } else {
+        text.style.display = "block";
+        text.value = 0 ;
+    }
+}
+
+if (text.value < 0){
+	checkBox.checked = true ;
+	text.style.display = "none";
+}
+</script>
 
 </html>
 

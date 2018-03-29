@@ -18,19 +18,7 @@ public interface ICompetenceJpaDAO extends JpaRepository<Competence, String> {
 	@Query(value="select *  from TCOMPETENCE where ID = ?", nativeQuery=true)
 	Competence findOne(Long id);
 	
-	
-	@Query(value="SELECT c.FKCOURS , cv.FKETUDIANT ,  c.DESCRIPTION  FROM TCOMPETENCE c , TCOMPETENCE_VALID cv  WHERE cv.FKETUDIANT = ? AND c.FKCOURS = ?", nativeQuery=true)
-	List<Object[]> getCompetencesOfEtudiant(String etudiant, String cours );
-	
-	@Query(value="SELECT *  FROM TCOMPETENCE c , TCOMPETENCE_VALID cv  WHERE cv.FKETUDIANT = ? AND c.FKCOURS = ? AND c.FKCOURS = 'IVTE' AND c.ID = cv.FKCOMPETENCE", nativeQuery=true)
+	@Query(value="SELECT *  FROM TCOMPETENCE c , TCOMPETENCE_VALID cv  WHERE cv.FKETUDIANT = ? AND c.FKCOURS = ? AND c.ID = cv.FKCOMPETENCE", nativeQuery=true)
 	List<Object[]> getCompetencesValidOfEtudiant(String etudiant, String cours );
 
 }
-
-
-
-
-
-
-//		List<CompetenceValid>
-

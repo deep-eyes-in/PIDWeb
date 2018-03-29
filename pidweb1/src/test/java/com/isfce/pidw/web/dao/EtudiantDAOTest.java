@@ -28,13 +28,16 @@ public class EtudiantDAOTest {
 	@Transactional
 	public void testSaveGet() throws ParseException {
 		// Ajout d'un cours IPID
-		Etudiant test = new Etudiant("Test","test","test@gmail.com","02/647.25.69");
+		
+		
+		Etudiant test = new Etudiant("Test","test", "nom", "prenom", "test@gmail.com","02/647.25.69");
 		test=etudiantDAO.save(test);
-		assertEquals(new Long(1), test.getId());
+		assertEquals( "Test" , test.getUsername());
 		
 		test.setTel("02/000.00.00");
-		Etudiant saved=etudiantDAO.findOne(test.getId());
+		Etudiant saved=etudiantDAO.findOne( test.getUsername()  );
 		assertEquals(test, saved);
 	}
 
 }
+

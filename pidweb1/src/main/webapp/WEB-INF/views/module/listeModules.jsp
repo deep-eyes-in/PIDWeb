@@ -32,7 +32,7 @@
 			<s:url value="/module/${module.code}/update" var="updateUrl" />
 			<s:url value="/module/${module.code}/delete" var="deleteUrl" />
 			
-			<c:if test="${ userName != 'NULL' }">
+			<c:if test="${ listOfUser }">
 				<s:url value="../${module.code}" var="detailUrl" />
 			</c:if>
 
@@ -69,7 +69,7 @@
 						
 						
 		<!--  --> 
-		<c:if test="${ userName == 'NULL' }">
+
 				<c:if test="${ isAdmin}">
 
 					<button class="btn btn-primary" 
@@ -84,7 +84,7 @@
 				</c:if> 
 				
 				
-				<c:if test="${ (isAdmin) || isProf &&  (userName == userConnected) }">
+				<c:if test="${ addEvalRight }">
 					<p>
 						<c:if test="${ nbrSessionList[i] < 2   }">
 							<s:url value="/evaluation/${module.code}/add" var="addEvaluation" />
@@ -110,7 +110,7 @@
 						</c:if>
 					</p>
 				</c:if>
-		</c:if>
+
 
 				</div>
 		<c:set var="i" value="${i + 1}"></c:set>

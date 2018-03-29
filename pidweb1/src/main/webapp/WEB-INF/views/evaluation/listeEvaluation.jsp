@@ -40,10 +40,10 @@
 	
 	
 	
-<div class="divTable blueTable">
+<div id="myTable" class="divTable blueTable">
 	<div class="divTableHeading">
 		<div class="divTableRow">
-		<div class="divTableHead">Students</div>
+		<div class="divTableHead" onclick="sortTable()" >Students</div>
 		<div class="divTableHead">Results</div>
 		<div class="divTableHead">Mananger</div>
 		</div>
@@ -58,7 +58,15 @@
 		
 			<div class="divTableRow">
 				<div class="divTableCell"> <c:out	value="${eval.etudiant.nom}" />  <c:out	value="${eval.etudiant.prenom}" />	 </div>
-				<div class="divTableCell"> <c:out	value="${eval.resultat}" /> </div>
+				
+				<c:if test="${ eval.resultat >= 0 }">
+					<div class="divTableCell"> <c:out	value="${eval.resultat}" /> </div>
+				</c:if>
+				<c:if test="${ eval.resultat < 0 }">
+					<div class="divTableCell"> <c:out	value="Abandon" /> </div>
+				</c:if>
+				
+				
 				<div class="divTableCell">
 				
 <!--	 BT DELETE UPDATE DETAIL	-->

@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 public class CompetenceValid {
 
 
-
-
 	private Long competenceId ;
 	
 	private String description ;

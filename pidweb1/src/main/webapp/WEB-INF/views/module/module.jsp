@@ -48,59 +48,60 @@
 	
 	
 	
+<c:if test="${ (isAdmin) || (  moduleOwner ) }">
+	
 	<h1>
 		Détail des etudiants du module:
 	</h1>
 	
 	
+	<div class="divTable blueTable">
+		<div class="divTableHeading">
+			<div class="divTableRow">
+			<div class="divTableHead">Students</div>
+			<div class="divTableHead">email</div>
+			<div class="divTableHead">Mananger</div>
+			</div>
+		</div>
+		<div class="divTableBody">
+		
+			<c:forEach items="${etudiantList}" var="etudiant">
+				<!-- VAR URL -->
+				<s:url value="/etudiant/${etudiant.username}" var="detailUrl" />
+				<s:url value="/competence/${module.code}/${etudiant.username}" var="competencesUrl" />
+				
+				
 	
-<div class="divTable blueTable">
-	<div class="divTableHeading">
-		<div class="divTableRow">
-		<div class="divTableHead">Students</div>
-		<div class="divTableHead">email</div>
-		<div class="divTableHead">Mananger</div>
+				
+			
+				<div class="divTableRow">
+					<div class="divTableCell"> <c:out	value="${etudiant.nom}" />  <c:out	value="${etudiant.prenom}" />	 </div>
+					<div class="divTableCell"> <c:out	value="${etudiant.email}" /> </div>
+					<div class="divTableCell">
+					
+	<!--	 BT DELETE UPDATE DETAIL	-->
+	
+						<button class="btn btn-info" 
+							onclick="location.href='${detailUrl}'"> Détail etudiant</button>
+							
+						<button class="btn btn-info" 
+							onclick="location.href='${competencesUrl}'"> Valider competences </button>
+							
+	
+										
+					</div>
+				</div>
+							
+	
+							
+							
+			</c:forEach>
+								
+	
 		</div>
 	</div>
-	<div class="divTableBody">
-	
-		<c:forEach items="${etudiantList}" var="etudiant">
-			<!-- VAR URL -->
-			<s:url value="/etudiant/${etudiant.username}" var="detailUrl" />
-			<s:url value="/competence/${module.code}/${etudiant.username}" var="competencesUrl" />
-			
-			
 
-			
-		
-			<div class="divTableRow">
-				<div class="divTableCell"> <c:out	value="${etudiant.nom}" />  <c:out	value="${etudiant.prenom}" />	 </div>
-				<div class="divTableCell"> <c:out	value="${etudiant.email}" /> </div>
-				<div class="divTableCell">
-				
-<!--	 BT DELETE UPDATE DETAIL	-->
-
-					<button class="btn btn-info" 
-						onclick="location.href='${detailUrl}'"> Détail etudiant</button>
-						
-					<button class="btn btn-info" 
-						onclick="location.href='${competencesUrl}'"> Valider competences </button>
-						
-
-									
-				</div>
-			</div>
-						
-
-						
-						
-		</c:forEach>
-							
-
-	</div>
-</div>
-
-
+</c:if>
 
 
 	

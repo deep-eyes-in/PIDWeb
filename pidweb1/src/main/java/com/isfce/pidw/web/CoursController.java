@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -26,6 +25,7 @@ import org.springframework.web.util.UriUtils;
 import com.isfce.pidw.data.ICompetenceJpaDAO;
 import com.isfce.pidw.data.ICoursJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
+import com.isfce.pidw.filter.ConsoleColors;
 import com.isfce.pidw.model.Competence;
 import com.isfce.pidw.model.Cours;
 import com.isfce.pidw.model.Module;
@@ -38,26 +38,36 @@ public class CoursController {
 	final static Logger logger = Logger.getLogger(CoursController.class);
 
 	private ICoursJpaDAO coursDAO;
+	private IModuleJpaDAO moduleDAO ;
 	private ICompetenceJpaDAO competenceDAO;
 	
 	// Liste des langues
 	private List<String> listeLangues;
 
-	// Création de la liste de données pour le 1er exemple
+	
 	@Autowired
-	public CoursController(ICoursJpaDAO coursDAO, ICompetenceJpaDAO competenceDAO) {
+	public CoursController(ICoursJpaDAO coursDAO, IModuleJpaDAO moduleDAO, ICompetenceJpaDAO competenceDAO) {
 		this.coursDAO = coursDAO;
+		this.moduleDAO = moduleDAO ;
 		this.competenceDAO = competenceDAO;
 		listeLangues = creeListeLangues();
 	}
 
+	
+	
+	
 	// Liste des cours
 	@RequestMapping("/liste")
 	public String listeCours(Model model,Principal principal) {
+		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[listeCours]"  +  "[]" );
+		
 		model.addAttribute("coursList",coursDAO.findAll());
+		
+		
 		return "cours/listeCours";
 	}
-
+	
+	
 	// Méthode Get pour ajouter un cours
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String addCoursGet(@ModelAttribute Cours cours, Model model, Authentication authentication ) {
@@ -197,51 +207,42 @@ public class CoursController {
 		return "redirect:/cours/liste";
 	}
 
-	/**
-	 * Réceptionne le traitement de l'exception DuplicateException pour tous les
-	 * déclenchements au sein de ce contrôleur. Cette méthode n'est pas apellée
-	 * explicitement
-	 * 
-	 * @param req
-	 *            la request Http. Nécessaire pour fournir des données à la vue
-	 * @param e
-	 *            l'objet exception
-	 * @return un Modèle et une vue par le type ModelView
-	 */
-	// @ExceptionHandler(DuplicateException.class)
-	// private ModelAndView doublonHandler(HttpServletRequest req, Exception e) {
-	// ModelAndView m = new ModelAndView();
-	// m.addObject("exception", e);
-	// m.addObject("url", req.getRequestURL());
-	// m.setViewName("error");// nom logique de la page d'erreur
-	// return m;
-	// }
+	
 
 	// Affichage du détail d'un cours
-	@RequestMapping(value = "/{code}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{code}", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8;pageEncoding=UTF-8")
 	public String detailCours(@PathVariable String code, Model model) {
-		// Vérifie si on ne recoit pas le cours suite à une redirection
-		if (!model.containsAttribute("cours")) {
-			logger.debug("Recherche le cours: " + code);
-			// recherche le cours dans la liste
-			// Vérifie si le cours existe
-			Cours cours = coursDAO.findOne(code);
-			// gestion spécifique pour la non présence du cours.
-			if (cours == null)
-				throw new NotFoundException("Ce cours existe déjà ", code);
-			// Ajout au Modèle
-			model.addAttribute("cours", cours);
-			
-			List<Competence> competences = competenceDAO.getCompetencesOfCours(cours.getCode());
-			model.addAttribute("competenceList", competences);
-			logger.debug("oooooooooooooooooooooo");
-			List<String> modules = coursDAO.getModulesOfCours(cours.getCode());
-			model.addAttribute("moduleList", modules);
-			logger.debug("bbbbbbbbbbbbbbbbbbbbb");
-		} else
-			logger.debug("Utilisation d'un FlashAttribute pour le cours: " + code);
+		
+		logger.warn( ConsoleColors.f( "*["+  this.getClass().getSimpleName() + "]"  +  "[detailCours]"  +  "[]" , 
+				ConsoleColors.BLUE_BACKGROUND_BRIGHT  )   );
+		
+
+		logger.debug("Recherche le cours: " + code);
+
+		// gestion spécifique pour la non présence du cours.
+		if ( !coursDAO.exists(code) )
+			throw new NotFoundException("Ce cours n'existe pas : ", code);
+
+		
+		// On recupère les compétences du cours
+		List<Competence> competences = competenceDAO.getCompetencesOfCours( code );
+
+		// On récupère les modules du cours
+		List<Module> moduleList = moduleDAO.getModulesOfCours(code) ;
+		
+		
+		// Ajout des model
+		model.addAttribute("cours", coursDAO.findOne(code) );
+		model.addAttribute("competenceList", competences);
+		model.addAttribute("moduleList",  moduleList );
+		
+		
+		
 		return "cours/cours";
 	}
+	
+	
+
 
 	// crée un vecteur avec la liste des langues
 	private List<String> creeListeLangues() {

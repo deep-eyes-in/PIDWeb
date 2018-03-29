@@ -1,4 +1,4 @@
-<%@ page session="false" language="java"
+<%@ page session="true" language="java"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.isfce.pidw.data.*" %>
 
@@ -35,6 +35,11 @@
 <sec:authorize access="isAuthenticated()" var="isAuth">
 	<sec:authentication property="principal.username" var="username" />
 </sec:authorize>
+
+
+
+<c:set var="language" value="${not empty param.locale ? param.locale : not empty language ? language : pageContext.request.locale}" scope="session" />
+
 
 
 

@@ -1,7 +1,5 @@
 package com.isfce.pidw.web;
 
-import static org.mockito.Matchers.booleanThat;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,19 +23,14 @@ import org.springframework.web.util.UriUtils;
 import com.isfce.pidw.config.security.GeneratePassword;
 import com.isfce.pidw.config.security.Roles;
 import com.isfce.pidw.data.ICompetenceJpaDAO;
-import com.isfce.pidw.data.ICoursJpaDAO;
 //import com.isfce.pidw.data.ICoursJpaDAO;
 import com.isfce.pidw.data.IEtudiantJpaDAO;
 import com.isfce.pidw.data.IEvaluationJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
-import com.isfce.pidw.data.IEtudiantJpaDAO;
-import com.isfce.pidw.data.IUsersJpaDAO;
 import com.isfce.pidw.model.Competence;
 import com.isfce.pidw.model.Etudiant;
 import com.isfce.pidw.model.Evaluation;
 import com.isfce.pidw.model.Module;
-import com.isfce.pidw.model.Etudiant;
-import com.isfce.pidw.model.Users;
 
 @Controller
 @RequestMapping("/etudiant")
@@ -46,17 +39,12 @@ public class EtudiantController {
 	// Logger
 	final static Logger logger = Logger.getLogger(EtudiantController.class);
 	
-	// on recupre la liste de cours et etudiant depois L'usine (factory)
-//	private ICoursJpaDAO coursDAO;
+	// on recupre la liste de cours et etudiant depuis L'usine (factory)
 	private IEtudiantJpaDAO etudiantDAO;
 	private IModuleJpaDAO moduleDAO;
 	private IEvaluationJpaDAO evaluationDAO;
 	private ICompetenceJpaDAO competenceDAO;
-	
-//	private  List<Etudiant> listeEtudiant ;
-//	private  List<Cours> listeCours  ;
-	
-	
+		
 
 	// Création de la liste de données pour le 1er exemple
 	@Autowired
@@ -64,32 +52,20 @@ public class EtudiantController {
 		this.etudiantDAO = etudiantDAO;
 		this.moduleDAO = moduleDAO;
 		this.evaluationDAO = evaluationDAO;
-		this.competenceDAO = competenceDAO;
-
-//		listeEtudiant = etudiantDAO.findAll() ;
-//		listeCours = coursDAO.findAll() ;
-		
+		this.competenceDAO = competenceDAO;		
 	}
 
 	
-	// Liste des profs
+	// Liste des étudiants
 	@RequestMapping("/liste")
 	public String listeEtudiant(Model model) {
-		
-		System.out.println(   etudiantDAO.findAll().toString()   );
-		
-		System.out.println(   etudiantDAO.findAll().get(0).getUsername()   );
-		
-		
+				
 		model.addAttribute("etudiantList", etudiantDAO.findAll() );
 
 		return "etudiant/listeEtudiant";
 	}
 
-	
-	
-	
-	
+
 	// Méthode Get pour ajouter un etudiant
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String addEtudiantGet(@ModelAttribute Etudiant etudiant, Model model) {
@@ -100,11 +76,8 @@ public class EtudiantController {
 	}
 	
 
-	
-	
-	
-	
-	// Méthode Get pour faire un update d'un prof
+
+	// Méthode Get pour faire un update d'un étudiant
 	@RequestMapping(value = "/{code}/update", method = RequestMethod.GET)
 	public String updateEtudiantGet(@PathVariable String code, Model model) {
 
@@ -154,18 +127,14 @@ public class EtudiantController {
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String addUpdateEtudiantPost(@Valid Etudiant etudiant, BindingResult errors,
 			@RequestParam(value = "savedId", required = false) String savedId, Model model, RedirectAttributes rModel) {
-		
-		
-		
+
 		logger.debug("Etudiant Info:" + etudiant.getUsername() + " savedId " + savedId);
-		
 		
 		// Gestion de la validation
 		if (errors.hasErrors()) {
 			// Attribut maison pour distinguer un add d'un update
 			if (savedId != null)
 				model.addAttribute("savedId", savedId);
-
 
 			logger.debug("Erreurs dans les données de etudiant:" + etudiant.getUsername());
 			return "etudiant/addEtudiant";
@@ -191,10 +160,9 @@ public class EtudiantController {
 			}
 		} else {			// cas d'un Update
 
-			logger.debug("etudiant Info: code != null ");		
-		// Est ce que le id a changé?
-//			etudiant.setCode( etudiant.getCode() ) ;	
+			logger.debug("etudiant Info: code != null ");
 			
+			// Est ce que le id a changé?
 			if (!savedId.equals( etudiant.getUsername() )) {
 				// code à changé
 				// Vérifie si pas en doublon avec un autre
@@ -202,22 +170,19 @@ public class EtudiantController {
 					logger.debug("Le Etudiant Existe:" + etudiant.getUsername() + " savedId " + savedId);
 					throw new DuplicateException("Le Etudiant " + etudiant.getUsername() + " existe déjà");
 				}
-				// retire le etudiant avec l'ancien code
-				etudiantDAO.delete( savedId );
-			} else {
-				// retire le cours de la liste
-				etudiantDAO.delete( etudiant.getUsername());
 			}
-			
-			
 			
 			logger.debug("Mise à jour du etudiant: " + savedId);
 
 		}
 		
 
-
-		String pwd = GeneratePassword.PasswordEncode( etudiant.getPassword()  )  ;
+		String pwd ;
+		if(etudiant.getPassword().equals("*******")) {
+			pwd = etudiantDAO.findOne(etudiant.getUsername()).getPassword() ;
+		}else {
+			pwd = GeneratePassword.PasswordEncode( etudiant.getPassword()  )  ;
+		}
 		etudiant.setPassword(   pwd   );
 		
 		// ajoute le nouveau ou le Etudiant nouvellement modifié
@@ -254,7 +219,7 @@ public class EtudiantController {
 	public String deleteEtudiant(@PathVariable String code) {
 		logger.debug("<DEBUT> Supression du etudiant: " + code);
 		
-		// Vérifie si le cours existe
+		// Vérifie si l'étudiant existe
 		if (!etudiantDAO.exists(code))  {
 			throw new NotFoundException("Etudiant non trouvé pour suppression", code );
 		}
@@ -266,10 +231,6 @@ public class EtudiantController {
 	}
 	
 
-	
-		
-	
-	
 	/**
 	 * Réceptionne le traitement de l'exception DuplicateException pour tous les
 	 * déclenchements au sein de ce contrôleur. Cette méthode n'est pas apellée
@@ -281,86 +242,82 @@ public class EtudiantController {
 	 *            l'objet exception
 	 * @return un Modèle et une vue par le type ModelView
 	 */
-	// @ExceptionHandler(DuplicateException.class)
-	// private ModelAndView doublonHandler(HttpServletRequest req, Exception e) {
-	// ModelAndView m = new ModelAndView();
-	// m.addObject("exception", e);
-	// m.addObject("url", req.getRequestURL());
-	// m.setViewName("error");// nom logique de la page d'erreur
-	// return m;
-	// }
 
 	// Affichage du détail d'un Etudiant
-	@RequestMapping(value = "/{code}", method = RequestMethod.GET)
-	public String detailEtudiant(@PathVariable String code, Model model,  Authentication authentication) {
-		// Vérifie si on ne recoit pas le Etudiant suite à une redirection
-		if (!model.containsAttribute("etudiant")) {
-			logger.debug("Recherche le etudiant: " + code);
-			// recherche le etudiant dans la liste
-			// Vérifie si le prof existe
-			Etudiant etudiant = getEtudiant(code);
-			// gestion spécifique pour la non présence de etudiant.
-			if (etudiant == null)
-				throw new NotFoundException("Cet etudiant n'existe pas : ", code);
+	@RequestMapping(value = "/{student}", method = RequestMethod.GET)
+	public String detailEtudiant(@PathVariable String student, Model model,  Authentication authentication) {
+
+			logger.debug("Recherche le etudiant: " + student);
 			
+			// Vérifie si l'étudiant existe
+			if (!etudiantDAO.exists(student))
+				throw new NotFoundException("Cet etudiant n'existe pas : ", student);
+			
+			// On récupère l'étudiant
+			Etudiant etudiant = etudiantDAO.findOne(student);
+			
+			// On crée une variable booléenne pour indiquer si on est un admin
+			boolean isAdmin = false ;
 			String userConnected = new String();
+			// On vérifie qu'on est connecté
 			if(authentication != null) {
-				
+				// Si oui, on vérifie si on est admin
+				isAdmin = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_ADMIN.name()))  ;
+				// On récupère le nom d'utilisateur de la personne connectée
 				userConnected = authentication.getName();	
 			} else {
 				userConnected = "";
 			}
 
-			boolean isAdmin = false ;
-			if ( authentication != null )
-				isAdmin = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_ADMIN.name()))  ;
-
-			if(code.equals(userConnected) || isAdmin ) {
-				
+			// On vérifie soit si on est admin soit si on est l'étudiant ciblé
+			if(student.equals(userConnected) || isAdmin ) {
+				// On récupère la liste des modules de l'étudiant
 				List<Module> modules = moduleDAO.getModulesOfEtudiant(etudiant.getUsername());
 				
+				// On envoie déjà ces informations basiques
 				model.addAttribute("etudiant", etudiant );
-								
 				model.addAttribute("listModules", modules    );
 				
+				// On récupères les informations plus complexes en appelant les fonctions spécialisées
 				List<String> statusModules = getResultOfModules(modules, etudiant);
 				List<String> infosCompetences = getInfosOfCompetences(modules, etudiant);
+				List<String> evalComments = getCommentOfEval(modules, etudiant);
 				
-				for(int i=0;i<statusModules.size();i++) {
-					System.out.println(statusModules.get(i).toString());
-				}
-				
+				// On envoie les informations complémentaires
 				model.addAttribute("statusModules", statusModules    );
 				model.addAttribute("infosCompetences", infosCompetences    );
+				model.addAttribute("evalComments", evalComments    );
 				
 			} else {
-				throw new NoAccessException("Doit être connecté en admin ou l'étudiant " + code);
+				throw new NoAccessException("Doit être connecté en admin ou l'étudiant " + student);
 			}
-			
-			// Ajout au Modèle
 
 			
-			
-		} else
-			logger.debug("Utilisation d'un FlashAttribute pour le etudiant: " + code);
 		
 		return "etudiant/etudiant";
 	}
 	
 	
 	
+	
+	
+	// Fonction pour récupérer les informations concernant les compétences
 	private List<String> getInfosOfCompetences(List<Module> modules, Etudiant etudiant) {
 		List<String> allInfos = new ArrayList<>();
 		String info = new String();
 		
+		// On passe en revue chaque modules
 		for(Module module : modules) {
+			// On récupère les compétences du modules
 			List<Competence> competences = competenceDAO.getCompetencesOfCours(module.getCours().getCode());
+			// On récupère les compétences VALIDÉES de l'étudiant pour ce module
 			List<Object[]> validedComp = competenceDAO.getCompetencesValidOfEtudiant(etudiant.getUsername(), module.getCours().getCode());
 			
+			// On crée le texte qu'on affichera dans la page
 			info = validedComp.size() +" sur " + competences.size();
 			if(validedComp.size() == competences.size() && validedComp.size() > 0)
 				info += " Bravo !";
-			
+			// On ajoute le texte dans la variable contenant toutes les informations
 			allInfos.add(info);
 		}
 
@@ -369,43 +326,54 @@ public class EtudiantController {
 	}
 	
 	
-	
+	// Fonction pour récupérer les résultats des évaluations d'un étudiant pour tout ses modules
 	private List<String> getResultOfModules(List<Module> modules, Etudiant etudiant) {
 		
-		List<String> allResults = new ArrayList<>();
+		List<String> results = new ArrayList<>();
+		// On passe en revue tout ses modules
 		for(Module module : modules) {
 			
+			// On vérifie combien de sessions existent pour ce module
 			List<Evaluation.SESSION> sessions = evaluationDAO.getSessionsOfModule(module.getCode());
+			// On récupère le résultat de l'étudiant pour le module en question en tenant compte de la session
 			Evaluation evaluation = evaluationDAO.getEvaluationOfModuleOfEtudiant(module.getCode(), (sessions.size()-1), etudiant.getUsername() );
 			
-
-			
+			// On vérifie si l'évaluation existe, si oui, on crée le texte correspondant à son résultat
 			if(evaluation != null) {
-				if(evaluation.getResultat() >= 50) {
-					allResults.add("Réussi (" + evaluation.getResultat() + "%)");
-				} else {
-					allResults.add("Raté");
-				} 
+				if(evaluation.getResultat() >= 50) 
+					results.add("Réussi (" + evaluation.getResultat() + "%)");
+				else if(evaluation.getResultat() < 0) 
+					results.add("Abandon");	
+				 else 
+					 results.add("Raté");
+				
 			}
+			// Si non, on indique que le module n'a pas encore d'évaluation
 			else {
-				allResults.add("En cours");
+				results.add("En cours");
 			}
-			System.out.println(allResults.size());
+
 		}
 		
-		return allResults;
+		return results;
 	}
 	
-	
-	
-	
+	// Fonction pour récupérer les éventuels commentaires du professeur
+	private List<String> getCommentOfEval(List<Module> modules, Etudiant etudiant) {
+		List<String> comments = new ArrayList<>();
+		for(Module module : modules) {
+			List<Evaluation.SESSION> sessions = evaluationDAO.getSessionsOfModule(module.getCode());
+			Evaluation evaluation = evaluationDAO.getEvaluationOfModuleOfEtudiant(module.getCode(), (sessions.size()-1), etudiant.getUsername() );
 
-
-
-	// Renvoie un Optional de Etudiant
-	private Etudiant getEtudiant(String code) {
-			return etudiantDAO.findOne(code) ;
-		
+			if(evaluation != null) {
+				comments.add(evaluation.getComments());
+			}
+			else {
+				comments.add("");
+			}
+				
+		}
+		return comments;
 	}
 
 }

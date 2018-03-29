@@ -13,44 +13,16 @@ import lombok.NoArgsConstructor;
 public class ListeEvaluations {
 
 
-
-
-	//		evaluation.put( evaluations ,  resultat ) 
-//	private List<EvaluationKey> evaluations = new ArrayList<>();
-	
-//	private String resultat ;
-	
-//	private Map<EvaluationKey, Integer> infos = new HashMap<EvaluationKey, Integer>();
-	
 	
 	private List<Evaluation> evaluations = new ArrayList<>();
 	
-	
-	
-/*
-	@Getter(AccessLevel.NONE)
-	@Setter(AccessLevel.NONE)
-	Integer resultat ;
-	
-	List<Integer> listResultat ;
-*/
 
-/*
-	public ListeEvaluations( Map<EvaluationKey, Integer> infos   ) {		 List<EvaluationKey> evaluations  
-		super();
-		this.infos = infos ;
-	}
-*/
 	
 	public ListeEvaluations( List<Evaluation> evaluations   ) {		/* List<EvaluationKey> evaluations */ 
 		super();
 		this.evaluations = evaluations ;
 
 	}
-	
-	
-	
-	
 	
 	
 	public List<Evaluation>  findAll( ) {
@@ -72,31 +44,7 @@ public class ListeEvaluations {
 	public int  size(    ) {
 		return evaluations.size() ;
 	}
-	
-	
-	
-	
-	
-	
-/*	
-	public void setResultat(Integer i) {
-		listResultat.add(i);
-	}
-	
-	public Integer getResultat( ) {
-		return 7 ;
-	}
-	
-*/
-	
-	
-	
-/*
-	public void addInfos(String section) {
-		sections.add(section);
-	}
-*/
-	
+
 	
 }
 

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,8 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.isfce.pidw.config.DataConfig;
 import com.isfce.pidw.data.ICoursJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
+import com.isfce.pidw.data.IProfesseurJpaDAO;
 import com.isfce.pidw.model.Cours;
 import com.isfce.pidw.model.Module;
+import com.isfce.pidw.model.Professeur;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles(profiles = "testU")
 @ContextConfiguration(classes = DataConfig.class)
@@ -28,6 +31,8 @@ public class CoursDAOTest {
 	ICoursJpaDAO coursDAO;
 	@Autowired
 	IModuleJpaDAO moduleDAO;
+	@Autowired
+	IProfesseurJpaDAO professeurDAO;
 	@Test
 	@Transactional
 	public void testSaveGet() {
@@ -87,19 +92,27 @@ public class CoursDAOTest {
 		List<String> listeSections=coursDAO.listeSections();
 		assertEquals(3,listeSections.size());
 		//Vérifie si le nbr de section est bien de 2 pour ITEST
-		List<String> sections=coursDAO.coursSection("ITEST");
+		Set<String> sections=coursDAO.coursSection("ITEST");
 		assertEquals(2,sections.size() );
 		
 		//Ajout de module à un cours
 		coursGet= coursDAO.getOne("ITEST");
 		
+		//Ajout de prof à un module
+		Professeur prof1 = new Professeur("VO", "VO", "VO", "VO", "VO@VO.VO") ;
+		professeurDAO.save(prof1) ;
+		Professeur professeurGet ;
+		
+		//Ajout de module à un cours
+		professeurGet= professeurDAO.getOne("VO");
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Module m1 = new Module("4ITEST-1-A", sdf.parse("4/9/2017"), sdf.parse("22/1/2018"), Module.MAS.SOIR, coursGet);
-		Module m2 = new Module("4ITEST-2-A", sdf.parse("4/9/2017"), sdf.parse("22/1/2018"), Module.MAS.APM, coursGet);
+		Module m1 = new Module("4ITEST-1-A", sdf.parse("4/9/2017"), sdf.parse("22/1/2018"), Module.MAS.SOIR, coursGet, professeurGet);
+		Module m2 = new Module("4ITEST-2-A", sdf.parse("4/9/2017"), sdf.parse("22/1/2018"), Module.MAS.APM, coursGet, professeurGet);
 		//sauvegarde des cours
 		m1=moduleDAO.save(m1);
 		m2=moduleDAO.save(m2);
-		List<Module> modules=moduleDAO.getModulesCours("ITEST");
+		List<Module> modules=moduleDAO.getModulesOfCours("ITEST");
 		assertTrue(modules.contains(m1));
 		assertTrue(modules.contains(m2));
 		

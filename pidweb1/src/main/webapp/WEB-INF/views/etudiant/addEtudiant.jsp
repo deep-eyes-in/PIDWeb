@@ -19,7 +19,7 @@
 			<h1><s:message code="etudiant.creer"/></h1>
 		</c:when>
 		<c:otherwise>
-			<h1><s:message code="etudiant.modifier"/></h1>
+			<h1><s:message code="etudiant.modifier"/> : "${etudiant.username}" </h1>
 		</c:otherwise>
 	</c:choose>
 	<br />
@@ -34,13 +34,12 @@
 		<sf:errors path="*" element="div" cssClass="alert alert-danger" />
 
 <s:bind path="username">
+
 			<div class="form-group ${status.error ? 'has-error' : ''} ">
-				<sf:label path="username" class="col-sm-2 control-label">
-					<s:message code="etudiant.username" />
-				</sf:label>
+
 				<div class="col-sm-10">
 					<sf:input path="username" id="username" class="form-control"
-						placeholder="username du etudiant" />
+						placeholder="username du etudiant" type="hidden" />
 					<sf:errors path="username" class="control-label" />
 
 				</div>
@@ -57,7 +56,7 @@
 				</sf:label>
 				<div class="col-sm-10">
 					<sf:input path="password" id="password" class="form-control"
-						placeholder="password de etudiant" />
+						placeholder="password de etudiant" value="*******" />
 					<sf:errors path="password" class="control-label" />
 				</div>
 			</div>

@@ -37,40 +37,15 @@ public class ProfesseurController {
 	// Logger
 	final static Logger logger = Logger.getLogger(ProfesseurController.class);
 	
-	// on recupre la liste de cours et etudiant depois L'usine (factory)
-//	private ICoursJpaDAO coursDAO;
 	private IProfesseurJpaDAO professeurDAO;
-	
-//	private  List<Etudiant> listeEtudiant ;
-//	private  List<Cours> listeCours  ;
-	
-	
+
 
 	// Création de la liste de données pour le 1er exemple
 	@Autowired
 	public ProfesseurController(IProfesseurJpaDAO professeurDAO) {
-		this.professeurDAO = professeurDAO;
-
-//		listeEtudiant = etudiantDAO.findAll() ;
-//		listeCours = coursDAO.findAll() ;
-		
+		this.professeurDAO = professeurDAO;		
 	}
 
-	
-/*
-	private IUsersJpaDAO<Professeur> profDAO;
-
-	@Autowired
-	public ModuleController(IModuleJpaDAO moduleDAO, IUsersJpaDAO<Users> usersDAO, ICoursJpaDAO coursDAO, IUsersJpaDAO<Professeur> profDAO) {
-		super();
-		this.moduleDAO	 = moduleDAO;
-		this.usersDAO	 = usersDAO;
-		this.coursDAO	 = coursDAO;
-		this.profDAO	 = profDAO ;
-	}	
- */
-	
-	
 	
 	// Liste des profs
 	@RequestMapping("/liste")
@@ -185,15 +160,12 @@ public class ProfesseurController {
 				errors.rejectValue("id", "Professeur.id.doubon", "Existe déjà!");
 
 				return "professeur/addProfesseur";
-				//Autre solution en générant une exception
-				// throw new DuplicateException("Le Etudiant " + Etudiant.getId() + " existe déjà
-				// ");
+
 			}
 		} else {			// cas d'un Update
 
 			logger.debug("professeur Info: code != null ");		
 		// Est ce que le id a changé?
-//			professeur.setCode( professeur.getCode() ) ;	
 			
 			if (!savedId.equals( professeur.getUsername() )) {
 				// code à changé
@@ -202,11 +174,6 @@ public class ProfesseurController {
 					logger.debug("Le Professeur Existe:" + professeur.getUsername() + " savedId " + savedId);
 					throw new DuplicateException("Le Professeur " + professeur.getUsername() + " existe déjà");
 				}
-				// retire le professeur avec l'ancien code
-				professeurDAO.delete( savedId );
-			} else {
-				// retire le cours de la liste
-				professeurDAO.delete( professeur.getUsername());
 			}
 			
 			
@@ -217,7 +184,13 @@ public class ProfesseurController {
 		
 
 
-		String pwd = GeneratePassword.PasswordEncode( professeur.getPassword()  )  ;
+		
+		String pwd ;
+		if(professeur.getPassword().equals("*******")) {
+			pwd = professeurDAO.findOne(professeur.getUsername()).getPassword() ;
+		}else {
+			pwd = GeneratePassword.PasswordEncode( professeur.getPassword()  )  ;
+		}
 		professeur.setPassword(   pwd   );
 		
 		
@@ -245,10 +218,10 @@ public class ProfesseurController {
 	
 
 	/**
-	 * Supression d'un Etudiant
+	 * Supression d'un professeur
 	 * 
 	 * @param id
-	 *            du Etudiant
+	 *            du professeur
 	 * @return le mapping de redirection
 	 */
 	@RequestMapping(value = "/{code}/delete", method = RequestMethod.POST)
@@ -268,35 +241,16 @@ public class ProfesseurController {
 	
 
 	
-	/**
-	 * Réceptionne le traitement de l'exception DuplicateException pour tous les
-	 * déclenchements au sein de ce contrôleur. Cette méthode n'est pas apellée
-	 * explicitement
-	 * 
-	 * @param req
-	 *            la request Http. Nécessaire pour fournir des données à la vue
-	 * @param e
-	 *            l'objet exception
-	 * @return un Modèle et une vue par le type ModelView
-	 */
-	// @ExceptionHandler(DuplicateException.class)
-	// private ModelAndView doublonHandler(HttpServletRequest req, Exception e) {
-	// ModelAndView m = new ModelAndView();
-	// m.addObject("exception", e);
-	// m.addObject("url", req.getRequestURL());
-	// m.setViewName("error");// nom logique de la page d'erreur
-	// return m;
-	// }
 
-	// Affichage du détail d'un Etudiant
+	// Affichage du détail d'un professeur
 	@RequestMapping(value = "/{code}", method = RequestMethod.GET)
 	public String detailProfesseur(@PathVariable String code, Model model) {
-		// Vérifie si on ne recoit pas le Etudiant suite à une redirection
+		// Vérifie si on ne recoit pas le professeur suite à une redirection
 		if (!model.containsAttribute("professeur")) {
 			logger.debug("Recherche le professeur: " + code);
 			// recherche le professeur dans la liste
 			// Vérifie si le prof existe
-			Professeur professeur = getProfesseur(code);
+			Professeur professeur = professeurDAO.findOne(code);
 			// gestion spécifique pour la non présence de professeur.
 			if (professeur == null)
 				throw new NotFoundException("Ce professeur existe déjà ", code);
@@ -309,12 +263,5 @@ public class ProfesseurController {
 		return "professeur/professeur";
 	}
 
-
-
-	// Renvoie un Optional de Etudiant
-	private Professeur getProfesseur(String code) {
-			return professeurDAO.findOne(code) ;
-		
-	}
 
 }

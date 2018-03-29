@@ -13,8 +13,9 @@
 
 <div class="container">
 	
-	<h1><c:out value="Module : ${module.cours.nom} "></c:out></h1>
-	<h1><c:out value="Modifiation des compétence d'un étudiant : ${etudiant.username} "></c:out></h1>
+	<h1><c:out value="Cours : ${module.cours.nom} "></c:out></h1>
+	<h2><c:out value="Module : ${module.code} "></c:out></h2>
+	<c:if test="${editRight}"><h1><c:out value="Modifiation des compétences d'un étudiant : ${etudiant.username} "></c:out></h1></c:if>
 
 
 	
@@ -28,8 +29,10 @@
 					<div class="divTableRow">
 					<div class="divTableHead">Mastered</div>
 					<div class="divTableHead">Description</div>
-					<div class="divTableHead">Valider</div>
-					<div class="divTableHead">Refuser</div>
+					<c:if test="${editRight}">
+						<div class="divTableHead">Valider</div>
+						<div class="divTableHead">Refuser</div>
+					</c:if>
 					</div>
 				</div>
 				<div class="divTableBody">
@@ -54,37 +57,38 @@
 							
 							<div class="divTableCell"> <c:out	value="${comptValid.description}" /> 	 </div>
 							
-							
-							<div class="divTableCell"> 
-								
-								<c:if test="${comptValid.valided}">	
-									<sf:form method="POST" class="form-horizontal" modelAttribute="CompetenceValid"
-									action="${addActionUrl}">				
-									<button class="btn btn-info" disabled="disabled">Valider</button>	
-									</sf:form>
-								</c:if> 
-								<c:if test="${!comptValid.valided}">
-									<sf:form method="POST" class="form-horizontal" modelAttribute="CompetenceValid"
-									action="${addActionUrl}">
-									<button class="btn btn-info">Valider</button>	
-									</sf:form>
-								</c:if> 
-							</div>
-							<div class="divTableCell">
-								<c:if test="${!comptValid.valided}">
-									<sf:form method="POST" class="form-horizontal" modelAttribute="CompetenceValid"
-									action="${removeActionUrl}">						
-									<button class="btn btn-warning" disabled="disabled">Refuser</button>
-									</sf:form>
-								</c:if> 
-								<c:if test="${comptValid.valided}">
-									<sf:form method="POST" class="form-horizontal" modelAttribute="CompetenceValid"
-									action="${removeActionUrl}">	
-									<button class="btn btn-warning">Refuser</button>
-									</sf:form>	
-								</c:if> 
-								
-							</div>
+							<c:if test="${editRight}">
+								<div class="divTableCell">
+									
+									<c:if test="${comptValid.valided}">	
+										<sf:form method="POST" class="form-horizontal" modelAttribute="CompetenceValid"
+										action="${addActionUrl}">				
+										<button class="btn btn-info" disabled="disabled">Valider</button>	
+										</sf:form>
+									</c:if> 
+									<c:if test="${!comptValid.valided}">
+										<sf:form method="POST" class="form-horizontal" modelAttribute="CompetenceValid"
+										action="${addActionUrl}">
+										<button class="btn btn-info">Valider</button>	
+										</sf:form>
+									</c:if> 
+								</div>
+								<div class="divTableCell">
+									<c:if test="${!comptValid.valided}">
+										<sf:form method="POST" class="form-horizontal" modelAttribute="CompetenceValid"
+										action="${removeActionUrl}">						
+										<button class="btn btn-warning" disabled="disabled">Refuser</button>
+										</sf:form>
+									</c:if> 
+									<c:if test="${comptValid.valided}">
+										<sf:form method="POST" class="form-horizontal" modelAttribute="CompetenceValid"
+										action="${removeActionUrl}">	
+										<button class="btn btn-warning">Refuser</button>
+										</sf:form>	
+									</c:if> 
+									
+								</div>
+							</c:if>
 						</div>
 									
 					

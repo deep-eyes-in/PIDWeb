@@ -19,14 +19,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
+import com.isfce.pidw.data.ICompetenceJpaDAO;
 import com.isfce.pidw.data.ICoursJpaDAO;
 import com.isfce.pidw.data.IEtudiantJpaDAO;
 import com.isfce.pidw.data.IEvaluationJpaDAO;
 import com.isfce.pidw.data.IModuleJpaDAO;
 import com.isfce.pidw.data.IProfesseurJpaDAO;
 import com.isfce.pidw.data.IUsersJpaDAO;
+import com.isfce.pidw.filter.ConsoleColors;
 import com.isfce.pidw.filter.EvaluationKey;
 import com.isfce.pidw.model.Cours;
+import com.isfce.pidw.model.Etudiant;
 import com.isfce.pidw.model.Evaluation;
 import com.isfce.pidw.model.ListeEvaluations;
 import com.isfce.pidw.model.Module;
@@ -44,17 +47,22 @@ public class EvaluationController {
 	private IEtudiantJpaDAO etudiantDAO;
 	private IUsersJpaDAO<Users> usersDAO;
 	private IEvaluationJpaDAO evaluationDAO;
+	private ICompetenceJpaDAO competenceDAO ;
 	
 	private String className = "EvaluationController" ;
 
 	@Autowired
-	public EvaluationController(IModuleJpaDAO moduleDAO, IProfesseurJpaDAO professeurDAO, ICoursJpaDAO coursDAO, IEtudiantJpaDAO etudiantDAO, IUsersJpaDAO<Users> usersDAO, IEvaluationJpaDAO evaluationDAO ) {
+	public EvaluationController(IModuleJpaDAO moduleDAO, IProfesseurJpaDAO professeurDAO,
+			ICoursJpaDAO coursDAO, IEtudiantJpaDAO etudiantDAO, IUsersJpaDAO<Users> usersDAO,
+			IEvaluationJpaDAO evaluationDAO, ICompetenceJpaDAO competenceDAO  ) {
 		super();
 		this.moduleDAO	 = moduleDAO;
 		this.professeurDAO	 = professeurDAO;
 		this.coursDAO	 = coursDAO;
 		this.etudiantDAO	 = etudiantDAO ;
 		this.evaluationDAO = evaluationDAO;
+		
+		this.competenceDAO = competenceDAO ; 
 
 		this.usersDAO = usersDAO;
 	}
@@ -81,8 +89,7 @@ public class EvaluationController {
 	public String listeModules(@PathVariable Optional<String> codeUser, Model model, Authentication authentication) {
 		
 		System.out.printf( "["+  this.getClass().getSimpleName() + "]"  +  "[listeModules]"  +  "[]" );
-		
-		
+
 		model.addAttribute("module", null );
 		
 		return ""  ;
@@ -90,44 +97,44 @@ public class EvaluationController {
 	
 	
 	
+
+	// LEGACY FOR OLD LINKS SUPPORT
+	@RequestMapping(value = { "/view/{codeUser}" })
+	public String viewEvaluationLegacy(	@PathVariable Optional<String> codeUser	) {
+		logger.warn( ConsoleColors.f( "*["+  this.getClass().getSimpleName() + "]"  +  "[viewEvaluationLegacy]"  +  "[redirect:/evaluation/]" , 
+				ConsoleColors.RED_BACKGROUND_BRIGHT  )   );
+		return "redirect:/evaluation/" + codeUser.get() ;
+	}
+			
 	
-	@RequestMapping(value = { "/view/{codeUser}", "/view" })
+	@RequestMapping(value = { "/{codeUser}" })   // "/view/{codeUser}", "/view"
 	public String viewEvaluation(
 			@PathVariable Optional<Long> codeUser, 
 			Model model, 
 			Authentication authentication
 	) {
+		logger.warn( ConsoleColors.f( "*["+  this.getClass().getSimpleName() + "]"  +  "[viewEvaluation]"  +  "[]" , 
+				ConsoleColors.CYAN_BACKGROUND_BRIGHT  )   );
 		
-		System.out.printf( "["+  this.getClass().getSimpleName() + "]"  +  "[viewEvaluation]"  +  "[]" );
 		Long id = new Long( codeUser.get() ) ;
-		
 		
 		if ( evaluationDAO.exists (  id ) ) {
 			Evaluation eva = evaluationDAO.findOne( id ) ;
 			model.addAttribute("evaluation", eva );
 		}else {
-			model.addAttribute("evaluation", null );
+			return "redirect:/evaluation/"  ;			
 		}
-		
 		
 		return "evaluation/addEvaluation" ;
 	}	
 	
 	
-	
-//		/*
+
 	@RequestMapping(value = { "/{code}/{session}"  },  method = RequestMethod.GET)  
 	public String addUpdateEvaluationTest(
 			@PathVariable Optional<Integer> session,
 			@PathVariable Optional<String> code,
-			//@ModelAttribute Evaluation evaluation,
-//			@RequestParam(value = "session", required = true) String session,
-			
-//			@RequestParam(value = "session", required = false) Optional<Integer> session,
-			
-			Model model, RedirectAttributes rModel
-			, HttpServletRequest request
-	) {
+			Model model, RedirectAttributes rModel, HttpServletRequest request	) {
 		
 		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[addUpdateEvaluationTest]"  +  "[] \n" );
 		
@@ -149,53 +156,30 @@ public class EvaluationController {
 			keyTemp.setEtudiant( evaluationList.get(i).getEtudiant() );
 			keyTemp.setSession( evaluationList.get(i).getSession() );
 			
-
-//			listeEvaluations.getInfos().put(keyTemp,  evaluationList.get(i).getResultat() ) ;
 			
 			listeEvaluations.add( evaluationList.get(i).getId(), keyTemp ,  evaluationList.get(i).getResultat()   ) ;
 
-			
-
 		}
-		
-//		System.out.println( listeEvaluations.getEvaluations().toString() );
 		
 
 		rModel.addFlashAttribute("listeEvaluations", listeEvaluations );
-		
-		
 
-		return "redirect:/evaluation/temp" ;
-//		return "" ;
+		return "redirect:/evaluation/" ;
 		
 	}
-//		*/
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@RequestMapping(value = { "/temp"  },  method = RequestMethod.GET)
+
+
+	@RequestMapping(value = { "/"  },  method = RequestMethod.GET)
 	public String redirectToForm(
 			@ModelAttribute ListeEvaluations listeEvaluations,
-//			@ModelAttribute Evaluation Evaluation,
 			Model model) {
+		
 		System.out.println( model.toString() );
 		
 		System.out.println( listeEvaluations.getEvaluations().toString() );
-		
-		
 
-		
-//	 "" ) ; //
-		
-//		model.addAttribute( "evaluation", Evaluation.class );
-		
 		System.out.println(  model.containsAttribute("listeEvaluations")  );
+		
 		
 		if ( listeEvaluations.size() != 0 ) {
 			model.addAttribute( "module",  listeEvaluations.getEvaluations().get(0).getModule().getCode()  );	
@@ -207,27 +191,12 @@ public class EvaluationController {
 		
 
 
-		
 		return "evaluation/listeEvaluation" ;
 		
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-//	evaluation/IVTE-1-A/1
-	
-	
 
-	
-	
-	
-//	/evaluation/${eval.id}/update
-	
 	@RequestMapping(value = "/{id}/update" )
 	public String updateEvaluation(
 			@PathVariable Long id, 
@@ -250,17 +219,12 @@ public class EvaluationController {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
 
 	@RequestMapping(value = "/{code}/add" )
 	public String addEvaluation(@PathVariable String code, Model model) {
 		
 		System.out.printf( "*["+  this.getClass().getSimpleName() + "]"  +  "[addEvaluation]"  +  "[]" );
+		
 		
 		// Vérifie si on ne recoit pas le module suite à une redirection
 		if (!model.containsAttribute("module")) {
@@ -271,7 +235,7 @@ public class EvaluationController {
 			// gestion spécifique pour la non présence du module.
 			if (module == null) {
 				logger.debug("Problème : Not found");
-				throw new NotFoundException("Ce module existe déjà ", code);
+				throw new NotFoundException("Ce module n'existe pas ", code);
 			}
 			
 			
@@ -286,23 +250,24 @@ public class EvaluationController {
 		module.setCours(c);
 		module.setEtudiants(etudiantDAO.getEtudiantsOfModule(code));
 		
-		List<String> etudiantOfModule = new ArrayList<>();
-		etudiantOfModule = moduleDAO.getFkEtudiantsOfModule(code);
 
 		Integer nbrSession = getSessionOfEvaluation(code);
 		Evaluation.SESSION theSession = null;
-
+		
+		List<String> etudiantOfModule = new ArrayList<>();
+		
+		
 		if(nbrSession == 0) {
 			theSession = Evaluation.SESSION.PREMIERE;
-			
+			etudiantOfModule = moduleDAO.getFkEtudiantsOfModule(code);
 		} else if(nbrSession == 1) {
 			theSession = Evaluation.SESSION.DEUXIEME;
+			etudiantOfModule = etudiantDAO.get2ndSessionFkEtudiantsOfModule(code);
 		} else {
 			theSession = null;
 		}
 
-		//List<Evaluation> eval = new ArrayList<>();
-		
+
 		if(theSession != null) {
 			for(int i=0 ; i < etudiantOfModule.size() ; i++) {
 
@@ -311,7 +276,6 @@ public class EvaluationController {
 				evaluation.setId(evaluationDAO.generateId() + 1);
 				evaluation.setEtudiant(etudiantDAO.findOne(etudiantOfModule.get(i)));
 				evaluation.setModule(module);
-//				Short result = new Short("0");
 				evaluation.setResultat( 0 ); 
 				evaluation.setSession(theSession);	
 				
@@ -327,12 +291,7 @@ public class EvaluationController {
 		return "redirect:/module/liste";
 	}
 	
-	
-	
-	
-	
-	
-	
+
 	
 /////////////////////////////////////////////////////////////////////////
 //   BASIC FUCTIONS                                                    //
@@ -350,24 +309,7 @@ public class EvaluationController {
 	}
 	
 
-	
-	
-	
-	
-	
-	
-	
-/////////////////////////////////////////////////////////////////////////
-//   DEAD CODE                                                         //
-/////////////////////////////////////////////////////////////////////////
-	
-	
-	
 
-	
-	
-	
-	
 	
 	
 	@RequestMapping(value = { "/update"  },  method = RequestMethod.POST)  
@@ -381,108 +323,38 @@ public class EvaluationController {
 		System.out.println(model);
 		
 		Integer resultat = evaluation.getResultat() ;
+		String  comments = evaluation.getComments() ;
+		
 		evaluation = evaluationDAO.findOne(evaluation.getId() ) ;
 		evaluation.setResultat(resultat);
+		evaluation.setComments(comments);
 		
 		System.out.println(  evaluation.toString() );
 		
 		
-		
+		if( resultat > 50 ) {
+			Etudiant etu = evaluation.getEtudiant()  ;
+			Cours cours = evaluation.getModule().getCours()  ;
+			
+			int nbrCompValid  = competenceDAO.getCompetencesValidOfEtudiant(etu.getUsername(), cours.getCode()).size() ;
+			int nbrComp = competenceDAO.getCompetencesOfCours(cours.getCode()).size() ;
+
+			if ( nbrCompValid != nbrComp ) {
+				throw new DuplicateException(" Impossible d'entrer une note supérieure à 50% si toutes les compétences ne sont pas acquises ");
+			}
+		}
 		
 		
 		// ajoute le nouveau ou l evaluation nouvellement modifié
 		evaluationDAO.save(   evaluation   );
-		
-		
-		
-// 		"/{code}/{session}"
+
 	
 		return "redirect:/evaluation/" + evaluation.getModule().getCode() + "/" +  (evaluation.getSession().ordinal()+1)  ;
 	}
 	
 	
 	
-	
-	
-	
-	
 }
-
-
-
-
-
-
-
-
-
-
-/////////////////////////////////////////////////////////////////////////
-//  TRASH                                                              //
-/////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-/*
-listeEvaluations.getInfos().forEach((key, value) -> {
-    System.out.println( key ) ; 
-    System.out.println( value ) ;
-    
-	model.addAttribute( "module", key.getModule().getCode()  );
-	model.addAttribute( "session", key.getSession().ordinal() + 1  );
-	model.addAttribute( "evaluationList", listeEvaluations.getInfos() );		    
-
-});
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

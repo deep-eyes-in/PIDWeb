@@ -123,6 +123,9 @@ public class ModuleController {
 	}
 
 	
+	
+	
+	
 	@RequestMapping(value = { "/liste/{codeUser}", "/liste" })
 	public String listeModules(@PathVariable Optional<String> codeUser, Model model, Authentication authentication) {
 		
@@ -148,7 +151,7 @@ public class ModuleController {
 			
 			// si le code user est un prof retourne les modules du prof
 			if (Roles.ROLE_PROFESSEUR.equals(roleUser)) {
-				
+			
 				lm = SendListModules("ofProf", codeUser.get());
 				texte = "du professeur: " + codeUser.get();
 				logger.debug("Modules du prof " + codeUser.orElse("vide: ") + "NB Modules :" + lm.size());
@@ -175,8 +178,6 @@ public class ModuleController {
 		if ( lm != null ) {
 			for(Module c : lm){  
 				c.getCours().setSections(moduleDAO.getCoursSection( c.getCours().getCode() ));
-//				c.setEtudiants(moduleDAO.getEtudiantsOfModule( c.getCode() ));		//	getFkEtudiantsOfModule
-//				c.setFkEtudiants(moduleDAO.getFkEtudiantsOfModule( c.getCode() ));
 			}
 		} else {
 			throw new NoAccessException("Nom d'utilisateur invalide.");
@@ -184,9 +185,28 @@ public class ModuleController {
 		
 		nbrSessions = AddEvalToListModule(lm);
 		
+		boolean isAdmin = false;
+		boolean isProf = false;
+		boolean addEvalButtons = false;
+		if(authentication != null) {
+			 isProf = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_PROFESSEUR.name()));
+			 isAdmin = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(Roles.ROLE_ADMIN.name()));
+		}
+
 		
-		model.addAttribute("userName", (!codeUser.isPresent() ? "NULL" : codeUser.get()  )  );
-		model.addAttribute("userConnected", (authentication == null ? "NULL" : authentication.getName()) );
+		if(isAdmin) {
+			addEvalButtons = true;
+		} else if( codeUser.isPresent() && authentication != null ) {
+			if(isProf && codeUser.get().equals(authentication.getName()) ) 
+				addEvalButtons = true;
+		}
+		
+		boolean listOfUser = false;
+		if(codeUser.isPresent())
+			listOfUser = true;
+			
+		model.addAttribute("listOfUser", listOfUser  );
+		model.addAttribute("addEvalRight", addEvalButtons  );
 		
 		model.addAttribute("nbrSessionList", nbrSessions);
 		model.addAttribute("userModules", texte);// le texte pour indiquer de qui sont les modules
@@ -207,9 +227,7 @@ public class ModuleController {
 	@RequestMapping(value = { "/add", "/{code}/update"  },  method = RequestMethod.GET)  
 	public String addUpdateModules(@PathVariable Optional<String> code, @ModelAttribute Module module, Model model /* , Authentication authentication */) {
 		
-//		logger.debug(" user connecté: " + (authentication == null ? " NULL " : authentication.getName()));
-		
-		System.out.println( "°addUpdateModules°°°°°°°°°°°°°°°°°°START°");
+
 		
 		// si on ne précise pas de "codeUser"
 		if ( code.isPresent() ) {
@@ -221,16 +239,12 @@ public class ModuleController {
 			Module m = moduleDAO.findOne( code.get() );
 			m.getCours().setSections(moduleDAO.getCoursSection(m.getCours().getCode() ));
 			
-//			m.setEtudiants(  moduleDAO.getEtudiantsOfModule( code.get() )  );
-			
 			
 			// Attribut maison pour distinguer un add d'un update
 			model.addAttribute("savedId", module.getCode());
 			model.addAttribute("module", m);
 		}   else {
 			
-//			Professeur prof =   usersDAO. ; //  profDAO.getOne("VO");
-//			module.setProf(prof);
 			
 			model.addAttribute("module", module);
 		}
@@ -261,41 +275,22 @@ public class ModuleController {
 	public String addUpdateModulePost(@ModelAttribute Module module, BindingResult errors,
 			@RequestParam(value = "savedId", required = false) String savedId, Model model, RedirectAttributes rModel) throws ParseException {
 		
-		
-		System.out.println( "_________________" );
-		
-		System.out.println( errors.getAllErrors().toString()     );
-		
-		
-		
-	
-//		/*	
-		
-		
+
 		// Gestion de la validation
-		if ( errors.hasErrors() ) {			//			errors.hasErrors()    errors.getErrorCount()  > 1 
+		if ( errors.hasErrors() ) {			
 			// Attribut maison pour distinguer un add d'un update
 			if (savedId != null)
 				model.addAttribute("savedId", savedId);
-			System.out.println("YOOOOOOOOOOO");
+
 			// ajoute les données de la liste déroulante
 			model.addAttribute("module", module);
 			model.addAttribute( "coursList", getListLabelled( "cours" ) );
 			model.addAttribute( "profList", getListLabelled( "professeur" ) );
 			
-			
-System.out.println("COUCOUUUUUUUUUU");
-			logger.debug("Erreurs dans les données du module:" + module.getCode());
+
 			return "module/addModule";
 		}
 		
-		
-//		*/		
-		
-		
-		System.out.println( "DONT HAVE hasErrors" );
-		
-
 		
 
 		// distinction d'un update ou d'un add
@@ -328,25 +323,14 @@ System.out.println("COUCOUUUUUUUUUU");
 					logger.debug("Le module Existe:" + module.getCode() + " savedId " + savedId);
 					throw new DuplicateException("Le module " + module.getCode() + " existe déjà");
 				}
-				// retire le module avec l'ancien code
-				moduleDAO.delete(savedId);
+
 			} else
 				// retire le module de la liste
-				moduleDAO.delete(module.getCode());
+//				moduleDAO.delete(module.getCode());
 			logger.debug("Mise à jour du module:" + savedId);
 
 		}
 
-		System.out.println( "°°°°°°°°°°°°°°°°°°°°");
-		System.out.println( module.getCours().getCode()  );
-		
-		
-/*		
-		Set<Etudiant> etudiants = new HashSet<>();
-		
-		etudiants.add( etudiantDAO.findAll().get(0) )  ;
-		module.setEtudiants(etudiants);
-*/
 		
 		// ajoute le nouveau ou le module nouvellement modifié
 		moduleDAO.save(module);
@@ -382,18 +366,12 @@ System.out.println("COUCOUUUUUUUUUU");
 		if (!moduleDAO.exists(code))
 			throw new NotFoundException("module non trouvé pour suppression", code);
 		moduleDAO.delete(code);
+		
 		logger.debug("Supression du module: " + code);
 		return "redirect:/module/liste";
 	}
 
 
-	
-	
-	
-	
-	
-	
-	
 
 	// Affichage du détail d'un module
 	@RequestMapping(value = "/{code}", method = RequestMethod.GET)
@@ -423,28 +401,28 @@ System.out.println("COUCOUUUUUUUUUU");
 			// Ajout au Modèle
 			model.addAttribute("module", module);
 			
+	
 			
-			System.out.println("aaa");
-			System.out.println(  authentication.isAuthenticated()  );
-			System.out.println("bbb");
-			
-			if ( authentication.isAuthenticated()  ) {
+			if ( authentication!=null &&  authentication.isAuthenticated()  ) {
+				System.out.println(  module.getProf().getUsername() + " / "  +  authentication.getName()  );
 				
 				if ( getRole( authentication ) ==  Roles.ROLE_ADMIN      ) {
 					
 					model.addAttribute("etudiantList", etudiantDAO.getEtudiantsOfModule( module.getCode() ));
 					
 				}else if ( getRole( authentication ) ==   Roles.ROLE_PROFESSEUR    ) {
+					// Connecté en tant que prof & le cour lui apartient.
 					if ( module.getProf().getUsername().equals(  authentication.getName() ) ) {
+						
 						model.addAttribute("etudiantList", etudiantDAO.getEtudiantsOfModule( module.getCode() ));
+						
+						model.addAttribute("moduleOwner" , true  ) ;
 					}
 				}
 			}
 			
-			
-		} 	
-		
-		
+		}
+				
 		return "module/module";
 	}
 
@@ -469,14 +447,6 @@ System.out.println("COUCOUUUUUUUUUU");
 		return authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals( role.name() ))  ;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-
 
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
@@ -549,23 +519,14 @@ System.out.println("COUCOUUUUUUUUUU");
 		return "module/signup" ;
 	}
 	
-	
-	
-	
-	
-	
-	//			module/remove/IIBD-1-B/Batistouille
-	
-	
+
 	@RequestMapping(value = { "remove/{code}/{userName}"  },  method = RequestMethod.GET)
 	public String removeModule(
 			@PathVariable Optional<String> code,
 			@PathVariable Optional<String> userName,
 			Model model /* , Authentication authentication */
 	) {
-		
-		System.out.println( "removeModule°°°°°°°°°°°°°°°°°°START°");
-//		moduleDAO.removeSignUp( code.get() , userName.get() ) ;
+
 		return "redirect:/etudiant/" + userName.get() ;
 		
 	}
@@ -581,24 +542,8 @@ System.out.println("COUCOUUUUUUUUUU");
 			Model model /* , Authentication authentication */
 	) {
 		
-//		logger.debug(" user connecté: " + (authentication == null ? " NULL " : authentication.getName()));
-		
-		System.out.println( "SIGNUPMODULE°°°°°°°°°°°°°°°°°°START°");
-		
-		
-		
-		
 		model.addAttribute("moduleList", moduleDAO.getModuleCodeList() );
-//		model.addAttribute("etudiantList", moduleDAO.getModuleCodeList() );
-		
-		
-		
-		System.out.println(  getListLabelled( "etudiant" ).toString()  );
-		
 		model.addAttribute( "etudiantList", getListLabelled( "etudiant" ) );
-		
-		
-		System.out.println( "°SIGNUPETUDIANT°°°°°°°°°°°°°°°°°°END°");
 		
 		return "module/signup";
 	}
@@ -606,18 +551,8 @@ System.out.println("COUCOUUUUUUUUUU");
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-
-	
 
 	public Map<String, String> getListLabelled( String obj ) {
-		System.out.println( "°_START°°°°°°°°°°°°°°°°°°°");
 		
 		Map<String, String> listLabelled = new LinkedHashMap<String, String>();
 
@@ -639,7 +574,6 @@ System.out.println("COUCOUUUUUUUUUU");
 			System.out.println(codeNomList.get(i)[0] + " " + codeNomList.get(i)[1]);
 		}
 		
-		System.out.println( "°_END°°°°°°°°°°°°°°°°°°°");
 		return listLabelled;
 	}
 	

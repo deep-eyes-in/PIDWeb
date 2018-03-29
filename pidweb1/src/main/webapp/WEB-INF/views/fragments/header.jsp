@@ -1,13 +1,7 @@
-
-
-
 <%@ include file="/WEB-INF/views/fragments/taglibs.jspf" %>
 
 
 
-
-<%@ page session="false" language="java"
-	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 
 
@@ -57,39 +51,30 @@
 					href="http://isfce.org" target="blank">ISFCE</a>
 			</div>
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="<s:url value="/"/>">Home</a></li>
-				<li class="dropdown"><a class="dropdown-toggle"
-					data-toggle="dropdown" href="#">Cours <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="<s:url value = "/cours/liste"/>">liste</a></li>
-						<li class="${isAdmin ? '':'disabled'}"><a
-							href="<s:url value = "${isAdmin ? '/cours/add':'#'}" />">add</a></li>
-					</ul></li>
+				<li class="active"><a href="<s:url value="/"/>"> <s:message code="menu.home" /> </a></li>
+				
+				<li class="active"><a href="<s:url value = "/cours/liste"/>"> <s:message code="menu.cours" /></a></li>
+				
 				<c:if test="${ (isAdmin) }">
-					<li class="dropdown"><a class="dropdown-toggle"
-						data-toggle="dropdown" href="#">Etudiants <span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li><a href="<s:url value = "/etudiant/liste"/>">liste</a></li>
-							<li><a href="<s:url value = "/etudiant/add" />">add</a></li>
-						</ul></li>
+					<li class="active"><a href="<s:url value = "/etudiant/liste"/>"> <s:message code="menu.student" /> </a></li>
 				</c:if>
-				<li class="dropdown"><a class="dropdown-toggle"
-					data-toggle="dropdown" href="#">Professeur <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="<s:url value = "/professeur/liste"/>">liste</a></li>
-						<li><a href="<s:url value = "/professeur/add" />">add</a></li>
-					</ul></li>
+				
+				<li class="active"><a href="<s:url value = "/professeur/liste"/>"> <s:message code="menu.teacher" /> </a></li>
+				
 
 
 				<li class="dropdown"><a class="dropdown-toggle"
-					data-toggle="dropdown" href="#">Module <span class="caret"></span></a>
+					data-toggle="dropdown" href="#"> <s:message code="menu.module" /> <span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li><a href="<s:url value = "/module/liste"/>">liste</a></li>
-						<li><a href="<s:url value = "/module/add" />">add</a></li>
-						<li><a href="<s:url value = "/module/signup" />">sign up</a></li>
+						<li><a href="<s:url value = "/module/liste"/>">   <s:message code="menu.module.list" /> </a></li>
+						<li><a href="<s:url value = "/module/add" />">    <s:message code="menu.module.add" /> </a></li>
+						<li><a href="<s:url value = "/module/signup" />"> <s:message code="menu.module.signup" />  </a></li>
 					</ul></li>
 
 			</ul>
+			
+			
+			
 			<ul class="nav navbar-nav navbar-right">
 				<sec:authorize access="isAuthenticated()">
 					<li><a href=""
@@ -102,6 +87,18 @@
 					<li><a href="${loginUrl}"><span
 							class="glyphicon glyphicon-log-in"></span> Login</a></li>
 				</sec:authorize>
+			</ul>
+			
+			
+			<ul class="nav navbar-nav navbar-right">
+		        <form>
+		            <select id="language" name="locale" onchange="submit()">
+		                <option value="pt" ${language == 'pt' ? 'selected' : ''}>Portugues</option>
+		                <option value="en" ${language == 'en' ? 'selected' : ''}>English</option>
+<%-- 		                <option value="nl" ${language == 'nl' ? 'selected' : ''}>Nederlands</option>  --%>
+		                <option value="fr" ${language == 'fr' ? 'selected' : ''}>Français</option>
+		            </select>
+		        </form>
 			</ul>
 		</div>
 

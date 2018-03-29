@@ -56,6 +56,7 @@
 		Inscription de l'étudiant:
 	</h1>
 	
+	
 
 				
 	<div class="divTable blueTable">
@@ -68,6 +69,7 @@
 			<div class="divTableHead">Nom du cours</div>
 			<div class="divTableHead">Nombre de compétences validées</div>
 			<div class="divTableHead">Status</div>
+			<div class="divTableHead">Remarque du professeur</div>
 		</div>
 		</div>
 		<div class="divTableBody">
@@ -87,6 +89,7 @@
 					<a href="../competence/${module.code}/${etudiant.username}">Détails</a>
 				</div>
 				<div class="divTableCell"><c:out value="${statusModules[i]}" /></div>
+				<div class="divTableCell"><c:out value="${evalComments[i]}" /></div>
 			</div>
 			<c:set var="i" value="${i + 1}"></c:set>
 			</c:forEach>

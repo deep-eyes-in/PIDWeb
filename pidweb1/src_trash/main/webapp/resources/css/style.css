@@ -1,0 +1,98 @@
+body {
+	font-family: sans-serif;
+}
+h1 {
+	color:#0080ff;
+}
+
+.email {
+	color:#0080c0;
+	font-size: 12pt;
+}
+
+ul.nivUn{
+	color:#0080ff;
+	font-size: 16pt;
+}
+ul.nivDeux{
+	color:black;
+	font-size: 10 pt;
+	list-style-type: square;
+}
+
+label.error {
+	color: red;
+}
+
+input.error {
+	background-color: #ffcccc;
+}
+
+div.errors {
+	background-color: #ffcccc;
+	border: 1px solid red;
+	margin: 10px;
+}
+
+span.error{
+	background-color: #ffccff;
+	
+}
+
+
+
+
+
+
+
+
+.col-sm-4{
+	background-color:#d8daec;
+	text-align:center;
+	border: 13px solid #FFF;  /* 1px solid #a8a28e;   #6363CC  */
+	border-radius: 5px
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

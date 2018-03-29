@@ -23,7 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.isfce.pidw.data.ICompetenceJpaDAO;
 import com.isfce.pidw.data.ICoursJpaDAO;
+import com.isfce.pidw.data.IModuleJpaDAO;
 import com.isfce.pidw.model.Cours;
 import com.isfce.pidw.web.CentralExceptionHandle;
 import com.isfce.pidw.web.CoursController;
@@ -31,19 +33,33 @@ import com.isfce.pidw.web.DuplicateException;
 
 public class CoursControllerTest {
 	@Autowired
+
+	IModuleJpaDAO moduleDAO ;
+	ICompetenceJpaDAO competenceDAO;
+	
 	ICoursJpaDAO mockDAO;
 	CoursController controller;
 
 	@Before
 	public void initMockDAO() {
+		ICompetenceJpaDAO competenceDAO = mock(ICompetenceJpaDAO.class);		
+		when(competenceDAO.getCompetencesOfCours("PID")).thenReturn(null);
+		
+		IModuleJpaDAO moduleDAO = mock(IModuleJpaDAO.class);		
+		when(moduleDAO.getModulesOfCours("PID")).thenReturn(null);
+
+		
 		Cours coursPID = new Cours("PID", "Projet de développement", (short) 60);
 		ICoursJpaDAO mockDAO = mock(ICoursJpaDAO.class);
 		when(mockDAO.exists("PID")).thenReturn(true);
 		when(mockDAO.findAll()).thenReturn(Arrays.asList(coursPID));
 		when(mockDAO.findOne("PID")).thenReturn(coursPID);
-		controller=new CoursController(mockDAO);
+		
+		controller=new CoursController(mockDAO, moduleDAO, competenceDAO);
 
 	}
+	
+	
 
 	@Test
 	public void testListeCours() throws Exception {
@@ -68,6 +84,7 @@ public class CoursControllerTest {
 	@Test
 	public void testDetailCours() throws Exception {
 		MockMvc mockMvc = standaloneSetup(controller).build();
+		System.out.println( get("/cours/PID").toString() );
 		mockMvc.perform(get("/cours/PID")).andExpect(view().name("cours/cours"));
 	}
 
@@ -82,7 +99,7 @@ public class CoursControllerTest {
 		when(mockDAO.exists("ISO2")).thenReturn(false);
 		when(mockDAO.save(newSaved)).thenReturn(newSaved);
 
-		CoursController controller = new CoursController(mockDAO);
+		CoursController controller = new CoursController(mockDAO, moduleDAO, competenceDAO);
 
 		MockMvc mockMvc = standaloneSetup(controller).build();
 		mockMvc.perform(get("/cours/SO2/update")).andExpect(view().name("cours/addCours"));
@@ -106,7 +123,7 @@ public class CoursControllerTest {
 		when(mockDAO.exists("SO2")).thenReturn(true);
 		when(mockDAO.findOne("SO2")).thenReturn(saved);
 
-		CoursController controller = new CoursController(mockDAO);
+		CoursController controller = new CoursController(mockDAO, moduleDAO, competenceDAO);
 		MockMvc mockMvc = standaloneSetup(controller)
 				// .setValidator(validator())
 				// .setViewResolvers(viewResolver())
@@ -153,7 +170,7 @@ public class CoursControllerTest {
 
 		when(mockDAO.exists("BROL")).thenReturn(false);
 
-		CoursController controller = new CoursController(mockDAO);
+		CoursController controller = new CoursController(mockDAO, moduleDAO, competenceDAO);
 		MockMvc mockMvc = standaloneSetup(controller).build();
 
 		mockMvc.perform(get("/cours/BROL/update")).andExpect(status().isNotFound());
@@ -173,7 +190,7 @@ public class CoursControllerTest {
 		when(mockDAO.exists("IBD")).thenReturn(true);
 		when(mockDAO.findOne("IBD")).thenReturn(aModif);
 
-		CoursController controller = new CoursController(mockDAO);
+		CoursController controller = new CoursController(mockDAO, moduleDAO, competenceDAO);
 		MockMvc mockMvc = standaloneSetup(controller).setControllerAdvice(new CentralExceptionHandle()).build();
 		// Verifie que l'on retourne sur la vue en cas de doublon pour un add
 		mockMvc.perform(
@@ -193,7 +210,7 @@ public class CoursControllerTest {
 		Cours saved = new Cours("ISO2", "Structure des ordinateurs", (short) 60);
 		when(mockDAO.findOne(saved.getCode())).thenReturn(saved);
 		when(mockDAO.exists(saved.getCode())).thenReturn(true);
-		CoursController controller = new CoursController(mockDAO);
+		CoursController controller = new CoursController(mockDAO, moduleDAO, competenceDAO);
 
 		MockMvc mockMvc = standaloneSetup(controller).build();
 		mockMvc.perform(post("/cours/ISO2/delete").param("code", "ISO2")).andExpect(redirectedUrl("/cours/liste"));
