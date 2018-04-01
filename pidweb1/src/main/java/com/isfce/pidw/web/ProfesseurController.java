@@ -39,8 +39,6 @@ public class ProfesseurController {
 	
 	private IProfesseurJpaDAO professeurDAO;
 
-
-	// Création de la liste de données pour le 1er exemple
 	@Autowired
 	public ProfesseurController(IProfesseurJpaDAO professeurDAO) {
 		this.professeurDAO = professeurDAO;		
@@ -50,20 +48,14 @@ public class ProfesseurController {
 	// Liste des profs
 	@RequestMapping("/liste")
 	public String listeProfesseur(Model model) {
-		
-		System.out.println(   professeurDAO.findAll().toString()   );
-		
-		System.out.println(   professeurDAO.findAll().get(0).getUsername()   );
-		
-		
+	
 		model.addAttribute("professeurList", professeurDAO.findAll() );
 
 		return "professeur/listeProfesseur";
 	}
 
 	
-	
-	
+
 	
 	// Méthode Get pour ajouter un professeur
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
@@ -228,9 +220,9 @@ public class ProfesseurController {
 	public String deleteProfesseur(@PathVariable String code) {
 		logger.debug("<DEBUT> Supression du professeur: " + code);
 		
-		// Vérifie si le cours existe
+		// Vérifie si le professeur existe
 		if (!professeurDAO.exists(code))  {
-			throw new NotFoundException("Professeur non trouvé pour suppression", code );
+			throw new NotFoundException("Professeur non trouvé pour suppression : ", code );
 		}
 		professeurDAO.delete(code);
 		logger.debug("Supression du professeur: " + code);

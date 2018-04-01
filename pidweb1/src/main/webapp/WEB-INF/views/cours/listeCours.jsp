@@ -33,7 +33,7 @@
 
 
 
-	<!--	 Block avec 3 cours per line	-->
+	<!--	 Block avec 3 cours par ligne	-->
 	<div class='row'>
 		
 		<c:forEach items="${coursList}" var="cours">
@@ -43,48 +43,45 @@
 			<s:url value="/cours/${cours.code}/delete" var="deleteUrl" />
 			<s:url value="/competence/${cours.code}/add" var="addCompetUrl" />
 			
-				<div class='col-sm-4'>
+			<div class='col-sm-4'  style="min-height: 250px;"  >
 				
-			<div  onclick="location.href='${coursUrl}'">
-					<h1>
-						<c:out	value="${cours.code}" />
-					</h1> 
-					<h4>
-						<c:out value="${cours.nom}" />
-					</h4>
-					<h4>
-						Nb Périodes: <c:out value="${cours.nbPeriodes}" />
-					</h4>
-			</div>
+				<div  onclick="location.href='${coursUrl}'">
+						<h1>
+							<c:out	value="${cours.code}" />
+						</h1> 
+						<h4>
+							<c:out value="${cours.nom}" />
+						</h4>
+						<h4>
+							Nb Périodes: <c:out value="${cours.nbPeriodes}" />
+						</h4>
+				</div>
 
 	
 	
-<!--	 BT DELETE UPDATE DETAIL	-->
+				<!--	 BT DELETE UPDATE DETAIL	-->
 				<button class="btn btn-info" 
 					onclick="location.href='${detailUrl}'"> Détail</button>
 					
 				<c:if test="${ isAdmin}">
-				
-						<button class="btn btn-primary" 
-							onclick="location.href='${updateUrl}'">Update</button>
-						
-						
-						<button class="btn btn-danger"
-							onclick="
-							if (confirm('Suppression du cours  ?')) {
-							 this.disabled=true;
-			                 post('${deleteUrl}',{'${_csrf.parameterName}': '${_csrf.token}'})}">Delete
-						</button>
-						<button class="btn btn-success" 
-							onclick="location.href='${addCompetUrl}'">Add compétence
-						</button>
+					<button class="btn btn-primary" 
+						onclick="location.href='${updateUrl}'">Update</button>
+					
+					
+					<button class="btn btn-danger"
+						onclick="
+						if (confirm('Suppression du cours  ?')) {
+						 this.disabled=true;
+		                 post('${deleteUrl}',{'${_csrf.parameterName}': '${_csrf.token}'})}">Delete
+					</button>
+					<button class="btn btn-success" 
+						onclick="location.href='${addCompetUrl}'">Add compétence
+					</button>
 				</c:if>
 			</div>
 		
 		</c:forEach>
-	
-			
-		
+
 	</div>
 
 

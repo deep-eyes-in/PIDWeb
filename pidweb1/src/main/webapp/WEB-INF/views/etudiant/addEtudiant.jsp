@@ -33,15 +33,16 @@
 		<%-- affiche une div avec toutes les erreurs --%>
 		<sf:errors path="*" element="div" cssClass="alert alert-danger" />
 
-<s:bind path="username">
 
+				<s:bind path="username">
 			<div class="form-group ${status.error ? 'has-error' : ''} ">
-
-				<div class="col-sm-10">
+					<sf:label path="username" class="col-sm-2 control-label">
+						<s:message code="etudiant.username" />
+					</sf:label>
+					<div class="col-sm-10">
 					<sf:input path="username" id="username" class="form-control"
-						placeholder="username du etudiant" type="hidden" />
+						placeholder="username de l'étudiant" />
 					<sf:errors path="username" class="control-label" />
-
 				</div>
 
 			</div>

@@ -19,16 +19,12 @@ public class HomeController {
 
 	@RequestMapping(value = "/", method = GET)
 	public String home(Locale locale, Model model) {
-		// Formattage d'une date à la locale du client
 		
-		
+		// Formattage de la date et l'heure locale du client
 		Date date = new Date();
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
 		String formattedDate = dateFormat.format(date);
 		model.addAttribute("serverTime", formattedDate);
-		
-		
-		
 
 		return "home";
 	}

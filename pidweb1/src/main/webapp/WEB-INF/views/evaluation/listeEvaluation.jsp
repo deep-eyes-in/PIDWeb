@@ -52,7 +52,7 @@
 	
 		<c:forEach items="${evaluationList}" var="eval">
 			<!-- VAR URL -->
-			<s:url value="/evaluation/view/${eval.id}" var="detailUrl" />
+			<s:url value="/evaluation/${eval.id}" var="detailUrl" />
 
 			
 		

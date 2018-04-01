@@ -37,7 +37,14 @@ public interface IModuleJpaDAO extends JpaRepository<Module, String> {
 	List<Module> getModulesOfEtudiant(String username);
 		
 	@Query(value="select FKETUDIANT from TINSCRIPTION where FKMODULE=?", nativeQuery=true)
-	List<String> getFkEtudiantsOfModule(String code);	
+	List<String> getFkEtudiantsOfModule(String code);
+	
+	@Query(value="	select  e.USERNAME   from TETUDIANT e \r\n" + 
+			"	  inner join TEVALUATION ev on i.FKMODULE =ev.FKMODULE AND ev.FKETUDIANT=e.USERNAME \r\n" + 
+			"	  inner join TINSCRIPTION i on i.FKETUDIANT=e.USERNAME\r\n" + 
+			"	  inner join TUSERS u on u.USERNAME=e.USERNAME \r\n" + 
+			"	where ev.RESULTAT BETWEEN 0 AND  49 AND i.FKMODULE=?", nativeQuery=true)
+	List<String> get2ndSessionFkEtudiantsOfModule(String code);
 	
 	@Query(value="select * from TINSCRIPTION ORDER BY FKMODULE", nativeQuery=true)
 	List<Object[]> getAllInscriptions( );

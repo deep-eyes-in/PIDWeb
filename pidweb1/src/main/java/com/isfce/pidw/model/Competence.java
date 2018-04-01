@@ -38,7 +38,7 @@ public class Competence {
 	
 	
 	@NotNull
-	@Size(min = 4, max = 60, message = "{elem.competence}")
+	@Size(min = 4, max = 120, message = "{elem.competence}")
 	@Column(nullable = false, length = 50)
 	private String description;	
 	

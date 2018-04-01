@@ -25,7 +25,7 @@
 	<br />
 
 	<s:url value="/module/signup" var="moduleActionUrl" />
-
+		Maintenez le bouton CTRL pour en séléctionner plusieurs
 	<%-- modelAttribute correspond à une clé dans le modèle --%>
 	<sf:form method="POST" class="form-horizontal" modelAttribute="signUp"
 		action="${moduleActionUrl}">
@@ -44,7 +44,7 @@
 				<div class="col-sm-5">
 					<s:message code="module.code" var="lblLangue" />
 					<sf:select path="modules" class="form-control">
-						<sf:option value="None" label="${lblLangue}" />
+
 						<sf:options items="${moduleList}" />
 					</sf:select>
 					<sf:errors path="modules" class="control-label" />
@@ -58,12 +58,12 @@
 		<s:bind path="etudiant">
 			<div class="form-group ${status.error ? 'has-error' : ''}">
 				<sf:label path="modules" class="col-sm-2 control-label">
-					<s:message code="cours.langue" />
+					<s:message code="etudiant.username" />
 				</sf:label>
 				<div class="col-sm-5">
 					<s:message code="cours.langue.defaut" var="lblLangue" />
 					<sf:select path="etudiant" class="form-control">
-						<sf:option value="None" label="${lblLangue}" />
+						<sf:option value="None" label="-- Choisissez l'étudiant --" />
 						<sf:options items="${etudiantList}" />
 					</sf:select>
 					<sf:errors path="etudiant" class="control-label" />

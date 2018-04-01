@@ -41,7 +41,7 @@
 			
 				<div class='col-sm-4'>
 				
-			<div  onclick="location.href='${detailUrl}'">
+			<div  onclick="location.href='${detailUrl}'"   >
 					<h1>
 						<c:out	value="${module.code}" />
 					</h1> 

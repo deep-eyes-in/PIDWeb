@@ -88,7 +88,7 @@ public class ModuleController {
 
 	@RequestMapping(value = "/liste/{codeUser}", method = RequestMethod.POST)
 	public String listeModules(@PathVariable String codeUser, Model model, Authentication authentication) {
-		System.out.println("GOGOG");
+
 		return "redirect:/module/liste/"  + codeUser;
 	}
 	
@@ -515,9 +515,10 @@ public class ModuleController {
 			
 		}
 		
-		
-		return "module/signup" ;
+		return "redirect:/etudiant/" + selectedUsername  ;
 	}
+	
+	
 	
 
 	@RequestMapping(value = { "remove/{code}/{userName}"  },  method = RequestMethod.GET)
